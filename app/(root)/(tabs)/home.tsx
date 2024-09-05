@@ -1,8 +1,13 @@
 import React from "react";
-import { View } from "react-native";
+import { Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Home = () => {
-  return <View>Home</View>;
+  return (
+    <SafeAreaView>
+      <Text>Home</Text>
+    </SafeAreaView>
+  );
 };
 
 export default Home;

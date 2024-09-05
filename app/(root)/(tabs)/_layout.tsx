@@ -1,13 +1,11 @@
-import React from "react";
-import { Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-const Home = () => {
+import * as React from "react";
+import { Stack } from "expo-router";
+export default function Layout() {
   return (
-    <SafeAreaView>
-      <Text>Home</Text>
-    </SafeAreaView>
+    <Stack>
+      <Stack.Screen name="chat" options={{ headerShown: false }} />
+      <Stack.Screen name="home" options={{ headerShown: false }} />
+      <Stack.Screen name="profile" options={{ headerShown: false }} />
+    </Stack>
   );
-};
-
-export default Home;
+}
