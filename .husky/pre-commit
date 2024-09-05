@@ -1,1 +1,40 @@
-npm
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo '🏗️👷 Updating CHANGELOG.md with latest commits'
+
+ git log --pretty="- %s" > CHANGELOG.md && git add . ||
+ (
+     echo '❌ ❌  Creating or Updating Change log failed. ✅Stage all changes, and try commit again✅❌ ❌ ';
+     false;
+ )
+
+
+ echo '🏗️👷 Styling, testing and building your project before committing'
+
+
+# # # Check Prettier standards
+#  yarn run check-format ||
+#  (
+#      echo '❌ ❌  Prettier Check Failed. ✅Run yarn run format✅, to add changes and try commit again.❌ ❌ ';
+#      false;
+#  )
+
+# # # Check ESLint Standards
+#  yarn run check-lint ||
+#  (
+#          echo '❌ ❌  ESLint Check Failed. Make the required changes listed above, add changes and try to commit again.❌ ❌ '
+#          false;
+#  )
+
+# # # Check tsconfig standards
+#  yarn run check-types ||
+# (
+#      echo '❌ ❌ Failed Type check. Make the changes required above.❌ ❌ '
+#     false;
+# )
+
+
+
+# # # If everything passes... Now we can commit
+#  echo '✅✅✅✅ You win this time... I am committing this now. ✅✅✅✅'
