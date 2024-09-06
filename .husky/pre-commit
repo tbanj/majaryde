@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo '🏗️👷 Updating CHANGELOG.md with latest commits'
 
  git log --pretty="- %s" > CHANGELOG.md && git add . ||
