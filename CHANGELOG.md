@@ -5,6 +5,7 @@
 - updated
 - updated
 - updated
+- updated
 - resolve tailwind.config.js file issue
 - added nativewind npm
 - Initial commit
