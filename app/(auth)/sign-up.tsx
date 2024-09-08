@@ -36,8 +36,8 @@ const SignUp = () => {
             label="Email"
             placeholder="Enter email"
             icon={icons.email}
-            value={form.name}
-            onChangeText={(value: string) => setForm({ ...form, name: value })}
+            value={form.email}
+            onChangeText={(value: string) => setForm({ ...form, email: value })}
           />
           <InputField
             label="Password"
@@ -45,7 +45,9 @@ const SignUp = () => {
             icon={icons.lock}
             secureTextEntry={true}
             value={form.password}
-            onChangeText={(value: string) => setForm({ ...form, name: value })}
+            onChangeText={(value: string) =>
+              setForm({ ...form, password: value })
+            }
           />
 
           <CustomButton
