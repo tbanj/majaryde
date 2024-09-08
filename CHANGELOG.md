@@ -1,3 +1,4 @@
+- clerk auth signup
 - clerk auth
 - updated
 - updated
