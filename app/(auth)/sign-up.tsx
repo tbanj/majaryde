@@ -179,7 +179,15 @@ const SignUp = () => {
             </Text>
             <CustomButton
               title="Browse Home"
-              onPress={() => router.push("/(root)/(tabs)/home")}
+              onPress={() => {
+                setVerification({
+                  ...verification,
+                  state: "default",
+                  error: "",
+                  code: "",
+                });
+                router.push("/(root)/(tabs)/home");
+              }}
               className="mt-5"
             />
           </View>
