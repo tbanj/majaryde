@@ -1,3 +1,4 @@
+- signup with clerk api completed
 - clerk auth signup
 - clerk auth signup
 - clerk auth
