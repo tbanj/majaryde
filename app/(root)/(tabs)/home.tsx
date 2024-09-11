@@ -167,6 +167,8 @@ export default function Home() {
                 <Image source={icons.out} className="w-4 h-4" />
               </TouchableOpacity>
             </View>
+
+            {/* GoogleTextInput  */}
           </>
         )}
       />
