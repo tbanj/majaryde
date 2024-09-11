@@ -1,3 +1,4 @@
+- signin persist in progress
 - signin with clerk api completed
 - signup with clerk api completed
 - clerk auth signup
