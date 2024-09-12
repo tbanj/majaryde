@@ -1,3 +1,4 @@
+- get user location implemented
 - code cleanup
 - zustand implement for state managemnt
 - zustand implement for state managemnt
