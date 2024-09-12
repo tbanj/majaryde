@@ -1,6 +1,7 @@
 - zustand implement for state managemnt
 - zustand implement for state managemnt
 - zustand implement for state managemnt
+- zustand implement for state managemnt
 - updated
 - updated
 - updated
