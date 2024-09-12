@@ -1,7 +1,7 @@
 import { LocationStore } from "@/types/type";
 import { create } from "zustand";
 
-const useLocationStore = create<LocationStore>((set) => ({
+export const useLocationStore = create<LocationStore>((set) => ({
   userAddress: null,
   userLongitude: null,
   destinationAddress: null,
