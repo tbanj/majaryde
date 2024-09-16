@@ -4,7 +4,7 @@ import { Image, ScrollView, Text, View } from "react-native";
 import InputField from "@/components/InputField";
 import { icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
-import { Link, useRouter } from "expo-router";
+import { Link, router, useRouter } from "expo-router";
 // import OAuth from "@/components/OAuth";
 
 const SignIn = () => {
@@ -14,7 +14,6 @@ const SignIn = () => {
   });
 
   const { signIn, setActive, isLoaded } = useSignIn();
-  const router = useRouter();
 
   const onSignInPress = useCallback(async () => {
     if (!isLoaded) {
