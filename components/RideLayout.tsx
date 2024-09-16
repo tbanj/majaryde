@@ -1,14 +1,9 @@
 import { ReactNode } from "react";
 import { Text, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const RideLayout = ({ children }: { children: ReactNode }) => {
-  return (
-    <View>
-      <Text>TOP OF THE LAYOUT</Text>
-      {children}
-      <Text>BOTTOM OF THE LAYOUT</Text>
-    </View>
-  );
+  return <GestureHandlerRootView>{children}</GestureHandlerRootView>;
 };
 
 export default RideLayout;

@@ -1,3 +1,4 @@
+- find-ride route
 - fide ride component
 - fide ride component
 - map helper function implemented
