@@ -1,3 +1,4 @@
+- map helper function implemented
 - get user location implemented
 - code cleanup
 - zustand implement for state managemnt

@@ -8,8 +8,8 @@ export const generateMarkersFromData = ({
   userLongitude,
 }: {
   data: Driver[];
-  userLatitude: number;
-  userLongitude: number;
+  userLatitude: any;
+  userLongitude: any;
 }): MarkerData[] => {
   return data.map((driver) => {
     const latOffset = (Math.random() - 0.5) * 0.01; // Random offset between -0.005 and 0.005

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Tabs } from "expo-router";
-import { Image, ImageSourcePropType, View } from "react-native";
+import { Image, ImageSourcePropType, View, Keyboard } from "react-native";
 import { icons } from "@/constants";
 
 const TabIcon = ({
@@ -28,6 +28,7 @@ const TabIcon = ({
 );
 
 const Layout = () => {
+  const [isKeyboardVisible, setKeyboardVisible] = React.useState(false);
   return (
     <Tabs
       initialRouteName="index"
