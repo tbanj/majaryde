@@ -1,4 +1,5 @@
 - fide ride component
+- fide ride component
 - map helper function implemented
 - get user location implemented
 - code cleanup
