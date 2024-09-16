@@ -1,5 +1,5 @@
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 
@@ -7,6 +7,9 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   Text,
   TouchableOpacity,
   View,
@@ -24,12 +27,12 @@ const recentRides = [
     ride_id: "1",
     origin_address: "Kathmandu, Nepal",
     destination_address: "Pokhara, Nepal",
-    origin_latitude: "27.717245",
-    origin_longitude: "85.323961",
-    destination_latitude: "28.209583",
-    destination_longitude: "83.985567",
+    origin_latitude: 27.717245,
+    origin_longitude: 85.323961,
+    destination_latitude: 28.209583,
+    destination_longitude: 83.985567,
     ride_time: 391,
-    fare_price: "19500.00",
+    fare_price: 19500.0,
     payment_status: "paid",
     driver_id: 2,
     user_id: "1",
@@ -50,12 +53,12 @@ const recentRides = [
     ride_id: "2",
     origin_address: "Jalkot, MH",
     destination_address: "Pune, Maharashtra, India",
-    origin_latitude: "18.609116",
-    origin_longitude: "77.165873",
-    destination_latitude: "18.520430",
-    destination_longitude: "73.856744",
+    origin_latitude: 18.609116,
+    origin_longitude: 77.165873,
+    destination_latitude: 18.52043,
+    destination_longitude: 73.856744,
     ride_time: 491,
-    fare_price: "24500.00",
+    fare_price: 24500.0,
     payment_status: "paid",
     driver_id: 1,
     user_id: "1",
@@ -76,12 +79,12 @@ const recentRides = [
     ride_id: "3",
     origin_address: "Zagreb, Croatia",
     destination_address: "Rijeka, Croatia",
-    origin_latitude: "45.815011",
-    origin_longitude: "15.981919",
-    destination_latitude: "45.327063",
-    destination_longitude: "14.442176",
+    origin_latitude: 45.815011,
+    origin_longitude: 15.981919,
+    destination_latitude: 45.327063,
+    destination_longitude: 14.442176,
     ride_time: 124,
-    fare_price: "6200.00",
+    fare_price: 6200.0,
     payment_status: "paid",
     driver_id: 1,
     user_id: "1",
@@ -102,12 +105,12 @@ const recentRides = [
     ride_id: "4",
     origin_address: "Okayama, Japan",
     destination_address: "Osaka, Japan",
-    origin_latitude: "34.655531",
-    origin_longitude: "133.919795",
-    destination_latitude: "34.693725",
-    destination_longitude: "135.502254",
+    origin_latitude: 34.655531,
+    origin_longitude: 133.919795,
+    destination_latitude: 34.693725,
+    destination_longitude: 135.502254,
     ride_time: 159,
-    fare_price: "7900.00",
+    fare_price: 7900.0,
     payment_status: "paid",
     driver_id: 3,
     user_id: "1",
@@ -131,6 +134,8 @@ export default function Page() {
   const loading = true;
 
   const [hasPermission, setHasPermission] = useState(false);
+
+  const navigation = useNavigation();
 
   const handleSignOut = () => {};
   const handleDestinationPress = () => {};
@@ -160,6 +165,39 @@ export default function Page() {
 
     requestLocation();
   }, []);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      navigation.setOptions({
+        tabBarStyle: { display: "none" },
+      });
+    });
+
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      navigation.setOptions({
+        tabBarStyle: {
+          backgroundColor: "#333333",
+          borderRadius: 50,
+          paddingBottom: 0,
+          overflow: "hidden",
+          marginHorizontal: 20,
+          marginBottom: 20,
+          height: 78,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexDirection: "row",
+          position: "absolute",
+        },
+      });
+    });
+
+    // Clean up listeners on unmount
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, [navigation]);
 
   return (
     <SafeAreaView>
@@ -206,11 +244,15 @@ export default function Page() {
             </View>
 
             {/* GoogleTextInput  */}
-            <GoogleTextInput
-              icon={icons.search}
-              containerStyle="bg-white shadow-neutral-300"
-              handlePress={handleDestinationPress}
-            />
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+              <GoogleTextInput
+                icon={icons.search}
+                containerStyle="bg-white shadow-neutral-300"
+                handlePress={handleDestinationPress}
+              />
+            </KeyboardAvoidingView>
 
             <>
               <Text className="text-xl font-JakartaBold mt-5 mb-3">
