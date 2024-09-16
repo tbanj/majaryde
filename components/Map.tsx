@@ -65,6 +65,8 @@ const Map = () => {
   } = useLocationStore();
 
   useEffect(() => {
+    // TODO remove this later
+    setDrivers(drivers as MarkerData[]);
     if (Array.isArray(drivers)) {
       if (!userLatitude || !userLongitude) return;
     }
