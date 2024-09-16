@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 const ConfirmRide = () => {
   return (
     <View>
-      <Text>ConfirmRide</Text>
+      <Text>Confirm Ride</Text>
     </View>
   );
 };
