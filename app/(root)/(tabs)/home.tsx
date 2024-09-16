@@ -1,5 +1,5 @@
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
-import { Link, useNavigation, useRouter } from "expo-router";
+import { Link, router, useNavigation, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 
@@ -136,7 +136,6 @@ export default function Page() {
   const [hasPermission, setHasPermission] = useState(false);
 
   const navigation = useNavigation();
-  const router = useRouter();
 
   const handleSignOut = () => {};
   const handleDestinationPress = (location: {

@@ -1,3 +1,4 @@
+- driver card component implementation
 - confirm-ride page implementation
 - added bottom-sheet completed
 - added bottom-sheet

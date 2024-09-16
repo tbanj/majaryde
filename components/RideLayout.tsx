@@ -1,5 +1,5 @@
 import { icons } from "@/constants";
-import { useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
 import { ReactNode, useRef } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -18,8 +18,6 @@ const RideLayout = ({
   children: ReactNode;
   snapPoints?: string[];
 }) => {
-  const router = useRouter();
-
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   return (
