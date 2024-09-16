@@ -1,3 +1,5 @@
+- confirm-ride page implementation
+- added bottom-sheet completed
 - added bottom-sheet
 - ride layout component implemenation
 - find-ride route
