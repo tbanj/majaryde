@@ -5,6 +5,7 @@ import RideLayout from "@/components/RideLayout";
 import { icons } from "@/constants";
 import { useDriverStore, useLocationStore } from "@/store";
 import { formatTime } from "../lib/utils";
+import Payment from "@/components/Payment";
 
 const BookRide = () => {
   const { user } = useUser();
@@ -16,7 +17,7 @@ const BookRide = () => {
   )[0];
 
   return (
-    <RideLayout title="Book Ride" snapPoints={["85%", "40%"]}>
+    <RideLayout title="Book Ride">
       <>
         <Text className="text-xl font-JakartaSemiBold mb-3">
           Ride Information
@@ -84,6 +85,7 @@ const BookRide = () => {
             </Text>
           </View>
         </View>
+        <Payment />
       </>
     </RideLayout>
   );

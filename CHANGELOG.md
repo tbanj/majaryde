@@ -1,3 +1,4 @@
+- book ride payment component  implementation
 - book ride activity implementation
 - driver card component implementation
 - confirm-ride page implementation
