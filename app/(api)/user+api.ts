@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     if (!name || !email || !clerkId) {
       return Response.json(
         { error: "Missing request fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const response = await sql`

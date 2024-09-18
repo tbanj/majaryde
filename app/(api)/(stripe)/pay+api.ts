@@ -10,6 +10,6 @@ export async function POST(request: Request) {
       JSON.stringify({
         error: "Miss required payment information",
         status: 400,
-      })
+      }),
     );
 }
