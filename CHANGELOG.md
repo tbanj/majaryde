@@ -1,3 +1,4 @@
+- stripe component completed
 - stripe integration in progress
 - book ride payment component  implementation
 - book ride activity implementation
