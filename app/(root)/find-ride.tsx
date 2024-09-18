@@ -27,7 +27,7 @@ const FindRide = () => {
         />
       </View>
 
-      <View className="my-3">
+      <View className="">
         <Text className="text-lg font-JakartaBold mb-3">To</Text>
         <GoogleTextInput
           icon={icons.map}
