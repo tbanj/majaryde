@@ -4,7 +4,7 @@ import { Image, ScrollView, Text, View } from "react-native";
 import InputField from "@/components/InputField";
 import { icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
-import { Link, router, useRouter } from "expo-router";
+import { Link, router } from "expo-router";
 // import OAuth from "@/components/OAuth";
 
 const SignIn = () => {
@@ -12,6 +12,7 @@ const SignIn = () => {
     email: "",
     password: "",
   });
+  const [signInBTN, setSignInBTN] = useState<boolean>(false);
 
   const { signIn, setActive, isLoaded } = useSignIn();
 
@@ -21,6 +22,7 @@ const SignIn = () => {
     }
 
     try {
+      if (form.password && form.password) setSignInBTN(true);
       const signInAttempt = await signIn.create({
         identifier: form.email,
         password: form.password,
@@ -28,14 +30,17 @@ const SignIn = () => {
 
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
+        setSignInBTN(true);
         router.push("/(root)/(tabs)/home");
       } else {
         // See https://clerk.com/docs/custom-flows/error-handling
         // for more info on error handling
         console.error(JSON.stringify(signInAttempt, null, 2));
+        setSignInBTN(false);
       }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
+      setSignInBTN(false);
     }
   }, [isLoaded, form.email, form.password]);
   return (
@@ -70,6 +75,7 @@ const SignIn = () => {
             title="Sign In"
             onPress={onSignInPress}
             className="mt-6"
+            disabled={signInBTN}
           />
 
           {/* <OAuth /> */}
