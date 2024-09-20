@@ -1,3 +1,4 @@
+- stripe success modal implemented
 - stripe intent completed
 - stripe intent completed
 - stripe intent completed

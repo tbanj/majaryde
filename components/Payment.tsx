@@ -1,4 +1,4 @@
-import { Alert, Image, View } from "react-native";
+import { Alert, Image, Text, View } from "react-native";
 import { PaymentSheetError, useStripe } from "@stripe/stripe-react-native";
 import CustomButton from "./CustomButton";
 import { useState } from "react";
@@ -144,6 +144,13 @@ const Payment = ({
         bg-white p-7 rounded-2xl"
         >
           <Image source={images.check} className="w-28 h-28 mt-5" />
+          <Text className="text-2xl text-center font-JakartaBold mt-5">
+            Ride booked!
+          </Text>
+          <Text className="text-md text-general-200 font-JakartaMedium text-center mt-3">
+            Thank you for your booking, Your reservation has been placed. Please
+            proceed with your trip
+          </Text>
         </View>
       </ReactNativeModal>
     </>
