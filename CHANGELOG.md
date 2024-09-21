@@ -1,3 +1,4 @@
+- clerk google OAuth code review
 - clerk google OAuth implementation completed
 - clerk google OAuth implementation
 - stripe success modal toggle implemented
