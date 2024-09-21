@@ -44,7 +44,7 @@ const Rides = () => {
         )}
         ListHeaderComponent={() => (
           <>
-            <Text className="text-2xl font-JakartaBold">All Rides</Text>
+            <Text className="text-2xl font-JakartaBold my-5">All Rides</Text>
           </>
         )}
       />
