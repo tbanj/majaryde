@@ -1,3 +1,4 @@
+- clerk google OAuth implementation
 - stripe success modal toggle implemented
 - stripe success modal implemented
 - stripe intent completed
