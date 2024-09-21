@@ -5,6 +5,7 @@ import InputField from "@/components/InputField";
 import { icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
+import OAuth from "@/components/OAuth";
 // import OAuth from "@/components/OAuth";
 
 const SignIn = () => {
@@ -78,12 +79,12 @@ const SignIn = () => {
             disabled={signInBTN}
           />
 
-          {/* <OAuth /> */}
+          <OAuth />
           <Link
             className="text-lg text-center text-general-200 mt-10"
             href={"/sign-up"}
           >
-            <Text>Don't have an account</Text>
+            <Text>Don't have an account {""}</Text>
             <Text className="text-primary-500">Sign Up</Text>
           </Link>
         </View>

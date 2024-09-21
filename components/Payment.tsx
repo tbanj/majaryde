@@ -8,6 +8,7 @@ import { useLocationStore } from "@/store";
 import { useAuth } from "@clerk/clerk-expo";
 import ReactNativeModal from "react-native-modal";
 import { images } from "@/constants";
+import { router } from "expo-router";
 
 const Payment = ({
   fullName,
@@ -18,7 +19,7 @@ const Payment = ({
 }: PaymentProps) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { userId } = useAuth();
-  const [success, setSuccess] = useState<boolean>(true);
+  const [success, setSuccess] = useState<boolean>(false);
   const {
     userAddress,
     userLongitude,
@@ -30,10 +31,10 @@ const Payment = ({
 
   const initializePaymentSheet = async () => {
     const { error } = await initPaymentSheet({
-      merchantDisplayName: "Example, Inc.",
+      merchantDisplayName: "MajaRyde Inc.",
       intentConfiguration: {
         mode: {
-          amount: 1099,
+          amount: parseInt(amount) * 100,
           currencyCode: "USD",
         },
         confirmHandler: async (paymentMethod, _, intentCreationCallback) => {
@@ -149,8 +150,17 @@ const Payment = ({
           </Text>
           <Text className="text-md text-general-200 font-JakartaMedium text-center mt-3">
             Thank you for your booking, Your reservation has been placed. Please
-            proceed with your trip
+            proceed with your trip!
           </Text>
+
+          <CustomButton
+            className="mt-5"
+            title="Back Home"
+            onPress={() => {
+              setSuccess(false);
+              router.push("/(root)/(tabs)/home");
+            }}
+          />
         </View>
       </ReactNativeModal>
     </>

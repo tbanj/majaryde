@@ -7,6 +7,7 @@ import InputField from "@/components/InputField";
 import { icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI } from "../lib/fetch";
+import OAuth from "@/components/OAuth";
 // import OAuth from "@/components/OAuth";
 
 const SignUp = () => {
@@ -123,7 +124,7 @@ const SignUp = () => {
             className="mt-6"
           />
 
-          {/* <OAuth /> */}
+          <OAuth />
           <Link
             className="text-lg text-center text-general-200 mt-10"
             href={"/sign-in"}
