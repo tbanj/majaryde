@@ -155,15 +155,16 @@ export default function Page() {
             </View>
 
             {/* GoogleTextInput  */}
-            <KeyboardAvoidingView
+            {/* <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-              <GoogleTextInput
-                icon={icons.search}
-                containerStyle="bg-white shadow-neutral-300"
-                handlePress={handleDestinationPress}
-              />
-            </KeyboardAvoidingView>
+              
+            </KeyboardAvoidingView> */}
+            <GoogleTextInput
+              icon={icons.search}
+              containerStyle="bg-white shadow-neutral-300"
+              handlePress={handleDestinationPress}
+            />
 
             <>
               <Text className="text-xl font-JakartaBold mt-5 mb-3">
