@@ -1,3 +1,4 @@
+- profile route implementation
 - clerk google OAuth code review
 - clerk google OAuth implementation completed
 - clerk google OAuth implementation
