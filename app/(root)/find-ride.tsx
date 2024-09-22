@@ -2,10 +2,10 @@ import CustomButton from "@/components/CustomButton";
 import GoogleTextInput from "@/components/GoogleTextInput";
 import RideLayout from "@/components/RideLayout";
 import { icons } from "@/constants";
-import { useLocationStore } from "@/store";
+import { useDriverStore, useLocationStore } from "@/store";
 import { router } from "expo-router";
-import React from "react";
-import { Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { Alert, Text, View } from "react-native";
 
 const FindRide = () => {
   const {
@@ -14,6 +14,12 @@ const FindRide = () => {
     setDestinationLocation,
     setUserLocation,
   } = useLocationStore();
+  const { drivers } = useDriverStore();
+
+  useEffect(() => {
+    // clearDrivers();
+  }, []);
+
   return (
     <RideLayout title="Ride">
       <View className="my-3">
@@ -40,7 +46,16 @@ const FindRide = () => {
 
       <CustomButton
         title="Find now"
-        onPress={() => router.push("/(root)/confirm-ride")}
+        onPress={() => {
+          const dataNotValid = drivers.find(
+            (data: any) => data.price === "NaN"
+          );
+          if (dataNotValid) {
+            Alert.alert("Error", "Choose another closeby destination");
+            return;
+          }
+          router.push("/(root)/confirm-ride");
+        }}
         className="mt-5"
       />
     </RideLayout>

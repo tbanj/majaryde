@@ -154,7 +154,6 @@ export default function Page() {
               </TouchableOpacity>
             </View>
 
-            {/* GoogleTextInput  */}
             {/* <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
             >

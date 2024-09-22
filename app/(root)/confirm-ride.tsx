@@ -7,16 +7,15 @@ import { FlatList, Text, View } from "react-native";
 
 const ConfirmRide = () => {
   const { drivers, selectedDriver, setSelectedDriver } = useDriverStore();
-
   return (
-    <RideLayout title="Choose a Rider" snapPoints={["65%", "85%"]}>
+    <RideLayout title="Choose a Rider" snapPoints={["65%", "90%"]}>
       <FlatList
         data={drivers}
         renderItem={({ item }) => (
           <DriverCard
             item={item}
             selected={selectedDriver!}
-            setSelected={() => setSelectedDriver(Number(item.id)!)}
+            setSelected={() => setSelectedDriver(Number(item.id))}
           />
         )}
         ListFooterComponent={() => (

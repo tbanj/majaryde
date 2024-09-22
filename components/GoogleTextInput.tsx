@@ -18,9 +18,9 @@ const GoogleTextInput = ({
 }: GoogleInputProps) => {
   const ref = useRef<GooglePlacesAutocompleteRef>(null);
 
-  const handleClearText = () => {
+  /* const handleClearText = () => {
     ref?.current?.setAddressText("");
-  };
+  }; */
 
   return (
     <View
@@ -80,14 +80,14 @@ const GoogleTextInput = ({
             />
           </View>
         )}
-        renderRightButton={() => (
+        /* renderRightButton={() => (
           <TouchableOpacity
             onPress={handleClearText}
             className="justify-center items-center w-10 h-10 rounded-full bg-white"
           >
             <Image source={icons.close} className="w-4 h-4" />
           </TouchableOpacity>
-        )}
+        )} */
         textInputProps={{
           placeholderTextColor: "gray",
           placeholder: initialLocation ?? "where do you want to go?",

@@ -78,13 +78,13 @@ const Map = () => {
       if (!userLatitude || !userLongitude) return;
 
       const newMarkers = generateMarkersFromData({
-        data: drivers!,
+        data: drivers,
         userLatitude,
         userLongitude,
       });
       setMarkers(newMarkers);
     }
-  }, [drivers]);
+  }, [drivers, userLatitude, userLongitude]);
 
   useEffect(() => {
     if (markers.length > 0 && destinationLatitude && destinationLongitude) {
