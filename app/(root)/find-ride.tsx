@@ -16,10 +16,6 @@ const FindRide = () => {
   } = useLocationStore();
   const { drivers } = useDriverStore();
 
-  useEffect(() => {
-    // clearDrivers();
-  }, []);
-
   return (
     <RideLayout title="Ride">
       <View className="my-3">

@@ -71,6 +71,8 @@ const Map = () => {
     destinationLongitude,
   } = useLocationStore();
 
+  console.log("Map userLongitude", userLongitude, "userLatitude", userLatitude);
+
   useEffect(() => {
     // TODO remove this later
     // setDrivers(drivers as MarkerData[]);
@@ -78,7 +80,7 @@ const Map = () => {
       if (!userLatitude || !userLongitude) return;
 
       const newMarkers = generateMarkersFromData({
-        data: drivers,
+        data: drivers!,
         userLatitude,
         userLongitude,
       });
@@ -129,7 +131,8 @@ const Map = () => {
       mapType="mutedStandard"
       showsPointsOfInterest={false}
       initialRegion={region}
-      // showsUserLocation={true}
+      /* if you want ur recent ride to show dont enable showUserLocation */
+      showsUserLocation={true}
       userInterfaceStyle="light"
     >
       {markers.map((marker) => (
@@ -159,7 +162,7 @@ const Map = () => {
 
           <MapViewDirections
             origin={{
-              latitude: userLatitude,
+              latitude: userLatitude!,
               longitude: userLongitude,
             }}
             destination={{

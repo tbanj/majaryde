@@ -1,14 +1,16 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { Link, router, useNavigation } from "expo-router";
+import { Link, router, useFocusEffect, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Image,
   Keyboard,
   KeyboardAvoidingView,
+  Linking,
   Platform,
   Text,
   TouchableOpacity,
@@ -20,10 +22,17 @@ import { icons, images } from "@/constants";
 import GoogleTextInput from "@/components/GoogleTextInput";
 import Map from "@/components/Map";
 import { useLocationStore } from "@/store";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useFetch } from "@/app/lib/fetch";
 
 export default function Page() {
+  const [hasPermission, setHasPermission] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [locationPermissionState, setLocationPermissionState] = useState({
+    location: false,
+    currentLoc: null,
+  });
+
   const { setUserLocation, setDestinationLocation } = useLocationStore();
   const { user } = useUser();
   const { signOut } = useAuth();
@@ -32,8 +41,6 @@ export default function Page() {
     loading,
     error,
   } = useFetch<Ride[]>(`/(api)/ride/${user?.id}`);
-
-  const [hasPermission, setHasPermission] = useState(false);
 
   const navigation = useNavigation();
 
@@ -51,31 +58,101 @@ export default function Page() {
     router.push("/(root)/find-ride");
   };
 
-  useEffect(() => {
-    const requestLocation = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+  // useEffect(() => {
+  //   // const requestLocation = async () => {
+  //   //   let { status } = await Location.requestForegroundPermissionsAsync();
+  //   //   if (status !== "granted") {
+  //   //     setHasPermission(false);
+  //   //     setErrorMsg("Permission to access location was denied");
+  //   //     return;
+  //   //   } else {
+  //   //     let location = await Location.getCurrentPositionAsync();
+
+  //   //     const address = await Location.reverseGeocodeAsync({
+  //   //       latitude: location.coords?.latitude,
+  //   //       longitude: location.coords?.longitude,
+  //   //     });
+
+  //   //     setUserLocation({
+  //   //       /* latitude: location.coords?.latitude,
+  //   //     longitude: location.coords?.longitude, */
+  //   //       latitude: 37.78825,
+  //   //       longitude: -122.4324,
+  //   //       address: `${address[0].name}, ${address[0].region}`,
+  //   //     });
+  //   //   }
+  //   // };
+  //   console.log("you are here");
+  //   requestLocation();
+  // }, []);
+
+  const requestLocation = async () => {
+    try {
+      // Linking.openSettings();
+      let { status, granted } =
+        await Location.requestForegroundPermissionsAsync();
+      console.log(
+        "status else",
+        status,
+        "hasPermission",
+        hasPermission,
+        "granted",
+        granted
+      );
+
       if (status !== "granted") {
-        setHasPermission(false);
+        // setHasPermission(false);
+        // setErrorMsg("Permission to access location was denied");
+        setLocationPermissionState((prev) => ({ ...prev, location: false }));
+        /* Alert.alert(
+        "Warning",
+        "Permission to access location was denied, kindly grant"
+      );
+      requestLocation(); */
+        // Alert.alert("Permission Denied", "Location permission is required.");
         return;
+      } else {
+        // setHasPermission(true);
+        setLocationPermissionState((prev) => ({ ...prev, location: true }));
+        let location = await Location.getCurrentPositionAsync();
+        console.log("location", location);
+        if (location)
+          setLocationPermissionState((prev: any) => ({
+            ...prev,
+            currentLoc: location,
+          }));
+        const address = await Location.reverseGeocodeAsync({
+          latitude: location.coords?.latitude,
+          longitude: location.coords?.longitude,
+        });
+
+        setUserLocation({
+          latitude: location.coords?.latitude,
+          longitude: location.coords?.longitude,
+          /* latitude: 37.78825,
+        longitude: -122.4324, */
+          address: `${address[0].name}, ${address[0].region}`,
+        });
       }
-      let location = await Location.getCurrentPositionAsync();
+    } catch (error: any) {
+      console.log("requestLocation error", typeof error, error);
+    }
+  };
 
-      const address = await Location.reverseGeocodeAsync({
-        latitude: location.coords?.latitude,
-        longitude: location.coords?.longitude,
+  useFocusEffect(
+    useCallback(() => {
+      setLocationPermissionState({
+        location: false,
+        currentLoc: null,
       });
+      console.log("Screen is focused, running requestLocation");
+      requestLocation();
 
-      setUserLocation({
-        /* latitude: location.coords?.latitude,
-        longitude: location.coords?.longitude, */
-        latitude: 37.78825,
-        longitude: -122.4324,
-        address: `${address[0].name}, ${address[0].region}`,
-      });
-    };
-
-    requestLocation();
-  }, []);
+      return () => {
+        console.log("This route is now unfocused.");
+      };
+    }, [])
+  );
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -109,6 +186,19 @@ export default function Page() {
       hideSubscription.remove();
     };
   }, [navigation]);
+
+  /* let permissionCheck: boolean;
+  if (hasPermission) {
+    permissionCheck = hasPermission;
+  } */
+
+  const requestPermit = () => {
+    // setHasPermission(true);
+    if (!locationPermissionState?.location) Linking.openSettings();
+    requestLocation();
+  };
+
+  console.log("locationPermissionState", locationPermissionState);
 
   return (
     <SafeAreaView>
@@ -166,12 +256,24 @@ export default function Page() {
             />
 
             <>
-              <Text className="text-xl font-JakartaBold mt-5 mb-3">
+              {locationPermissionState?.currentLoc ? (
+                <Text className="text-xl font-JakartaBold mt-5 mb-3">
+                  Your Current Location
+                </Text>
+              ) : (
+                <TouchableOpacity onPress={requestPermit}>
+                  <Text className="text-xl font-JakartaBold mt-5 mb-3">
+                    Kindly Grant Location Perm.
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {/* <Text className="text-xl font-JakartaBold mt-5 mb-3">
                 Your Current Location
-              </Text>
+              </Text> */}
 
               <View className="flex flex-row items-center bg-transparent h-[300px]">
-                <Map />
+                {/* {permissionCheck ? <Map /> : <></>} */}
+                {locationPermissionState?.currentLoc && <Map />}
               </View>
             </>
 

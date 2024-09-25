@@ -17,6 +17,8 @@ const Payment = ({
   driverId,
   rideTime,
 }: PaymentProps) => {
+  // console.warn("Amount", amount, parseInt(amount) * 100);
+
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { userId } = useAuth();
   const [success, setSuccess] = useState<boolean>(false);
@@ -34,7 +36,7 @@ const Payment = ({
       merchantDisplayName: "MajaRyde Inc.",
       intentConfiguration: {
         mode: {
-          amount: parseInt(amount) * 100,
+          amount: parseFloat(amount) * 100,
           currencyCode: "USD",
         },
         confirmHandler: async (paymentMethod, _, intentCreationCallback) => {
@@ -158,7 +160,7 @@ const Payment = ({
             title="Back Home"
             onPress={() => {
               setSuccess(false);
-              router.push("/(root)/(tabs)/home");
+              router.replace("/(root)/(tabs)/home");
             }}
           />
         </View>

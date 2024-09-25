@@ -130,7 +130,6 @@ declare interface DriverStore {
   setSelectedDriver: (driverId: number) => void;
   setDrivers: (drivers: MarkerData[]) => void;
   clearSelectedDriver: () => void;
-  clearDrivers: () => void;
 }
 
 declare interface DriverCardProps {

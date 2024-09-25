@@ -19,7 +19,13 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
+      ],
+      "package": "com.tbanj.majaryde"
     },
     "web": {
       "bundler": "metro",
@@ -42,6 +48,12 @@
       "eas": {
         "projectId": "ef2825e6-74f7-49f8-b731-abdb75c17dbd"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ef2825e6-74f7-49f8-b731-abdb75c17dbd"
     }
   }
 }

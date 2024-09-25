@@ -8,7 +8,7 @@ import { FlatList, Text, View } from "react-native";
 const ConfirmRide = () => {
   const { drivers, selectedDriver, setSelectedDriver } = useDriverStore();
   return (
-    <RideLayout title="Choose a Rider" snapPoints={["65%", "90%"]}>
+    <RideLayout title="Choose a Rider" snapPoints={["65%", "85%"]}>
       <FlatList
         data={drivers}
         renderItem={({ item }) => (
