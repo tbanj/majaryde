@@ -26,14 +26,19 @@ const BookRide = () => {
     return () => {};
   }, []);
 
+  console.log(
+    "process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+    process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  );
+
   return (
     <StripeProvider
       publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
       merchantIdentifier="merchant.majaryde.com"
       urlScheme="myapp"
     >
-      {driverDetails && (
-        <RideLayout title="Book Ride">
+      <RideLayout title="Book Ride">
+        {driverDetails && (
           <>
             <Text className="text-xl font-JakartaSemiBold mb-3">
               Ride Information
@@ -109,8 +114,8 @@ const BookRide = () => {
               rideTime={driverDetails?.time!}
             />
           </>
-        </RideLayout>
-      )}
+        )}
+      </RideLayout>
     </StripeProvider>
   );
 };
