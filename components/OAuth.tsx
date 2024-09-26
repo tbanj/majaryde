@@ -13,11 +13,9 @@ const OAuth = () => {
     try {
       const result = await googleOAuth(startOAuthFlow);
 
-      console.log("handleGoogleSignIn", result);
-
       /* result.success === false..when the Google login is cancelled */
       if (!result.success) return;
-      if (result.code === "session_exists" || result.code === "success") {
+      else if (result.code === "session_exists" || result.code === "success") {
         router.replace("/(root)/(tabs)/home");
       }
     } catch (err) {

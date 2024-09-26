@@ -61,6 +61,7 @@ import MapViewDirections from "react-native-maps-directions";
 
 const Map = () => {
   const { data: drivers, loading, error } = useFetch<Driver[]>("/(api)/driver");
+  console.log("map error", error);
   const { selectedDriver, setDrivers } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
@@ -70,8 +71,6 @@ const Map = () => {
     destinationLatitude,
     destinationLongitude,
   } = useLocationStore();
-
-  console.log("Map userLongitude", userLongitude, "userLatitude", userLatitude);
 
   useEffect(() => {
     // TODO remove this later
@@ -112,7 +111,7 @@ const Map = () => {
   if (error)
     return (
       <View className="flex justify-between items-center w-full">
-        <Text>Error: {error}</Text>
+        <Text>Error Now: {typeof error}</Text>
       </View>
     );
 
@@ -123,6 +122,7 @@ const Map = () => {
     destinationLongitude,
   });
 
+  /* if you want ur recent ride to show dont enable showUserLocation */
   return (
     <MapView
       provider={PROVIDER_DEFAULT}
@@ -131,7 +131,6 @@ const Map = () => {
       mapType="mutedStandard"
       showsPointsOfInterest={false}
       initialRegion={region}
-      /* if you want ur recent ride to show dont enable showUserLocation */
       showsUserLocation={true}
       userInterfaceStyle="light"
     >

@@ -6,7 +6,17 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "DATABASE_URL": "DATABASE_URL",
+        "EXPO_PUBLIC_SERVER_URL": "EXPO_PUBLIC_SERVER_URL",
+        "EXPO_PUBLIC_GEOAPIFY_API_KEY": "EXPO_PUBLIC_GEOAPIFY_API_KEY",
+        "EXPO_PUBLIC_GOOGLE_API_KEY": "EXPO_PUBLIC_GOOGLE_API_KEY",
+        "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY": "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+        "EXPO_STRIPE_SECRET_KEY": "EXPO_STRIPE_SECRET_KEY"
+      },
+      "channel": "development"
     },
     "preview": {
       "android": {

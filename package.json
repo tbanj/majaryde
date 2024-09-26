@@ -52,7 +52,8 @@
     "react-native-web": "~0.19.10",
     "stripe": "^16.11.0",
     "zustand": "^4.5.5",
-    "expo-updates": "~0.25.25"
+    "expo-updates": "~0.25.25",
+    "expo-dev-client": "~4.0.27"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

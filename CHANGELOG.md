@@ -1,3 +1,4 @@
+- fix map issue
 - chat route implementation
 - profile route implementation
 - clerk google OAuth code review

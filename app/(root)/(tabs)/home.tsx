@@ -58,64 +58,21 @@ export default function Page() {
     router.push("/(root)/find-ride");
   };
 
-  // useEffect(() => {
-  //   // const requestLocation = async () => {
-  //   //   let { status } = await Location.requestForegroundPermissionsAsync();
-  //   //   if (status !== "granted") {
-  //   //     setHasPermission(false);
-  //   //     setErrorMsg("Permission to access location was denied");
-  //   //     return;
-  //   //   } else {
-  //   //     let location = await Location.getCurrentPositionAsync();
-
-  //   //     const address = await Location.reverseGeocodeAsync({
-  //   //       latitude: location.coords?.latitude,
-  //   //       longitude: location.coords?.longitude,
-  //   //     });
-
-  //   //     setUserLocation({
-  //   //       /* latitude: location.coords?.latitude,
-  //   //     longitude: location.coords?.longitude, */
-  //   //       latitude: 37.78825,
-  //   //       longitude: -122.4324,
-  //   //       address: `${address[0].name}, ${address[0].region}`,
-  //   //     });
-  //   //   }
-  //   // };
-  //   console.log("you are here");
-  //   requestLocation();
-  // }, []);
-
   const requestLocation = async () => {
     try {
       // Linking.openSettings();
       let { status, granted } =
         await Location.requestForegroundPermissionsAsync();
-      console.log(
-        "status else",
-        status,
-        "hasPermission",
-        hasPermission,
-        "granted",
-        granted
-      );
 
       if (status !== "granted") {
-        // setHasPermission(false);
-        // setErrorMsg("Permission to access location was denied");
         setLocationPermissionState((prev) => ({ ...prev, location: false }));
-        /* Alert.alert(
-        "Warning",
-        "Permission to access location was denied, kindly grant"
-      );
-      requestLocation(); */
         // Alert.alert("Permission Denied", "Location permission is required.");
         return;
       } else {
         // setHasPermission(true);
         setLocationPermissionState((prev) => ({ ...prev, location: true }));
         let location = await Location.getCurrentPositionAsync();
-        console.log("location", location);
+        console.log("requestLocation location", location);
         if (location)
           setLocationPermissionState((prev: any) => ({
             ...prev,
@@ -145,7 +102,6 @@ export default function Page() {
         location: false,
         currentLoc: null,
       });
-      console.log("Screen is focused, running requestLocation");
       requestLocation();
 
       return () => {
@@ -187,18 +143,13 @@ export default function Page() {
     };
   }, [navigation]);
 
-  /* let permissionCheck: boolean;
-  if (hasPermission) {
-    permissionCheck = hasPermission;
-  } */
-
   const requestPermit = () => {
     // setHasPermission(true);
     if (!locationPermissionState?.location) Linking.openSettings();
     requestLocation();
   };
 
-  console.log("locationPermissionState", locationPermissionState);
+  console.warn("ocationPermissionState", locationPermissionState);
 
   return (
     <SafeAreaView>
@@ -270,11 +221,12 @@ export default function Page() {
               {/* <Text className="text-xl font-JakartaBold mt-5 mb-3">
                 Your Current Location
               </Text> */}
-
-              <View className="flex flex-row items-center bg-transparent h-[300px]">
-                {/* {permissionCheck ? <Map /> : <></>} */}
-                {locationPermissionState?.currentLoc && <Map />}
-              </View>
+              {/* {permissionCheck ? <Map /> : <></>} */}
+              {locationPermissionState?.currentLoc && (
+                <View className="flex flex-row items-center bg-transparent h-[300px]">
+                  <Map />
+                </View>
+              )}
             </>
 
             <Text className="text-xl font-JakartaBold mt-5 mb-3">
