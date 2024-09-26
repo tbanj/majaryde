@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
-import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps";
+import { ActivityIndicator, Text, View, Platform } from "react-native";
+import MapView, {
+  Marker,
+  PROVIDER_DEFAULT,
+  PROVIDER_GOOGLE,
+} from "react-native-maps";
 import {
   calculateDriverTimes,
   calculateRegion,
@@ -62,6 +66,7 @@ import MapViewDirections from "react-native-maps-directions";
 const Map = () => {
   const { data: drivers, loading, error } = useFetch<Driver[]>("/(api)/driver");
   console.log("map error", error);
+  console.log("map drivers", drivers);
   const { selectedDriver, setDrivers } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
@@ -76,7 +81,10 @@ const Map = () => {
     // TODO remove this later
     // setDrivers(drivers as MarkerData[]);
     if (Array.isArray(drivers)) {
-      if (!userLatitude || !userLongitude) return;
+      if (!userLatitude || !userLongitude) {
+        console.log("User location is missing or undefined.");
+        return;
+      }
 
       const newMarkers = generateMarkersFromData({
         data: drivers!,
@@ -116,19 +124,23 @@ const Map = () => {
     );
 
   const region = calculateRegion({
-    userLatitude,
-    userLongitude,
+    userLatitude: userLatitude || 37.78825, // fallback latitude
+    userLongitude: userLongitude || -122.4324, // fallback longitude
     destinationLatitude,
     destinationLongitude,
   });
 
+  console.log("PUBLIC_GOOGLE_API_KEY", process.env.EXPO_PUBLIC_GOOGLE_API_KEY);
+  console.log("Calculated Region:", region);
+  console.log("Markers Data: ", markers);
+
   /* if you want ur recent ride to show dont enable showUserLocation */
   return (
     <MapView
-      provider={PROVIDER_DEFAULT}
+      provider={PROVIDER_GOOGLE}
       className="w-full h-full rounded-2xl"
       tintColor="black"
-      mapType="mutedStandard"
+      mapType={Platform.OS === "android" ? "none" : "standard"}
       showsPointsOfInterest={false}
       initialRegion={region}
       showsUserLocation={true}

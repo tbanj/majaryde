@@ -149,7 +149,7 @@ export default function Page() {
     requestLocation();
   };
 
-  console.warn("ocationPermissionState", locationPermissionState);
+  console.warn("locationPermissionState", locationPermissionState);
 
   return (
     <SafeAreaView>
@@ -207,7 +207,7 @@ export default function Page() {
             />
 
             <>
-              {locationPermissionState?.currentLoc ? (
+              {/* {locationPermissionState?.currentLoc ? (
                 <Text className="text-xl font-JakartaBold mt-5 mb-3">
                   Your Current Location
                 </Text>
@@ -217,16 +217,19 @@ export default function Page() {
                     Kindly Grant Location Perm.
                   </Text>
                 </TouchableOpacity>
-              )}
+              )} */}
               {/* <Text className="text-xl font-JakartaBold mt-5 mb-3">
                 Your Current Location
               </Text> */}
+              <View className="flex flex-row items-center bg-transparent h-[300px]">
+                <Map />
+              </View>
               {/* {permissionCheck ? <Map /> : <></>} */}
-              {locationPermissionState?.currentLoc && (
+              {/* {locationPermissionState?.currentLoc && (
                 <View className="flex flex-row items-center bg-transparent h-[300px]">
                   <Map />
                 </View>
-              )}
+              )} */}
             </>
 
             <Text className="text-xl font-JakartaBold mt-5 mb-3">
