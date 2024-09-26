@@ -24,8 +24,10 @@
     "@neondatabase/serverless": "^0.9.5",
     "@react-navigation/native": "^6.0.2",
     "@stripe/stripe-react-native": "^0.38.6",
+    "dotenv": "^16.4.5",
     "expo": "~51.0.28",
     "expo-constants": "~16.0.2",
+    "expo-dev-client": "~4.0.27",
     "expo-font": "~12.0.10",
     "expo-linking": "~6.3.1",
     "expo-local-authentication": "^14.0.1",
@@ -35,6 +37,7 @@
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
+    "expo-updates": "~0.25.25",
     "expo-web-browser": "~13.0.3",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
@@ -51,9 +54,7 @@
     "react-native-swiper": "^1.6.0",
     "react-native-web": "~0.19.10",
     "stripe": "^16.11.0",
-    "zustand": "^4.5.5",
-    "expo-updates": "~0.25.25",
-    "expo-dev-client": "~4.0.27"
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
