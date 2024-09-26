@@ -17,8 +17,6 @@ const Payment = ({
   driverId,
   rideTime,
 }: PaymentProps) => {
-  // console.warn("Amount", amount, parseInt(amount) * 100);
-
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { userId } = useAuth();
   const [success, setSuccess] = useState<boolean>(false);
@@ -94,14 +92,6 @@ const Payment = ({
               });
             }
           }
-
-          // Call the `intentCreationCallback` with your server response's client secret or error
-          /* const { clientSecret, error } = await response.json();
-    if (clientSecret) {
-      intentCreationCallback({ clientSecret });
-    } else {
-      intentCreationCallback({ error });
-    } */
         },
       },
       returnURL: "myapp://book-ride",
@@ -111,10 +101,6 @@ const Payment = ({
       console.log(error);
     }
   };
-
-  /* const confirmHandler = async (paymentMethod, shouldSavePaymentMethod, intentCreationCallback) => {
-    // explained later
-  } */
 
   const openPaymentSheet = async () => {
     await initializePaymentSheet();
