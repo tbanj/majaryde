@@ -24,13 +24,15 @@ import Map from "@/components/Map";
 import { useLocationStore } from "@/store";
 import { useEffect, useState, useCallback } from "react";
 import { useFetch } from "@/app/lib/fetch";
+import CustomButton from "@/components/CustomButton";
+import ReactNativeModal from "react-native-modal";
 
 export default function Page() {
   const [hasPermission, setHasPermission] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [locationPermissionState, setLocationPermissionState] = useState({
-    location: false,
-    currentLoc: null,
+    location: null,
+    BTNDisabled: false,
   });
 
   const { setUserLocation, setDestinationLocation } = useLocationStore();
@@ -65,43 +67,45 @@ export default function Page() {
         await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
-        setLocationPermissionState((prev) => ({ ...prev, location: false }));
+        setLocationPermissionState((prev: any) => ({
+          ...prev,
+          location: status,
+        }));
         // Alert.alert("Permission Denied", "Location permission is required.");
         return;
       } else {
-        // setHasPermission(true);
-        setLocationPermissionState((prev) => ({ ...prev, location: true }));
         let location = await Location.getCurrentPositionAsync();
         console.log("requestLocation location", location);
-        if (location)
+        if (location) {
+          const address = await Location.reverseGeocodeAsync({
+            latitude: location.coords?.latitude,
+            longitude: location.coords?.longitude,
+          });
+
+          setUserLocation({
+            latitude: location.coords?.latitude,
+            longitude: location.coords?.longitude,
+            /* latitude: 37.78825,
+        longitude: -122.4324, */
+            address: `${address[0].name}, ${address[0].region}`,
+          });
           setLocationPermissionState((prev: any) => ({
             ...prev,
-            currentLoc: location,
+            location: status,
           }));
-        const address = await Location.reverseGeocodeAsync({
-          latitude: location.coords?.latitude,
-          longitude: location.coords?.longitude,
-        });
-
-        setUserLocation({
-          latitude: location.coords?.latitude,
-          longitude: location.coords?.longitude,
-          /* latitude: 37.78825,
-        longitude: -122.4324, */
-          address: `${address[0].name}, ${address[0].region}`,
-        });
+        }
       }
     } catch (error: any) {
+      setLocationPermissionState((prev: any) => ({
+        ...prev,
+        location: "denied",
+      }));
       console.log("requestLocation error", typeof error, error);
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      setLocationPermissionState({
-        location: false,
-        currentLoc: null,
-      });
       requestLocation();
 
       return () => {
@@ -144,9 +148,16 @@ export default function Page() {
   }, [navigation]);
 
   const requestPermit = () => {
-    // setHasPermission(true);
-    if (!locationPermissionState?.location) Linking.openSettings();
+    setLocationPermissionState((prev: any) => ({
+      ...prev,
+      BTNDisabled: true,
+    }));
+    if (locationPermissionState?.location === "denied") Linking.openSettings();
     requestLocation();
+    setLocationPermissionState((prev: any) => ({
+      ...prev,
+      BTNDisabled: true,
+    }));
   };
 
   console.warn("locationPermissionState", locationPermissionState);
@@ -207,7 +218,8 @@ export default function Page() {
             />
 
             <>
-              {/* {locationPermissionState?.currentLoc ? (
+              {/* {!locationPermissionState?.location ||
+              locationPermissionState?.currentLoc ? (
                 <Text className="text-xl font-JakartaBold mt-5 mb-3">
                   Your Current Location
                 </Text>
@@ -217,19 +229,44 @@ export default function Page() {
                     Kindly Grant Location Perm.
                   </Text>
                 </TouchableOpacity>
+                
               )} */}
+              <Text className="text-xl font-JakartaBold mt-5 mb-3">
+                Your Current Location
+              </Text>
+              {locationPermissionState.location === "denied" && (
+                <ReactNativeModal
+                  isVisible={locationPermissionState.location === "denied"}
+                >
+                  <View className="bg-white px-7 py-9 rounded-2xl min-h-[150px] flex justify-center items-center">
+                    <Text className="text-2xl font-JakartaExtraBold mb-2">
+                      Grant Permission
+                    </Text>
+                    <Text className="font-Jakarta mb-5">
+                      Kindly grant location Permission.
+                    </Text>
+
+                    <CustomButton
+                      title="Ok"
+                      onPress={requestPermit}
+                      disabled={locationPermissionState.BTNDisabled}
+                      className="mt-5 bg-warning-500 !w-[100px]"
+                    />
+                  </View>
+                </ReactNativeModal>
+              )}
               {/* <Text className="text-xl font-JakartaBold mt-5 mb-3">
                 Your Current Location
               </Text> */}
-              <View className="flex flex-row items-center bg-transparent h-[300px]">
+              {/* <View className="flex flex-row items-center bg-transparent h-[300px]">
                 <Map />
-              </View>
+              </View> */}
               {/* {permissionCheck ? <Map /> : <></>} */}
-              {/* {locationPermissionState?.currentLoc && (
+              {locationPermissionState?.location === "granted" && (
                 <View className="flex flex-row items-center bg-transparent h-[300px]">
                   <Map />
                 </View>
-              )} */}
+              )}
             </>
 
             <Text className="text-xl font-JakartaBold mt-5 mb-3">

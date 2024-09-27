@@ -1,4 +1,5 @@
 - implemented chrome debugger for react-native
+- implemented chrome debugger for react-native
 - fix map issue
 - chat route implementation
 - profile route implementation
