@@ -131,7 +131,7 @@ const Map = () => {
   });
 
   console.log(
-    "PUBLIC_GOOGLE_API_KEY",
+    "EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY",
     process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY
   );
   console.log("Calculated Region:", region);
