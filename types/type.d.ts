@@ -10,6 +10,11 @@ declare interface Driver {
   rating: number;
 }
 
+declare interface LocationPermissionState {
+  location: null | string;
+  BTNDisabled: boolean;
+}
+
 declare interface MarkerData {
   latitude: number;
   longitude: number;

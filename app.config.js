@@ -34,7 +34,7 @@ export default {
       package: "com.tbanj.majaryde",
       config: {
         googleMaps: {
-          apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
+          apiKey: process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
         },
       },
     },
