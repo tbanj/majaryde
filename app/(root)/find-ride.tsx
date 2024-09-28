@@ -16,6 +16,8 @@ const FindRide = () => {
   } = useLocationStore();
   const { drivers } = useDriverStore();
 
+  console.log("find-ride drivers", drivers);
+
   return (
     <RideLayout title="Ride">
       <View className="my-3">
