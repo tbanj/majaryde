@@ -26,11 +26,6 @@ const BookRide = () => {
     return () => {};
   }, []);
 
-  console.log(
-    "process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY",
-    process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  );
-
   return (
     <StripeProvider
       publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
