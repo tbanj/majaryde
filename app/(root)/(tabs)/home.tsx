@@ -69,7 +69,7 @@ export default function Page() {
       if (status !== "granted") {
         setLocationPermissionState((prev: any) => ({
           ...prev,
-          location: status,
+          location: "denied",
         }));
         // Alert.alert("Permission Denied", "Location permission is required.");
         return;
@@ -106,7 +106,11 @@ export default function Page() {
 
   useFocusEffect(
     useCallback(() => {
-      requestLocation();
+      if (
+        locationPermissionState.location === null ||
+        locationPermissionState.location === "denied"
+      )
+        requestLocation();
 
       return () => {
         console.log("This route is now unfocused.");

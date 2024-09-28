@@ -16,9 +16,11 @@ export default {
       backgroundColor: "#2F80ED",
     },
     ios: {
+      bundleIdentifier: "com.tbanj.majaryde",
       supportsTablet: true,
       config: {
-        googleMapsApiKey: process.env.EXPO_PUBLIC_DEV_IOS_MAP_GOOGLE_API_KEY,
+        googleMapsApiKey:
+          process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
       },
     },
     android: {

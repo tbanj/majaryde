@@ -1,4 +1,5 @@
 - updated
+- updated
 - implemented chrome debugger for react-native
 - implemented chrome debugger for react-native
 - fix map issue

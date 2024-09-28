@@ -131,8 +131,8 @@ const Map = () => {
   });
 
   console.log(
-    "EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY",
-    process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY
+    "EXPO_PUBLIC_GOOGLE_API_KEY",
+    process.env.EXPO_PUBLIC_GOOGLE_API_KEY
   );
   console.log("Calculated Region:", region);
   console.log("Markers Data: ", markers);
@@ -143,7 +143,7 @@ const Map = () => {
       provider={PROVIDER_GOOGLE}
       className="w-full h-full rounded-2xl"
       tintColor="black"
-      mapType={Platform.OS === "android" ? "none" : "standard"}
+      mapType="standard"
       showsPointsOfInterest={false}
       initialRegion={region}
       showsUserLocation={true}
@@ -183,7 +183,7 @@ const Map = () => {
               latitude: destinationLatitude,
               longitude: destinationLongitude,
             }}
-            apikey={process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY!}
+            apikey={process.env.EXPO_PUBLIC_GOOGLE_API_KEY!}
             strokeColor="#0286ff"
             strokeWidth={2}
           />
