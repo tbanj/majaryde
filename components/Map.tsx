@@ -65,8 +65,6 @@ import MapViewDirections from "react-native-maps-directions";
 
 const Map = () => {
   const { data: drivers, loading, error } = useFetch<Driver[]>("/(api)/driver");
-  console.log("map error", error);
-  console.log("map drivers", drivers);
   const { selectedDriver, setDrivers } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
@@ -129,13 +127,6 @@ const Map = () => {
     destinationLatitude,
     destinationLongitude,
   });
-
-  console.log(
-    "EXPO_PUBLIC_GOOGLE_API_KEY",
-    process.env.EXPO_PUBLIC_GOOGLE_API_KEY
-  );
-  console.log("Calculated Region:", region);
-  console.log("Markers Data: ", markers);
 
   /* if you want ur recent ride to show dont enable showUserLocation */
   return (

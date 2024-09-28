@@ -75,7 +75,6 @@ export default function Page() {
         return;
       } else {
         let location = await Location.getCurrentPositionAsync();
-        console.log("requestLocation location", location);
         if (location) {
           const address = await Location.reverseGeocodeAsync({
             latitude: location.coords?.latitude,
@@ -100,7 +99,6 @@ export default function Page() {
         ...prev,
         location: "denied",
       }));
-      console.log("requestLocation error", typeof error, error);
     }
   };
 

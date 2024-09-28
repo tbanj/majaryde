@@ -1,3 +1,4 @@
+- android unused code clean
 - updated
 - updated
 - implemented chrome debugger for react-native
