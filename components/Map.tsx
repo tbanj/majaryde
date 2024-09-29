@@ -117,7 +117,7 @@ const Map = () => {
   if (error)
     return (
       <View className="flex justify-between items-center w-full">
-        <Text>Error Now: {typeof error}</Text>
+        <Text>Error Now: {error}</Text>
       </View>
     );
 

@@ -33,6 +33,7 @@ export default function Page() {
   const [locationPermissionState, setLocationPermissionState] = useState({
     location: null,
     BTNDisabled: false,
+    signOutActivated: false,
   });
 
   const { setUserLocation, setDestinationLocation } = useLocationStore();
@@ -46,9 +47,22 @@ export default function Page() {
 
   const navigation = useNavigation();
 
-  const handleSignOut = () => {
-    signOut();
-    router.push("/(auth)/sign-in");
+  const handleSignOut = async () => {
+    try {
+      setLocationPermissionState((prev: any) => ({
+        ...prev,
+        BTNDisabled: true,
+        signOutActivated: true,
+      }));
+      await signOut();
+      router.push("/(auth)/sign-in");
+    } catch (error: any) {
+      setLocationPermissionState((prev: any) => ({
+        ...prev,
+        BTNDisabled: false,
+      }));
+      console.error("Failed to log out:", error);
+    }
   };
 
   const handleDestinationPress = (location: {
@@ -69,7 +83,7 @@ export default function Page() {
       if (status !== "granted") {
         setLocationPermissionState((prev: any) => ({
           ...prev,
-          location: "denied",
+          location: status,
         }));
         // Alert.alert("Permission Denied", "Location permission is required.");
         return;
@@ -112,6 +126,13 @@ export default function Page() {
 
       return () => {
         console.log("This route is now unfocused.");
+        if (locationPermissionState.signOutActivated)
+          setLocationPermissionState((prev: any) => ({
+            ...prev,
+            location: null,
+            signOutActivated: false,
+            BTNDisabled: false,
+          }));
       };
     }, [])
   );
@@ -149,20 +170,18 @@ export default function Page() {
     };
   }, [navigation]);
 
-  const requestPermit = () => {
+  const requestPermit = async () => {
     setLocationPermissionState((prev: any) => ({
       ...prev,
       BTNDisabled: true,
     }));
     if (locationPermissionState?.location === "denied") Linking.openSettings();
-    requestLocation();
+    await requestLocation();
     setLocationPermissionState((prev: any) => ({
       ...prev,
-      BTNDisabled: true,
+      BTNDisabled: false,
     }));
   };
-
-  console.warn("locationPermissionState", locationPermissionState);
 
   return (
     <SafeAreaView>
@@ -201,6 +220,7 @@ export default function Page() {
                 👋
               </Text>
               <TouchableOpacity
+                disabled={locationPermissionState.BTNDisabled}
                 onPress={handleSignOut}
                 className="justify-center items-center w-10 h-10 rounded-full bg-white"
               >
@@ -264,11 +284,9 @@ export default function Page() {
                 <Map />
               </View> */}
               {/* {permissionCheck ? <Map /> : <></>} */}
-              {locationPermissionState?.location === "granted" && (
-                <View className="flex flex-row items-center bg-transparent h-[300px]">
-                  <Map />
-                </View>
-              )}
+              <View className="flex flex-row items-center bg-transparent h-[300px]">
+                <Map />
+              </View>
             </>
 
             <Text className="text-xl font-JakartaBold mt-5 mb-3">

@@ -3,9 +3,9 @@ import { Redirect } from "expo-router";
 import React from "react";
 
 const Page = () => {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
 
-  if (isSignedIn) {
+  if (isSignedIn && isLoaded) {
     return <Redirect href={"/(root)/(tabs)/home"} />;
   }
 
