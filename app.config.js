@@ -53,6 +53,7 @@ export default {
         },
       ],
       "expo-font",
+      "@bugsnag/plugin-expo-eas-sourcemaps",
     ],
     experiments: {
       typedRoutes: true,
@@ -60,6 +61,9 @@ export default {
     extra: {
       eas: {
         projectId: "ef2825e6-74f7-49f8-b731-abdb75c17dbd",
+      },
+      bugsnag: {
+        apiKey: process.env.EXPO_PUBLIC_BUGSNAG_API_KEY,
       },
     },
     runtimeVersion: {
