@@ -1,63 +1,121 @@
+- Merge branch 'dev-temi' of https://github.com/tbanj/majaryde into dev-temi
 - updated
+- updated
+- Merge pull request #56 from tbanj/dev
 - debugging api issue in apk
+- Merge pull request #55 from tbanj/dev
 - debugging api issue in apk
+- Merge pull request #54 from tbanj/dev
 - android unused code clean
+- Merge pull request #53 from tbanj/dev
 - android unused code clean
+- Merge pull request #52 from tbanj/dev
 - updated
+- Merge pull request #51 from tbanj/dev
 - updated
+- Merge pull request #50 from tbanj/dev
 - implemented chrome debugger for react-native
+- Merge pull request #49 from tbanj/dev
 - implemented chrome debugger for react-native
+- Merge pull request #48 from tbanj/dev
 - fix map issue
+- Merge pull request #47 from tbanj/dev
 - chat route implementation
+- Merge pull request #46 from tbanj/dev
 - profile route implementation
+- Merge pull request #45 from tbanj/dev
 - clerk google OAuth code review
+- Merge pull request #44 from tbanj/dev
 - clerk google OAuth implementation completed
+- Merge pull request #43 from tbanj/dev
 - clerk google OAuth implementation
+- Merge pull request #42 from tbanj/dev
 - stripe success modal toggle implemented
+- Merge pull request #41 from tbanj/dev
 - stripe success modal implemented
+- Merge pull request #40 from tbanj/dev
 - stripe intent completed
+- Merge pull request #39 from tbanj/dev
 - stripe intent completed
+- Merge pull request #38 from tbanj/dev
 - stripe intent completed
+- Merge pull request #37 from tbanj/dev
 - stripe component completed
+- Merge pull request #36 from tbanj/dev
 - stripe integration in progress
+- Merge pull request #35 from tbanj/dev
 - book ride payment component  implementation
+- Merge pull request #34 from tbanj/dev
 - book ride activity implementation
+- Merge pull request #33 from tbanj/dev
 - driver card component implementation
 - confirm-ride page implementation
+- Merge pull request #32 from tbanj/dev
 - added bottom-sheet completed
+- Merge pull request #31 from tbanj/dev
 - added bottom-sheet
+- Merge pull request #30 from tbanj/dev
 - ride layout component implemenation
+- Merge pull request #29 from tbanj/dev
 - find-ride route
+- Merge pull request #28 from tbanj/dev
 - fide ride component
+- Merge pull request #27 from tbanj/dev
 - fide ride component
+- Merge pull request #26 from tbanj/dev
 - map helper function implemented
+- Merge pull request #25 from tbanj/dev
 - get user location implemented
+- Merge pull request #24 from tbanj/dev
 - code cleanup
+- Merge pull request #23 from tbanj/dev
+- zustand implement for state managemnt
+- Merge pull request #22 from tbanj/dev
+- zustand implement for state managemnt
+- Merge pull request #21 from tbanj/dev
 - zustand implement for state managemnt
 - zustand implement for state managemnt
 - zustand implement for state managemnt
-- zustand implement for state managemnt
-- zustand implement for state managemnt
+- Merge pull request #20 from tbanj/dev
 - updated
+- Merge pull request #19 from tbanj/dev
 - updated
+- Merge pull request #18 from tbanj/dev
 - updated
+- Merge pull request #17 from tbanj/dev
 - updated
+- Merge pull request #16 from tbanj/dev
 - user home ui in progress
+- Merge pull request #15 from tbanj/dev
 - signin persist in progress
+- Merge pull request #14 from tbanj/dev
 - signin with clerk api completed
+- Merge pull request #13 from tbanj/dev
 - signup with clerk api completed
 - clerk auth signup
+- Merge pull request #12 from tbanj/dev
 - clerk auth signup
+- Merge pull request #11 from tbanj/dev
 - clerk auth
+- Merge pull request #10 from tbanj/dev
+- updated
+- Merge pull request #9 from tbanj/dev
 - updated
 - updated
+- Merge pull request #8 from tbanj/dev
 - updated
+- Merge pull request #7 from tbanj/dev
 - updated
+- Merge pull request #6 from tbanj/dev
 - updated
+- Merge pull request #5 from tbanj/dev
 - updated
+- Merge pull request #4 from tbanj/dev
 - updated
+- Merge pull request #3 from tbanj/dev
 - updated
-- updated
+- Merge pull request #2 from tbanj/dev
 - resolve tailwind.config.js file issue
+- Merge pull request #1 from tbanj/dev
 - added nativewind npm
 - Initial commit
