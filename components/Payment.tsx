@@ -39,7 +39,7 @@ const Payment = ({
         },
         confirmHandler: async (paymentMethod, _, intentCreationCallback) => {
           const { paymentIntent, customer } = await fetchAPI(
-            "/(api)/(stripe)/create",
+            `${process.env.EXPO_PUBLIC_API_STRIPE_CREATE}`,
             {
               method: "POST",
               headers: {
@@ -55,19 +55,22 @@ const Payment = ({
           );
 
           if (paymentIntent.client_secret) {
-            const { result } = await fetchAPI("/(api)/(stripe)/pay", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                payment_method_id: paymentMethod.id,
-                payment_intent_id: paymentIntent.id,
-                customer_id: customer,
-              }),
-            });
+            const { result } = await fetchAPI(
+              `${process.env.EXPO_PUBLIC_API_STRIPE_PAY}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  payment_method_id: paymentMethod.id,
+                  payment_intent_id: paymentIntent.id,
+                  customer_id: customer,
+                }),
+              }
+            );
             if (result.client_secret) {
-              await fetchAPI("/(api)/ride/create", {
+              await fetchAPI(`${process.env.EXPO_PUBLIC_API_RIDE}/create`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",

@@ -8,6 +8,6 @@ export async function GET() {
     return Response.json({ data: response });
   } catch (error) {
     console.log(error);
-    return Response.json({ error });
+    return Response.json({ error: "An error occurred while fetching data" });
   }
 }
