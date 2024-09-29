@@ -64,7 +64,11 @@ import MapViewDirections from "react-native-maps-directions";
 ]; */
 
 const Map = () => {
-  const { data: drivers, loading, error } = useFetch<Driver[]>("/(api)/driver");
+  const {
+    data: drivers,
+    loading,
+    error,
+  } = useFetch<Driver[]>(`${process.env.EXPO_PUBLIC_API_DRIVER}`);
   const { selectedDriver, setDrivers } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
@@ -114,12 +118,14 @@ const Map = () => {
       </View>
     );
 
-  if (error)
+  if (error) {
+    console.error("API Error:", error);
     return (
       <View className="flex justify-between items-center w-full">
-        <Text>Error Now: {error}</Text>
+        <Text>Error loading map data. Please try again later.</Text>
       </View>
     );
+  }
 
   const region = calculateRegion({
     userLatitude: userLatitude || 37.78825, // fallback latitude

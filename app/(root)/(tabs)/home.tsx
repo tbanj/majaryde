@@ -43,7 +43,7 @@ export default function Page() {
     data: recentRides,
     loading,
     error,
-  } = useFetch<Ride[]>(`/(api)/ride/${user?.id}`);
+  } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_API_RIDE}/${user?.id}`);
 
   const navigation = useNavigation();
 
