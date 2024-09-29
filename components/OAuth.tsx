@@ -2,23 +2,32 @@ import { Alert, Image, Text, View } from "react-native";
 import CustomButton from "./CustomButton";
 import { icons } from "@/constants";
 import { useOAuth } from "@clerk/clerk-expo";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { googleOAuth } from "@/app/lib/auth";
 import { router } from "expo-router";
 
 const OAuth = () => {
+  const [BTNDisabled, setBTNDisabled] = useState(false);
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
 
   const handleGoogleSignIn = useCallback(async () => {
     try {
-      const result = await googleOAuth(startOAuthFlow);
-
+      setBTNDisabled(true);
+      const result = await googleOAuth(await startOAuthFlow);
       /* result.success === false..when the Google login is cancelled */
-      if (!result.success) return;
-      else if (result.code === "session_exists" || result.code === "success") {
+
+      if (!result.success) {
+        setBTNDisabled(false);
+        return;
+      } else if (
+        result.code === "session_exists" ||
+        result.code === "success"
+      ) {
+        setBTNDisabled(false);
         router.replace("/(root)/(tabs)/home");
       }
     } catch (err) {
+      setBTNDisabled(false);
       console.error("OAuth error", err);
     }
   }, []);
@@ -31,6 +40,7 @@ const OAuth = () => {
         <View className="flex-1 h-[1px] bg-general-100" />
       </View>
       <CustomButton
+        disabled={BTNDisabled}
         title="Log In with Google"
         className="mt-5 w-full shadow-none"
         IconLeft={() => (
