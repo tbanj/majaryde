@@ -39,6 +39,12 @@ export default function Page() {
   const { setUserLocation, setDestinationLocation } = useLocationStore();
   const { user } = useUser();
   const { signOut } = useAuth();
+  console.warn(
+    "${user?.id}",
+    process.env.EXPO_PUBLIC_API_RIDE,
+    process.env.EXPO_PUBLIC_API_DRIVER
+  );
+
   const {
     data: recentRides,
     loading,
