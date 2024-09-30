@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View, Platform } from "react-native";
-import Bugsnag from "@bugsnag/expo";
 import MapView, {
   Marker,
   PROVIDER_DEFAULT,
@@ -74,7 +73,6 @@ const Map = () => {
 
   if (error) {
     console.error("API Error:", error);
-    Bugsnag.notify(new Error(`Test error from loading map: ${error}`));
     return (
       <View className="flex justify-between items-center w-full">
         <Text>Error loading map data. Please try again later.</Text>

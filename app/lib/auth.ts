@@ -1,6 +1,5 @@
 import * as SecureStore from "expo-secure-store";
 import * as Linking from "expo-linking";
-import Bugsnag from "@bugsnag/expo";
 import { fetchAPI } from "./fetch";
 export interface TokenCache {
   getToken: (key: string) => Promise<string | undefined | null>;
@@ -40,11 +39,6 @@ export const googleOAuth = async (startOAuthFlow: any) => {
         scheme: "majaryde",
       }),
     });
-    Bugsnag.notify(
-      new Error(
-        `Test googleOAuth, createdSessionId, signUp, setActive: ${createdSessionId}, ${signUp}`
-      )
-    );
     if (createdSessionId) {
       if (setActive) {
         setActive!({ session: createdSessionId });

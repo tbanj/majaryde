@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 
 export const fetchAPI = async (url: string, options?: RequestInit) => {
   try {
+    console.warn("fetchAPI", url);
     const response = await fetch(url, options);
     if (!response.ok) {
       new Error(`HTTP error! status: ${response.status}`);
@@ -23,6 +24,8 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
     setError(null);
 
     try {
+      console.warn("fetchData", url, options);
+
       const result = await fetchAPI(url, options);
       setData(result.data);
     } catch (err) {
