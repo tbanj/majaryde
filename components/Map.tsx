@@ -21,7 +21,7 @@ const Map = () => {
     data: drivers,
     loading,
     error,
-  } = useFetch<Driver[]>(`${process.env.EXPO_PUBLIC_API_DRIVER}`);
+  } = useFetch<Driver[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/driver`);
   const { selectedDriver, setDrivers } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 

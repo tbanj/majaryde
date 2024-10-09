@@ -39,7 +39,7 @@ const Payment = ({
         },
         confirmHandler: async (paymentMethod, _, intentCreationCallback) => {
           const { paymentIntent, customer } = await fetchAPI(
-            `${process.env.EXPO_PUBLIC_API_STRIPE_CREATE}`,
+            `${process.env.EXPO_PUBLIC_LIVE_API_STRIPE}/create`,
             {
               method: "POST",
               headers: {
@@ -56,7 +56,7 @@ const Payment = ({
 
           if (paymentIntent.client_secret) {
             const { result } = await fetchAPI(
-              `${process.env.EXPO_PUBLIC_API_STRIPE_PAY}`,
+              `${process.env.EXPO_PUBLIC_LIVE_API_STRIPE}/pay`,
               {
                 method: "POST",
                 headers: {
@@ -70,25 +70,28 @@ const Payment = ({
               }
             );
             if (result.client_secret) {
-              await fetchAPI(`${process.env.EXPO_PUBLIC_API_RIDE}/create`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  origin_address: userAddress,
-                  destination_address: destinationAddress,
-                  origin_latitude: userLatitude,
-                  origin_longitude: userLongitude,
-                  destination_latitude: destinationLatitude,
-                  destination_longitude: destinationLongitude,
-                  ride_time: rideTime.toFixed(0),
-                  fare_price: parseInt(amount) * 100,
-                  payment_status: "paid",
-                  driver_id: driverId,
-                  user_id: userId,
-                }),
-              });
+              await fetchAPI(
+                `${process.env.EXPO_PUBLIC_LIVE_API}/ride/create`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    origin_address: userAddress,
+                    destination_address: destinationAddress,
+                    origin_latitude: userLatitude,
+                    origin_longitude: userLongitude,
+                    destination_latitude: destinationLatitude,
+                    destination_longitude: destinationLongitude,
+                    ride_time: rideTime.toFixed(0),
+                    fare_price: parseInt(amount) * 100,
+                    payment_status: "paid",
+                    driver_id: driverId,
+                    user_id: userId,
+                  }),
+                }
+              );
 
               intentCreationCallback({
                 clientSecret: result.client_secret,
