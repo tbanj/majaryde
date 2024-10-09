@@ -35,16 +35,15 @@ export const tokenCache = {
 export const googleOAuth = async (startOAuthFlow: any) => {
   try {
     const { createdSessionId, signUp, setActive } = await startOAuthFlow({
-      redirectUrl: Linking.createURL("/(root)/(tabs)/home", {
+      redirectUrl: Linking.createURL(`${process.env.EXPO_PUBLIC_HOME_URL}`, {
         scheme: "myapp",
       }),
     });
-
     if (createdSessionId) {
       if (setActive) {
         setActive!({ session: createdSessionId });
         if (signUp.createdUserId) {
-          await fetchAPI(`${process.env.EXPO_PUBLIC_API_USER}`, {
+          await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
             method: "POST",
             body: JSON.stringify({
               name: `${signUp.firstName} ${signUp.lastName}`,

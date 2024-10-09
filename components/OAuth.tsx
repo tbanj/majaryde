@@ -13,9 +13,8 @@ const OAuth = () => {
   const handleGoogleSignIn = useCallback(async () => {
     try {
       setBTNDisabled(true);
-      const result = await googleOAuth(await startOAuthFlow);
+      const result = await googleOAuth(startOAuthFlow);
       /* result.success === false..when the Google login is cancelled */
-
       if (!result.success) {
         setBTNDisabled(false);
         return;

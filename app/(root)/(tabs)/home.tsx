@@ -36,14 +36,15 @@ export default function Page() {
     signOutActivated: false,
   });
 
-  const { setUserLocation, setDestinationLocation } = useLocationStore();
+  const { setUserLocation, setDestinationLocation, userLatitude } =
+    useLocationStore();
   const { user } = useUser();
   const { signOut } = useAuth();
   const {
     data: recentRides,
     loading,
     error,
-  } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_API_RIDE}/${user?.id}`);
+  } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`);
 
   const navigation = useNavigation();
 
@@ -55,7 +56,7 @@ export default function Page() {
         signOutActivated: true,
       }));
       await signOut();
-      router.push("/(auth)/sign-in");
+      router.replace("/(auth)/sign-in");
     } catch (error: any) {
       setLocationPermissionState((prev: any) => ({
         ...prev,
@@ -120,7 +121,8 @@ export default function Page() {
     useCallback(() => {
       if (
         locationPermissionState.location === null ||
-        locationPermissionState.location === "denied"
+        locationPermissionState.location === "denied" ||
+        !userLatitude
       )
         requestLocation();
 
