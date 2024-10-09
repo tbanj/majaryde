@@ -49,7 +49,7 @@ export default {
       [
         "expo-router",
         {
-          origin: "https://uber.dev/",
+          origin: process.env.EXPO_PUBLIC_SERVER_URL,
         },
       ],
       "expo-font",

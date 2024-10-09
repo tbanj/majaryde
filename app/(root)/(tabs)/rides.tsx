@@ -13,8 +13,7 @@ const Rides = () => {
     data: recentRides,
     loading,
     error,
-  } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_API_RIDE}/${user?.id}`);
-
+  } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`);
   return (
     <SafeAreaView>
       <FlatList

@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       JSON.stringify({
         error: "Please enter a valid email address",
         status: 400,
-      }),
+      })
     );
 
   let customer;
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
   const ephemeralKey = await stripe.ephemeralKeys.create(
     { customer: customer.id },
-    { apiVersion: "2024-06-20" },
+    { apiVersion: "2024-06-20" }
   );
   const paymentIntent = await stripe.paymentIntents.create({
     amount: parseInt(amount) * 100,
@@ -44,6 +44,7 @@ export async function POST(request: Request) {
       paymentIntent: paymentIntent,
       ephemeralKey: ephemeralKey,
       customer: customer.id,
-    }),
+      status: 201,
+    })
   );
 }

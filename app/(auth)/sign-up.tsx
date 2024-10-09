@@ -27,9 +27,17 @@ const SignUp = () => {
     if (!isLoaded) return;
 
     try {
+      const name = form.name.split(" ");
+      if (!name[0] || !name[1]) {
+        Alert.alert("Error", "first name and last name is required");
+        return;
+      }
+      console.log("onSignUpPress name", form.name.split(" ")[0]);
       await signUp.create({
         emailAddress: form.email,
         password: form.password,
+        firstName: form.name.split(" ")[0],
+        lastName: form.name.split(" ")[1] || undefined,
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -62,7 +70,7 @@ const SignUp = () => {
         });
         await setActive({ session: completeSignUp.createdSessionId });
         setVerification({ ...verification, state: "success" });
-        // router.replace("/");
+        router.replace("/");
       } else {
         setVerification({
           ...verification,
