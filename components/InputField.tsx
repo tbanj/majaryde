@@ -15,6 +15,7 @@ const InputField = ({
   label,
   icon,
   iconRight,
+  iconOnly,
   secureTextEntry = false,
   labelStyle,
   containerStyle,
@@ -38,6 +39,7 @@ const InputField = ({
             {icon && (
               <Image source={icon} className={`w-6 h-6 ml-4 ${iconStyle}`} />
             )}
+            {iconOnly && iconOnly}
             <TextInput
               className={`rounded-full p-4 font-JakartaSemiBold text-[15px] flex-1 ${inputStyle} text-left`}
               secureTextEntry={secureTextEntry}

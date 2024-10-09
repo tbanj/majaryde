@@ -15,6 +15,7 @@ const Profile = () => {
       name: user?.primaryEmailAddress?.emailAddress || "Not Found",
       editable: false,
     },
+    phoneNumber: user?.primaryPhoneNumber?.phoneNumber || "Not Found",
   });
   const editInput = (name: string) => {
     console.log(name);
@@ -35,6 +36,17 @@ const Profile = () => {
       className="justify-center items-center w-10 h-10 rounded-full bg-white"
     >
       <Image source={icons.editInput} className={`w-6 h-6 mr-4`} />
+    </TouchableOpacity>
+  );
+
+  const EmailStatusButton = (name: string) => (
+    <TouchableOpacity
+      // disabled={locationPermissionState.BTNDisabled}
+      onPress={() => editInput(name)}
+      className="justify-center items-center w-10 h-10 rounded-full bg-[#E7F9EF] border-[#0CC25F]"
+    >
+      <Image source={icons.checkmark} className={`w-6 h-6 mr-4`} />
+      <Text>Verified</Text>
     </TouchableOpacity>
   );
   console.log("profile", profileFormState);
@@ -70,28 +82,39 @@ const Profile = () => {
 
             <InputField
               label="Last name"
-              placeholder={user?.lastName || "Not Found"}
+              placeholder={profileFormState.lastName.name}
               containerStyle="w-full"
               inputStyle="p-3.5"
-              editable={false}
+              editable={profileFormState.lastName.editable}
+              iconRight={InserterIcon("lastName")}
             />
 
             <InputField
               label="Email"
-              placeholder={
-                user?.primaryEmailAddress?.emailAddress || "Not Found"
-              }
+              placeholder={profileFormState.email.name}
               containerStyle="w-full"
               inputStyle="p-3.5"
-              editable={false}
+              editable={profileFormState.email.editable}
+              iconRight={InserterIcon("email")}
+            />
+
+            <InputField
+              label="Email status"
+              placeholder={profileFormState.emailStatus.name}
+              containerStyle="w-full"
+              inputStyle="p-3.5"
+              iconOnly={EmailStatusButton}
+              /* editable={profileFormState.email.editable}
+              iconRight={InserterIcon("email")} */
             />
 
             <InputField
               label="Phone"
-              placeholder={user?.primaryPhoneNumber?.phoneNumber || "Not Found"}
+              placeholder={profileFormState.phoneNumber.name}
               containerStyle="w-full"
               inputStyle="p-3.5"
-              editable={false}
+              editable={profileFormState.phoneNumber.editable}
+              iconRight={InserterIcon("phoneNumber")}
             />
           </View>
         </View>
