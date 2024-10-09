@@ -14,6 +14,7 @@ import { InputFieldProps } from "@/types/type";
 const InputField = ({
   label,
   icon,
+  iconRight,
   secureTextEntry = false,
   labelStyle,
   containerStyle,
@@ -42,6 +43,7 @@ const InputField = ({
               secureTextEntry={secureTextEntry}
               {...props}
             />
+            {iconRight && iconRight}
           </View>
         </View>
       </TouchableWithoutFeedback>

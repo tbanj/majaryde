@@ -1,12 +1,43 @@
 import { useUser } from "@clerk/clerk-expo";
-import { Image, ScrollView, Text, View } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import InputField from "@/components/InputField";
+import { icons } from "@/constants";
+import { useState } from "react";
 
 const Profile = () => {
   const { user } = useUser();
+  const [profileFormState, setProfileFormState] = useState<any>({
+    firstName: { name: user?.firstName || "Not Found", editable: false },
+    lastName: { name: user?.lastName || "Not Found", editable: false },
+    email: {
+      name: user?.primaryEmailAddress?.emailAddress || "Not Found",
+      editable: false,
+    },
+  });
+  const editInput = (name: string) => {
+    console.log(name);
+    // console.log("updated", updated);
+    setProfileFormState((prev: any) => ({
+      ...prev,
+      firstName: {
+        ...profileFormState[name],
+        editable: !profileFormState[name].editable,
+      },
+    }));
+  };
 
+  const InserterIcon = (name: string) => (
+    <TouchableOpacity
+      // disabled={locationPermissionState.BTNDisabled}
+      onPress={() => editInput(name)}
+      className="justify-center items-center w-10 h-10 rounded-full bg-white"
+    >
+      <Image source={icons.editInput} className={`w-6 h-6 mr-4`} />
+    </TouchableOpacity>
+  );
+  console.log("profile", profileFormState);
   return (
     <SafeAreaView className="flex-1">
       <ScrollView
@@ -29,10 +60,12 @@ const Profile = () => {
           <View className="flex flex-col items-start justify-start w-full">
             <InputField
               label="First name"
-              placeholder={user?.firstName || "Not Found"}
+              icon={icons.person}
+              placeholder={profileFormState.firstName.name}
               containerStyle="w-full"
               inputStyle="p-3.5"
-              editable={false}
+              editable={profileFormState.firstName.editable}
+              iconRight={InserterIcon("firstName")}
             />
 
             <InputField
