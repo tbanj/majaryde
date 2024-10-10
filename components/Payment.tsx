@@ -20,6 +20,7 @@ const Payment = ({
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { userId } = useAuth();
   const [success, setSuccess] = useState<boolean>(false);
+  const [trackRideModalShow, setTrackRideModalShow] = useState<boolean>(false);
   const {
     userAddress,
     userLongitude,
@@ -123,12 +124,17 @@ const Payment = ({
     }
   };
 
+  const initiateTrackRide = () => {
+    router.replace("/(root)/track-ride");
+  };
   return (
     <>
       <CustomButton
         title="Confirm Ride"
         className="my-10"
-        onPress={openPaymentSheet}
+        // temporary once done uncomment this part back
+        // onPress={openPaymentSheet}
+        onPress={initiateTrackRide}
       />
       <ReactNativeModal
         isVisible={success}
@@ -146,6 +152,12 @@ const Payment = ({
             Thank you for your booking, Your reservation has been placed. Please
             proceed with your trip!
           </Text>
+
+          <CustomButton
+            title="Go Track"
+            className="my-10"
+            onPress={openPaymentSheet}
+          />
 
           <CustomButton
             className="mt-5"
