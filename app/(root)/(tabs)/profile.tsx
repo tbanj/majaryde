@@ -234,7 +234,6 @@ const Profile = () => {
             }),
           }
         );
-        console.log("res", res);
         Alert.alert("Success", res?.message ?? "User detail updated");
       }
 
@@ -312,7 +311,6 @@ const Profile = () => {
     }
   };
 
-  console.log("profile userData", userData);
   return (
     <SafeAreaView className="flex-1">
       {COMPState.loadingState && (

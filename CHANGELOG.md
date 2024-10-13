@@ -1,3 +1,4 @@
+- resolve user api
 - removed unwanted code & fix auth issue
 - removed unwanted code & fix auth issue
 - removed unwanted code & fix auth issue

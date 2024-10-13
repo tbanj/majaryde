@@ -42,20 +42,7 @@ export const googleOAuth = async (startOAuthFlow: any) => {
     if (createdSessionId) {
       if (setActive) {
         await setActive({ session: createdSessionId });
-        console.log("about to");
         if (signUp.createdUserId) {
-          console.log(
-            "inside api",
-            signUp.createdUserId,
-            "signUp.firstName",
-            signUp.firstName,
-            "signUp.lastName",
-            signUp.lastName,
-            "signUp.emailAddress",
-            signUp.emailAddress,
-            "signUp.createdUserId",
-            signUp.createdUserId
-          );
           await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
             method: "POST",
             headers: {
