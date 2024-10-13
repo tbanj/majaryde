@@ -32,74 +32,72 @@ const BookRide = () => {
     router.replace("/(root)/(tabs)/home");
   };
   return (
-    <StripeProvider
-      publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
-      merchantIdentifier="merchant.majaryde.com"
-      urlScheme="myapp"
+    <RideLayout
+      title="Track Ride"
+      snapPoints={["58%", "85%"]}
+      showBackRoute={false}
     >
-      <RideLayout title="Track Ride">
-        {driverDetails && (
-          <>
-            <View className="space-x-2 flex justify-start flex-row">
-              <Text className="text-xl font-JakartaSemiBold mb-3">
-                Arriving in
-              </Text>
-              <Text className="text-xl font-JakartaRegular text-[#0CC25F]">
-                {formatTime(parseInt(`${driverDetails?.time}`) || 5)}
-              </Text>
-            </View>
+      {driverDetails && (
+        <>
+          <View className="space-x-2 flex justify-start flex-row border-b border-general-700">
+            <Text className="text-xl font-JakartaSemiBold mb-3">
+              Arriving in
+            </Text>
+            <Text className="text-xl font-JakartaRegular text-[#0CC25F]">
+              {formatTime(parseInt(`${driverDetails?.time}`) || 5)}
+            </Text>
+          </View>
 
-            <View className="flex py-3 px-5 w-full  items-start justify-center bg-general-600  mt-10">
-              <View className="flex flex-row items-center justify-between">
-                <View className="flex flex-col items-center justify-center">
-                  <Image
-                    source={{ uri: driverDetails?.profile_image_url }}
-                    className="w-28 h-28 rounded-full"
-                  />
+          <View className="flex py-3 px-5 w-full  items-start justify-center rounded-3xl bg-general-600 mt-5">
+            <View className="flex flex-row items-center justify-between w-full">
+              <View className="flex flex-col items-center justify-center">
+                <Image
+                  source={{ uri: driverDetails?.profile_image_url }}
+                  className="w-16 h-16 rounded-full"
+                />
 
-                  <View className="flex flex-row items-center justify-center mt-5 space-x-2">
-                    <Text className="text-lg font-JakartaSemiBold">
-                      {driverDetails?.title}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* //TODO car */}
-                <View className="flex justify-center items-center">
-                  <Image
-                    source={{ uri: driverDetails?.car_image_url }}
-                    className="w-28 h-28"
-                    resizeMode="contain"
-                  />
+                <View className="flex flex-row items-center justify-center pt-2">
+                  <Text className="text-lg font-JakartaRegular">
+                    {driverDetails?.title}
+                  </Text>
                 </View>
               </View>
-            </View>
 
-            <View className="flex flex-col w-full items-start justify-center mt-5">
-              <View className="flex flex-row items-center justify-start mt-3 border-b border-general-700 w-full py-3">
-                <Image source={icons.to} className="w-6 h-6" />
-                <Text className="text-lg font-JakartaRegular ml-2">
-                  {userAddress}
-                </Text>
-              </View>
-
-              <View className="flex flex-row items-center justify-start w-full py-3">
-                <Image source={icons.point} className="w-6 h-6" />
-                <Text className="text-lg font-JakartaRegular ml-2">
-                  {destinationAddress}
-                </Text>
+              {/* //TODO car */}
+              <View className="flex justify-center items-center h-auto">
+                <Image
+                  source={{ uri: driverDetails?.car_image_url }}
+                  className="w-28 h-28"
+                  resizeMode="cover"
+                />
               </View>
             </View>
+          </View>
 
-            <CustomButton
-              title="Back Home"
-              className="my-10"
-              onPress={handleHomeBTN}
-            />
-          </>
-        )}
-      </RideLayout>
-    </StripeProvider>
+          <View className="flex flex-col w-full items-start justify-center mt-5">
+            <View className="flex flex-row items-center justify-start mt-3 border-b border-general-700 w-full py-3">
+              <Image source={icons.to} className="w-6 h-6" />
+              <Text className="text-lg font-JakartaRegular ml-2">
+                {userAddress}
+              </Text>
+            </View>
+
+            <View className="flex flex-row items-center justify-start w-full py-3">
+              <Image source={icons.point} className="w-6 h-6" />
+              <Text className="text-lg font-JakartaRegular ml-2">
+                {destinationAddress}
+              </Text>
+            </View>
+          </View>
+
+          <CustomButton
+            title="Back Home"
+            className="my-4"
+            onPress={handleHomeBTN}
+          />
+        </>
+      )}
+    </RideLayout>
   );
 };
 

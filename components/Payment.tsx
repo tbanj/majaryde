@@ -133,8 +133,8 @@ const Payment = ({
         title="Confirm Ride"
         className="my-10"
         // temporary once done uncomment this part back
-        // onPress={openPaymentSheet}
-        onPress={initiateTrackRide}
+        onPress={openPaymentSheet}
+        // onPress={initiateTrackRide}
       />
       <ReactNativeModal
         isVisible={success}
@@ -155,12 +155,14 @@ const Payment = ({
 
           <CustomButton
             title="Go Track"
-            className="my-10"
-            onPress={openPaymentSheet}
+            className="my-7"
+            onPress={initiateTrackRide}
           />
 
           <CustomButton
-            className="mt-5"
+            className="shadow-none"
+            bgVariant="outline"
+            textVariant="primary"
             title="Back Home"
             onPress={() => {
               setSuccess(false);

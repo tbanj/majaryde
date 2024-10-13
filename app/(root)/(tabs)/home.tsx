@@ -36,6 +36,11 @@ export default function Page() {
     signOutActivated: false,
   });
 
+  const [COMPState, setCOMPState] = useState<any>({
+    BTNDisabled: false,
+    loadingState: false,
+  });
+
   const { setUserLocation, setDestinationLocation, userLatitude } =
     useLocationStore();
   const { user } = useUser();
@@ -55,13 +60,17 @@ export default function Page() {
         BTNDisabled: true,
         signOutActivated: true,
       }));
+      setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       await signOut();
+      setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
+
       router.replace("/(auth)/sign-in");
     } catch (error: any) {
       setLocationPermissionState((prev: any) => ({
         ...prev,
         BTNDisabled: false,
       }));
+      setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
       console.error("Failed to log out:", error);
     }
   };
@@ -127,7 +136,7 @@ export default function Page() {
         requestLocation();
 
       return () => {
-        console.log("This route is now unfocused.");
+        console.log("home route is now unfocused.");
         if (locationPermissionState.signOutActivated)
           setLocationPermissionState((prev: any) => ({
             ...prev,

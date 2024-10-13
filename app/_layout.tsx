@@ -7,10 +7,16 @@ import "react-native-reanimated";
 import { tokenCache } from "./lib/auth";
 import { LogBox, Text, View } from "react-native";
 import Bugsnag from "@bugsnag/expo";
-Bugsnag.start();
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // Prevent the splash screen from auto-hiding before asset loading is complete.
+
+if (!publishableKey) {
+  throw new Error(
+    "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
+  );
+}
+Bugsnag.start();
 SplashScreen.preventAutoHideAsync();
 
 LogBox.ignoreLogs(["Clerk:", "MapViewDirections Error:"]);
