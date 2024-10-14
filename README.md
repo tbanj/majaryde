@@ -14,9 +14,13 @@ This project have 9 major Layouts
 8. RideHistory Layout
 9. CustomerOnboarding Layout
 
-# Click on Google Drive Icon Below to download apk
+# App download apk link
 
-[<img src="scrs/google_drive.png">](https://drive.google.com/file/d/1C-EdSZA2-xYO5qVg3mEJ5_9kkCFEPTzN/view?usp=drivesdk)
+Direct link: https://expo.dev/artifacts/eas/pbrXsRUmxV54sESPoC5PRK.apk
+
+# App Demo
+
+Link: https://drive.google.com/file/d/1lnoKWpzni1h64qDtHQKACHbbMsPWvQXv/view
 
 # Screenshots
 
@@ -50,4 +54,4 @@ This project have 9 major Layouts
 <img src="https://github.com/user-attachments/assets/f72feb0e-d748-4b5c-99d9-2cd67b5a9b37" alt="Menu" width="288" height="512">&nbsp;
 <img src="https://github.com/user-attachments/assets/084d0efa-a014-43ee-b4be-7c00fbfb1046" alt="Menu" width="288" height="512">&nbsp;
 
-# Author : Alabi Temitope [<img src="scrs/linkedin-icon.png">](https://www.linkedin.com/in/alabi-temitope-aa036b103/)
+# Author : Alabi Temitope [<img src="https://github.com/user-attachments/assets/4003d179-03a5-43ff-a4b8-37ce150dbcb5">](https://www.linkedin.com/in/alabi-temitope-aa036b103/)
