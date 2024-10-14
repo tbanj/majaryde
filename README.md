@@ -1,50 +1,30 @@
-# Welcome to your Expo app 👋
+# majaryde
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is a MVP app for a ride hailing app for customers to order a ride. A user can book a ride, chat with the driver, update his detail provides English to Yoruba translation for basic & common Yoruba words and phrases use daily.
 
-## Get started
+This project have 9 major Layouts
 
-1. Install dependencies
+1. Home Layout
+2. BookRide Layout
+3. ComfirmRide Layout
+4. SelectDriver Layout
+5. TrackRide Layout
+6. Chat Layout
+7. Profile Layout
+8. RideHistory Layout
+9. CustomerOnboarding Layout
 
-   ```bash
-   npm install
-   ```
+# Click on Google Drive Icon Below to download apk
 
-2. Start the app
+[<img src="scrs/google_drive.png">](https://drive.google.com/file/d/1C-EdSZA2-xYO5qVg3mEJ5_9kkCFEPTzN/view?usp=drivesdk)
 
-   ```bash
-    npx expo start
-   ```
+# Screenshots
 
-In the output, you'll find options to open the app in a
+<img src="[scrs/home_activity.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="Menu" width="288" height="512">&nbsp;
+<img src="[scrs/number_activity.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="NumberActivity" width="288" height="512">&nbsp;
+<img src="[scrs/family_activity.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="FamilyActivity" width="288" height="512">&nbsp;
+<img src="[scrs/color_activity.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="Coloractivity" width="288" height="512">&nbsp;
+<img src="[scrs/phrases_activity.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="PhrasesActivity" width="288" height="512">&nbsp;
+<img src="[scrs/app_icon.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="AppIcon" width="288" height="512">
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+# Author : Alabi Temitope [<img src="scrs/linkedin-icon.png">](https://www.linkedin.com/in/alabi-temitope-aa036b103/)
