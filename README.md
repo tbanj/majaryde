@@ -20,6 +20,6 @@ This project have 9 major Layouts
 
 # Screenshots
 
-![Menu]([https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d](https://github.com/user-attachments/assets/f9421e85-a7ba-42db-aa23-b50bed187d60))
+ ![Menu](https://github.com/user-attachments/assets/f9421e85-a7ba-42db-aa23-b50bed187d60)
 
 # Author : Alabi Temitope [<img src="scrs/linkedin-icon.png">](https://www.linkedin.com/in/alabi-temitope-aa036b103/)
