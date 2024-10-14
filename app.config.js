@@ -5,7 +5,7 @@ export default {
     jsEngine: "hermes",
     name: "majaryde",
     slug: "majaryde",
-    version: "1.0.1",
+    version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: "myapp",

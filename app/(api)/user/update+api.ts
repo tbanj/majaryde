@@ -8,7 +8,7 @@ export async function PUT(request: Request) {
     if (!name || !email || !clerkId || !primary_phone_number) {
       return Response.json(
         { error: "Missing request fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const response = await sql`

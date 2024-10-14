@@ -21,7 +21,7 @@ const BookRide = () => {
   useEffect(() => {
     if (Array.isArray(drivers)) {
       setDriverDetails(
-        drivers?.filter((driver) => +driver.id === selectedDriver)[0]
+        drivers?.filter((driver) => +driver.id === selectedDriver)[0],
       );
     }
 

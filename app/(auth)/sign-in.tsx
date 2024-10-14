@@ -13,7 +13,6 @@ import { icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
 import OAuth from "@/components/OAuth";
-// import OAuth from "@/components/OAuth";
 
 const SignIn = () => {
   const [form, setForm] = useState({
@@ -60,7 +59,7 @@ const SignIn = () => {
     } catch (err: any) {
       Alert.alert(
         "Error",
-        `${err?.errors?.[0].longMessage ?? "invalid email or password"}`
+        `${err?.errors?.[0].longMessage ?? "invalid email or password"}`,
       );
       // console.error(JSON.stringify(err, null, 2));
       setSignInBTN(false);

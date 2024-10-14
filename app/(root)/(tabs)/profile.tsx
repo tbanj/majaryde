@@ -104,9 +104,9 @@ const Profile = () => {
     error,
   } = useFetch<any[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/user/${user?.id}`);
 
-  useFocusEffect(
+  /* useFocusEffect(
     useCallback(() => {
-      /* const fetchUserPhone = async () => {
+      const fetchUserPhone = async () => {
         try {
           setCOMPState({...COMPState, loadingState: true});
           const res = await fetchAPI(
@@ -125,19 +125,18 @@ const Profile = () => {
               name: res.data[0].primary_phone_number,
             },
           }));
-          console.log("phone number fetched", res.data.primary_phone_number);
           setCOMPState({...COMPState, loadingState: false});
         } catch (error) {
          setCOMPState({...COMPState, loadingState: false});
           console.error(error);
         }
       };
-      fetchUserPhone(); */
+      fetchUserPhone();
       return () => {
         console.log("profile route is now unfocused.");
       };
     }, [])
-  );
+  ); */
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -232,7 +231,7 @@ const Profile = () => {
               email: email.name,
               primary_phone_number: phoneNumber.name,
             }),
-          }
+          },
         );
         Alert.alert("Success", res?.message ?? "User detail updated");
       }
@@ -242,72 +241,6 @@ const Profile = () => {
       setCOMPState({ ...COMPState, loadingState: false });
       console.error("Failed to update user details:", error);
       Alert.alert("Error", "Error updating user details");
-    }
-  };
-
-  const handlePhoneUpdate = (value: string) => {
-    setProfileFormState({
-      ...profileFormState,
-      phoneNumber: { ...profileFormState.phoneNumber, name: value },
-    });
-  };
-
-  const sendOldEmailVerification = async () => {
-    if (!user) {
-      throw new Error("User is not authenticated");
-    }
-
-    try {
-      await user.primaryEmailAddress?.prepareVerification({
-        strategy: "email_code",
-      });
-      Alert.alert("OTP sent to your current email.");
-      setStep(2);
-    } catch (error) {
-      console.error("Error sending code to old email", error);
-    }
-  };
-
-  const confirmOldEmailVerification = async (code: string) => {
-    if (!user) {
-      throw new Error("User is not authenticated");
-    }
-
-    try {
-      await user.primaryEmailAddress?.attemptVerification({
-        code,
-      });
-      Alert.alert("Old email verified successfully!");
-      setStep(3);
-    } catch (error) {
-      console.error("Error sending code to old email", error);
-    }
-  };
-
-  const sendNewEmailVerification = async (code: string) => {
-    if (!user) {
-      throw new Error("User is not authenticated");
-    }
-
-    try {
-      const newEmail = await user.createEmailAddress({ email: "newEmail" });
-      await newEmail.prepareVerification({ strategy: "email_code" });
-      Alert.alert("Verification code sent to your new email.");
-      setStep(4);
-    } catch (error) {
-      console.error("Error sending code to old email", error);
-    }
-  };
-
-  const verifyNewEmail = async () => {
-    try {
-      await user?.primaryEmailAddress?.attemptVerification({
-        code: "newEmailCode",
-      });
-      Alert.alert("Email updated successfully!");
-      setStep(1);
-    } catch (error: any) {
-      Alert.alert("Error", error);
     }
   };
 
@@ -325,9 +258,6 @@ const Profile = () => {
             paddingBottom: 100,
           }
         }
-        /* contentContainerStyle={{
-          paddingBottom: 100,
-        }} */
       >
         <Text className="text-2xl font-JakartaBold my-5">My profile</Text>
 
@@ -348,7 +278,6 @@ const Profile = () => {
             <InputField
               label="First name"
               icon={icons.person}
-              // placeholder={profileFormState.firstName.name}
               value={profileFormState.firstName.name}
               onChangeText={(value: string) =>
                 setProfileFormState({
@@ -370,7 +299,6 @@ const Profile = () => {
 
             <InputField
               label="Last name"
-              // placeholder={profileFormState.lastName.name}
               value={profileFormState.lastName.name}
               onChangeText={(value: string) =>
                 setProfileFormState({
@@ -392,7 +320,6 @@ const Profile = () => {
 
             <InputField
               label="Email"
-              // placeholder={profileFormState.email.name}
               value={profileFormState.email.name}
               onChangeText={(value: string) =>
                 setProfileFormState({
@@ -407,7 +334,6 @@ const Profile = () => {
 
             <InputField
               label="Email status"
-              // placeholder={profileFormState.emailStatus.name}
               containerStyle="w-full"
               inputStyle="p-3.5"
               iconOnly={
@@ -448,7 +374,6 @@ const Profile = () => {
             disabled={!!COMPState.loadingState}
             title="Update Profile"
             className={`${profileFormState.phoneNumber.keyboard ? "mt-10" : "mt-5"}`}
-            // className="mt-6"
             onPress={updateUserDetails}
           />
         </View>

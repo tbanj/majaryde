@@ -15,7 +15,6 @@ import { icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI } from "../lib/fetch";
 import OAuth from "@/components/OAuth";
-// import OAuth from "@/components/OAuth";
 
 const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -67,7 +66,7 @@ const SignUp = () => {
       console.error(JSON.stringify(err, null, 2));
       Alert.alert(
         "Error",
-        err?.errors?.[0].longMessage ?? "Error encounter during user creation"
+        err?.errors?.[0].longMessage ?? "Error encounter during user creation",
       );
       setCOMPState({ ...COMPState, loadingState: false, BTNDisabled: false });
     }

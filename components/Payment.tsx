@@ -52,7 +52,7 @@ const Payment = ({
                 amount,
                 paymentMethodId: paymentMethod.id,
               }),
-            }
+            },
           );
 
           if (paymentIntent.client_secret) {
@@ -68,7 +68,7 @@ const Payment = ({
                   payment_intent_id: paymentIntent.id,
                   customer_id: customer,
                 }),
-              }
+              },
             );
             if (result.client_secret) {
               await fetchAPI(
@@ -91,7 +91,7 @@ const Payment = ({
                     driver_id: driverId,
                     user_id: userId,
                   }),
-                }
+                },
               );
 
               intentCreationCallback({
