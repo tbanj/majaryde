@@ -10,38 +10,27 @@ const OAuth = () => {
   const [BTNDisabled, setBTNDisabled] = useState(false);
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
 
-  // const handleGoogleSignIn = useCallback(async () => {
-  //   try {
-  //     setBTNDisabled(true);
-  //     const result = await googleOAuth(startOAuthFlow);
-  //     /* result.success === false..when the Google login is cancelled */
-  //     if (!result.success) {
-  //       setBTNDisabled(false);
-  //       return;
-  //     } else if (
-  //       result.code === "session_exists" ||
-  //       result.code === "success"
-  //     ) {
-  //       Alert.alert("Success", result.message);
-  //       setBTNDisabled(false);
-  //       router.replace("/(root)/(tabs)/home");
-  //     }
-  //   } catch (err) {
-  //     setBTNDisabled(false);
-  //     console.error("OAuth error", err);
-  //   }
-  // }, []);
-
-  const handleGoogleSignIn = async () => {
-    const result = await googleOAuth(startOAuthFlow);
-
-    if (result.code === "session_exists") {
-      Alert.alert("Success", "Session exists. Redirecting to home screen.");
-      router.replace("/(root)/(tabs)/home");
+  const handleGoogleSignIn = useCallback(async () => {
+    try {
+      setBTNDisabled(true);
+      const result = await googleOAuth(startOAuthFlow);
+      /* result.success === false..when the Google login is cancelled */
+      if (!result.success) {
+        setBTNDisabled(false);
+        return;
+      } else if (
+        result.code === "session_exists" ||
+        result.code === "success"
+      ) {
+        // Alert.alert("Success", result.message);
+        setBTNDisabled(false);
+        router.replace("/(root)/(tabs)/home");
+      }
+    } catch (err) {
+      setBTNDisabled(false);
+      console.error("OAuth error", err);
     }
-
-    Alert.alert(result.success ? "Success" : "Error", result.message);
-  };
+  }, []);
 
   return (
     <View>

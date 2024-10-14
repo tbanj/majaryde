@@ -20,7 +20,6 @@ const Payment = ({
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { userId } = useAuth();
   const [success, setSuccess] = useState<boolean>(false);
-  const [trackRideModalShow, setTrackRideModalShow] = useState<boolean>(false);
   const {
     userAddress,
     userLongitude,
@@ -52,7 +51,7 @@ const Payment = ({
                 amount,
                 paymentMethodId: paymentMethod.id,
               }),
-            },
+            }
           );
 
           if (paymentIntent.client_secret) {
@@ -68,7 +67,7 @@ const Payment = ({
                   payment_intent_id: paymentIntent.id,
                   customer_id: customer,
                 }),
-              },
+              }
             );
             if (result.client_secret) {
               await fetchAPI(
@@ -91,7 +90,7 @@ const Payment = ({
                     driver_id: driverId,
                     user_id: userId,
                   }),
-                },
+                }
               );
 
               intentCreationCallback({
@@ -134,7 +133,6 @@ const Payment = ({
         className="my-10"
         // temporary once done uncomment this part back
         onPress={openPaymentSheet}
-        // onPress={initiateTrackRide}
       />
       <ReactNativeModal
         isVisible={success}
