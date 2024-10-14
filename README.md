@@ -20,11 +20,6 @@ This project have 9 major Layouts
 
 # Screenshots
 
-<img src="https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d" alt="Menu" width="288" height="512">&nbsp;
-<img src="[scrs/number_activity.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="NumberActivity" width="288" height="512">&nbsp;
-<img src="[scrs/family_activity.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="FamilyActivity" width="288" height="512">&nbsp;
-<img src="[scrs/color_activity.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="Coloractivity" width="288" height="512">&nbsp;
-<img src="[scrs/phrases_activity.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="PhrasesActivity" width="288" height="512">&nbsp;
-<img src="[scrs/app_icon.png](https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d)" alt="AppIcon" width="288" height="512">
+<img src="https://github.com/user-attachments/assets/7b5ea110-d420-4fbd-8c54-528f117ec72d" alt="Menu" width="288" height="512">
 
 # Author : Alabi Temitope [<img src="scrs/linkedin-icon.png">](https://www.linkedin.com/in/alabi-temitope-aa036b103/)
