@@ -1,6 +1,6 @@
 # majaryde
 
-This is a MVP app for a ride hailing app for customers to order a ride. A user can book a ride, chat with the driver, update his detail provides English to Yoruba translation for basic & common Yoruba words and phrases use daily.
+This is a MVP app for a ride hailing app for customers to order a ride. A user can book a ride, chat with the driver, update his details.
 
 This project have 9 major Layouts
 
@@ -30,11 +30,10 @@ Link: https://drive.google.com/file/d/1lnoKWpzni1h64qDtHQKACHbbMsPWvQXv/view
 <img src="https://github.com/user-attachments/assets/85ac5609-0304-424e-a019-658a850868c6" alt="Menu" width="288" height="512">&nbsp;
 <img src="https://github.com/user-attachments/assets/8872c678-93b0-4ce9-9c68-855967c60fc6" alt="SplashScreenOne" width="288" height="512">&nbsp;
 <img src="https://github.com/user-attachments/assets/0a56ff69-c15d-4bbc-93a4-c808993027f2" alt="SplashScreenTwo" width="288" height="512">&nbsp;
-<img src="https://github.com/user-attachments/assets/1989d133-c126-4a82-9a23-d6ffc5291fc3" alt="Menu" width="288" height="512">&nbsp;
-<img src="https://github.com/user-attachments/assets/090bb19d-a807-40a2-8934-4178b18637e1" alt="Menu" width="288" height="512">&nbsp;
-<img src="https://github.com/user-attachments/assets/895aef36-7af4-4203-a25d-f99fd0e00495" alt="SplashScreenOne" width="288" height="512">&nbsp;
-<img src="https://github.com/user-attachments/assets/b3b3827b-68a4-4418-a987-8a435dd5e05e" alt="SplashScreenTwo" width="288" height="512">&nbsp;
 <img src="https://github.com/user-attachments/assets/3d84671a-75f6-4b2f-b72d-2f68b8d4bafd" alt="Menu" width="288" height="512">&nbsp;
+<img src="https://github.com/user-attachments/assets/1989d133-c126-4a82-9a23-d6ffc5291fc3" alt="Menu" width="288" height="512">&nbsp;
+<img src="https://github.com/user-attachments/assets/895aef36-7af4-4203-a25d-f99fd0e00495" alt="SplashScreenOne" width="288" height="512">&nbsp;
+<img src="https://github.com/user-attachments/assets/090bb19d-a807-40a2-8934-4178b18637e1" alt="Menu" width="288" height="512">&nbsp;
 <img src="https://github.com/user-attachments/assets/f281785c-f744-4c16-803b-31c75afa41b3" alt="Menu" width="288" height="512">&nbsp;
 <img src="https://github.com/user-attachments/assets/329ed0ae-36cb-4b5d-ac4e-20fce65fc425" alt="Menu" width="288" height="512">&nbsp;
 <img src="https://github.com/user-attachments/assets/f72feb0e-d748-4b5c-99d9-2cd67b5a9b37" alt="Menu" width="288" height="512">&nbsp;
