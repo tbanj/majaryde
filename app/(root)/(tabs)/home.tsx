@@ -2,6 +2,7 @@ import { useAuth, useUser } from "@clerk/clerk-expo";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
+// import { useDriverStore, useLocationStore } from "@/store";
 
 import {
   ActivityIndicator,
@@ -18,7 +19,7 @@ import { Ride } from "@/types/type";
 import { icons, images } from "@/constants";
 import GoogleTextInput from "@/components/GoogleTextInput";
 import Map from "@/components/Map";
-import { useLocationStore } from "@/store";
+import { useDriverStore, useLocationStore } from "@/store";
 import { useEffect, useState, useCallback } from "react";
 import { useFetch } from "@/app/lib/fetch";
 import CustomButton from "@/components/CustomButton";
@@ -38,6 +39,7 @@ export default function Page() {
 
   const { setUserLocation, setDestinationLocation, userLatitude } =
     useLocationStore();
+
   const { user } = useUser();
   const { signOut } = useAuth();
   const {
@@ -50,6 +52,7 @@ export default function Page() {
 
   const handleSignOut = async () => {
     try {
+      // resetUserMapData();
       setLocationPermissionState((prev: any) => ({
         ...prev,
         BTNDisabled: true,
@@ -57,13 +60,12 @@ export default function Page() {
       }));
       setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       await signOut();
-      setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
-
       router.replace("/(auth)/sign-in");
     } catch (error: any) {
       setLocationPermissionState((prev: any) => ({
         ...prev,
         BTNDisabled: false,
+        signOutActivated: true,
       }));
       setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
       console.error("Failed to log out:", error);
@@ -139,7 +141,7 @@ export default function Page() {
             BTNDisabled: false,
           }));
       };
-    }, []),
+    }, [])
   );
 
   useEffect(() => {
@@ -185,6 +187,19 @@ export default function Page() {
     setLocationPermissionState((prev: any) => ({
       ...prev,
       BTNDisabled: false,
+    }));
+  };
+
+  const handleLogout = (data: boolean) => {
+    setCOMPState({
+      ...COMPState,
+      BTNDisabled: false,
+      loadingState: false,
+    });
+    setLocationPermissionState((prev: any) => ({
+      ...prev,
+      BTNDisabled: false,
+      signOutActivated: true,
     }));
   };
 
@@ -270,7 +285,10 @@ export default function Page() {
                 </ReactNativeModal>
               )}
               <View className="flex flex-row items-center bg-transparent h-[300px]">
-                <Map />
+                <Map
+                  isLogout={COMPState.BTNDisabled}
+                  setIsLogout={handleLogout}
+                />
               </View>
             </>
 

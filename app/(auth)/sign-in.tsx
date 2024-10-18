@@ -59,9 +59,8 @@ const SignIn = () => {
     } catch (err: any) {
       Alert.alert(
         "Error",
-        `${err?.errors?.[0].longMessage ?? "invalid email or password"}`,
+        `${err?.errors?.[0].longMessage ?? "invalid email or password"}`
       );
-      // console.error(JSON.stringify(err, null, 2));
       setSignInBTN(false);
       setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
     }
