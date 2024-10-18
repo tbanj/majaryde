@@ -22,6 +22,7 @@ const OAuth = () => {
         result.code === "session_exists" ||
         result.code === "success"
       ) {
+        // Alert.alert("Success", result.message);
         setBTNDisabled(false);
         router.replace("/(root)/(tabs)/home");
       }

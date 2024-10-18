@@ -1,6 +1,13 @@
 import { useSignUp } from "@clerk/clerk-expo";
 import React, { useState } from "react";
-import { Alert, Image, ScrollView, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import ReactNativeModal from "react-native-modal";
 import { Link, router } from "expo-router";
 import InputField from "@/components/InputField";
@@ -8,7 +15,6 @@ import { icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI } from "../lib/fetch";
 import OAuth from "@/components/OAuth";
-// import OAuth from "@/components/OAuth";
 
 const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -22,17 +28,30 @@ const SignUp = () => {
     error: "",
     code: "",
   });
+  const [COMPState, setCOMPState] = useState<any>({
+    BTNDisabled: false,
+    loadingState: false,
+  });
 
   const onSignUpPress = async () => {
     if (!isLoaded) return;
 
     try {
       const name = form.name.split(" ");
-      if (!name[0] || !name[1]) {
+      if (!name[0] || !name[1] || name[1].length < 2 || name[0].length < 2) {
         Alert.alert("Error", "first name and last name is required");
         return;
       }
-      console.log("onSignUpPress name", form.name.split(" ")[0]);
+      if (
+        !form.email ||
+        !form.password ||
+        form.email.length < 5 ||
+        form.password.length < 5
+      ) {
+        Alert.alert("Error", "All fields are required");
+        return;
+      }
+      setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       await signUp.create({
         emailAddress: form.email,
         password: form.password,
@@ -41,11 +60,15 @@ const SignUp = () => {
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-
+      setCOMPState({ ...COMPState, loadingState: false, BTNDisabled: false });
       setVerification({ ...verification, state: "pending" });
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
-      Alert.alert("Error", err.errors[0].longMessage);
+      Alert.alert(
+        "Error",
+        err?.errors?.[0].longMessage ?? "Error encounter during user creation",
+      );
+      setCOMPState({ ...COMPState, loadingState: false, BTNDisabled: false });
     }
   };
 
@@ -55,44 +78,59 @@ const SignUp = () => {
     }
 
     try {
+      setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verification.code,
       });
 
       if (completeSignUp.status === "complete") {
-        await fetchAPI("/(api)/user", {
+        await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
-            name: form.name,
-            email: form.email,
-            clerkId: completeSignUp.createdUserId,
+            name: `${form.name}`,
+            email: `${form.email}`,
+            clerkId: `${completeSignUp.createdUserId}`,
           }),
         });
         await setActive({ session: completeSignUp.createdSessionId });
+        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
         setVerification({ ...verification, state: "success" });
-        router.replace("/");
       } else {
+        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
         setVerification({
           ...verification,
           state: "failed",
           error: "Verification failed",
         });
+
         console.error(JSON.stringify(completeSignUp, null, 2));
       }
     } catch (err: any) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
+      setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
       setVerification({
         ...verification,
         state: "failed",
-        error: err.errors[0].longMessage,
+        error:
+          err?.errors?.[0].longMessage ??
+          "Error encounter during user creation",
       });
+
       console.error(JSON.stringify(err, null, 2));
     }
   };
 
   return (
     <ScrollView className="flex-1 bg-white">
+      {COMPState.loadingState && (
+        <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )}
       <View className="flex-1 bg-white">
         <View className="relative w-full h-[250px]">
           <Image source={images.signUpCar} className="z-10 w-full h-[250px]" />
@@ -130,6 +168,7 @@ const SignUp = () => {
             title="Sign Up"
             onPress={onSignUpPress}
             className="mt-6"
+            disabled={COMPState.BTNDisabled}
           />
 
           <OAuth />
@@ -174,7 +213,8 @@ const SignUp = () => {
             )}
 
             <CustomButton
-              title="Verify Email"
+              title={`${COMPState.BTNDisabled ? "Please wait..." : "Verify Email"} `}
+              disabled={COMPState.BTNDisabled}
               onPress={onPressVerify}
               className="mt-5 bg-success-500"
             />
@@ -195,7 +235,7 @@ const SignUp = () => {
               You have successfully verified your account.
             </Text>
             <CustomButton
-              title="Browse Home"
+              title="Book Ride"
               onPress={() => {
                 setVerification({
                   ...verification,

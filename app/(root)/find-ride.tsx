@@ -44,7 +44,7 @@ const FindRide = () => {
         title="Find now"
         onPress={() => {
           const dataNotValid = drivers.find(
-            (data: any) => data.price === "NaN"
+            (data: any) => data.price === "NaN",
           );
           if (dataNotValid) {
             Alert.alert("Error", "Choose another closeby destination");

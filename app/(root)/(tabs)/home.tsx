@@ -1,17 +1,14 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { Link, router, useFocusEffect, useNavigation } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   Image,
   Keyboard,
-  KeyboardAvoidingView,
   Linking,
-  Platform,
   Text,
   TouchableOpacity,
   View,
@@ -28,12 +25,15 @@ import CustomButton from "@/components/CustomButton";
 import ReactNativeModal from "react-native-modal";
 
 export default function Page() {
-  const [hasPermission, setHasPermission] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [locationPermissionState, setLocationPermissionState] = useState({
     location: null,
     BTNDisabled: false,
     signOutActivated: false,
+  });
+
+  const [COMPState, setCOMPState] = useState<any>({
+    BTNDisabled: false,
+    loadingState: false,
   });
 
   const { setUserLocation, setDestinationLocation, userLatitude } =
@@ -55,13 +55,17 @@ export default function Page() {
         BTNDisabled: true,
         signOutActivated: true,
       }));
+      setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       await signOut();
+      setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
+
       router.replace("/(auth)/sign-in");
     } catch (error: any) {
       setLocationPermissionState((prev: any) => ({
         ...prev,
         BTNDisabled: false,
       }));
+      setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
       console.error("Failed to log out:", error);
     }
   };
@@ -86,7 +90,6 @@ export default function Page() {
           ...prev,
           location: status,
         }));
-        // Alert.alert("Permission Denied", "Location permission is required.");
         return;
       } else {
         let location = await Location.getCurrentPositionAsync();
@@ -127,7 +130,7 @@ export default function Page() {
         requestLocation();
 
       return () => {
-        console.log("This route is now unfocused.");
+        console.log("home route is now unfocused.");
         if (locationPermissionState.signOutActivated)
           setLocationPermissionState((prev: any) => ({
             ...prev,
@@ -136,7 +139,7 @@ export default function Page() {
             BTNDisabled: false,
           }));
       };
-    }, [])
+    }, []),
   );
 
   useEffect(() => {
@@ -242,19 +245,6 @@ export default function Page() {
             />
 
             <>
-              {/* {!locationPermissionState?.location ||
-              locationPermissionState?.currentLoc ? (
-                <Text className="text-xl font-JakartaBold mt-5 mb-3">
-                  Your Current Location
-                </Text>
-              ) : (
-                <TouchableOpacity onPress={requestPermit}>
-                  <Text className="text-xl font-JakartaBold mt-5 mb-3">
-                    Kindly Grant Location Perm.
-                  </Text>
-                </TouchableOpacity>
-                
-              )} */}
               <Text className="text-xl font-JakartaBold mt-5 mb-3">
                 Your Current Location
               </Text>
@@ -279,13 +269,6 @@ export default function Page() {
                   </View>
                 </ReactNativeModal>
               )}
-              {/* <Text className="text-xl font-JakartaBold mt-5 mb-3">
-                Your Current Location
-              </Text> */}
-              {/* <View className="flex flex-row items-center bg-transparent h-[300px]">
-                <Map />
-              </View> */}
-              {/* {permissionCheck ? <Map /> : <></>} */}
               <View className="flex flex-row items-center bg-transparent h-[300px]">
                 <Map />
               </View>
