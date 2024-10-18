@@ -33,6 +33,8 @@ import onboarding3 from "@/assets/images/onboarding3.png";
 import signUpCar from "@/assets/images/signup-car.png";
 import editInput from "@/assets/icons/edit_input.png";
 import edited_input_icon from "@/assets/icons/edited_input.png";
+import eye_visible from "@/assets/icons/eye_visible.png";
+import eye_hidden from "@/assets/icons/eye_hidden.png";
 
 export const images = {
   onboarding1,
@@ -73,6 +75,8 @@ export const icons = {
   to,
   editInput,
   edited_input_icon,
+  eye_hidden,
+  eye_visible,
 };
 
 export const onboarding = [
