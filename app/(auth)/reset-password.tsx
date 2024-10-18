@@ -277,7 +277,7 @@ const ResetPassword = () => {
             )}
 
             <CustomButton
-              title={`${COMPState.BTNDisabled ? "Please wait..." : "Verify Email"} `}
+              title={`${COMPState.BTNDisabled ? "Please wait..." : "Verify OTP"} `}
               disabled={COMPState.BTNDisabled}
               onPress={handleVerifyAndReset}
               className="mt-5 bg-success-500"
