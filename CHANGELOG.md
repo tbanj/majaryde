@@ -1,4 +1,10 @@
+- Merge branch 'dev-temi' of https://github.com/tbanj/majaryde into dev-temi
 - implementation signup recommendation
+- implementation signup recommendation
+- Update README.md
+- Update README.md
+- Update README.md
+- Update README.md
 - updated
 - updated
 - updated
