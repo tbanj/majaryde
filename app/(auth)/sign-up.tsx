@@ -1,6 +1,14 @@
 import { useSignUp } from "@clerk/clerk-expo";
-import React, { useState } from "react";
-import { Alert, Image, ScrollView, Text, View } from "react-native";
+import React, { Dispatch, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ReactNativeModal from "react-native-modal";
 import { Link, router } from "expo-router";
 import InputField from "@/components/InputField";
@@ -8,44 +16,99 @@ import { icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI } from "../lib/fetch";
 import OAuth from "@/components/OAuth";
-// import OAuth from "@/components/OAuth";
+
+interface InserterIconProp {
+  name: string;
+  form: any | null;
+  setForm: Dispatch<
+    React.SetStateAction<{
+      lastName: any;
+      firstName: any;
+      password: any;
+      email: any;
+    }>
+  >;
+}
+
+const InserterIcon = ({ name, setForm, form }: InserterIconProp) => {
+  const editInput = (name: string) => {
+    setForm((prev: any) => ({
+      ...prev,
+      [name]: {
+        ...prev[name],
+        hidePassword: !prev[name].hidePassword,
+      },
+    }));
+  };
+  return (
+    <TouchableOpacity
+      onPress={() => editInput(name)}
+      className="justify-center items-center w-10 h-10 rounded-full"
+    >
+      {form[name].hidePassword ? (
+        <Image source={icons.eye_hidden} className={`w-6 h-6 mr-4 `} />
+      ) : (
+        <Image source={icons.eye_visible} className={`w-6 h-6 mr-4 `} />
+      )}
+    </TouchableOpacity>
+  );
+};
 
 const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [form, setForm] = useState({
-    name: "",
+    /* name: "", */
+    firstName: "",
+    lastName: "",
     email: "",
-    password: "",
+    password: { name: "", hidePassword: true },
   });
   const [verification, setVerification] = useState({
     state: "default",
     error: "",
     code: "",
   });
+  const [COMPState, setCOMPState] = useState<any>({
+    BTNDisabled: false,
+    loadingState: false,
+  });
 
   const onSignUpPress = async () => {
     if (!isLoaded) return;
 
     try {
-      const name = form.name.split(" ");
-      if (!name[0] || !name[1]) {
+      /* const name = form.name.split(" ");
+      if (!name[0] || !name[1] || name[1].length < 2 || name[0].length < 2) {
         Alert.alert("Error", "first name and last name is required");
         return;
+      } */
+      if (
+        !form.email ||
+        !form.password.name ||
+        form.email.length < 5 ||
+        form.password.name.length < 5
+      ) {
+        Alert.alert("Error", "All fields are required");
+        return;
       }
-      console.log("onSignUpPress name", form.name.split(" ")[0]);
+      setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       await signUp.create({
         emailAddress: form.email,
-        password: form.password,
-        firstName: form.name.split(" ")[0],
-        lastName: form.name.split(" ")[1] || undefined,
+        password: form.password.name,
+        firstName: form.firstName,
+        lastName: form.lastName,
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-
+      setCOMPState({ ...COMPState, loadingState: false, BTNDisabled: false });
       setVerification({ ...verification, state: "pending" });
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
-      Alert.alert("Error", err.errors[0].longMessage);
+      Alert.alert(
+        "Error",
+        err?.errors?.[0].longMessage ?? "Error encounter during user creation"
+      );
+      setCOMPState({ ...COMPState, loadingState: false, BTNDisabled: false });
     }
   };
 
@@ -55,44 +118,70 @@ const SignUp = () => {
     }
 
     try {
+      if (verification.code.length > 6 || verification.code.length < 6) {
+        Alert.alert("Info", "code not accepted");
+        return;
+      }
+      setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verification.code,
       });
-
       if (completeSignUp.status === "complete") {
-        await fetchAPI("/(api)/user", {
+        await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
-            name: form.name,
-            email: form.email,
-            clerkId: completeSignUp.createdUserId,
+            name: `${form.lastName} ${form.firstName}`,
+            email: `${form.email}`,
+            clerkId: `${completeSignUp.createdUserId}`,
           }),
         });
         await setActive({ session: completeSignUp.createdSessionId });
+        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
         setVerification({ ...verification, state: "success" });
-        router.replace("/");
       } else {
+        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
         setVerification({
           ...verification,
           state: "failed",
           error: "Verification failed",
         });
+
         console.error(JSON.stringify(completeSignUp, null, 2));
       }
     } catch (err: any) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
-      setVerification({
-        ...verification,
-        state: "failed",
-        error: err.errors[0].longMessage,
-      });
-      console.error(JSON.stringify(err, null, 2));
+      setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
+      if (err?.errors?.[0].code !== "form_code_incorrect")
+        setVerification({
+          ...verification,
+          state: "failed",
+          error:
+            err?.errors?.[0].longMessage ??
+            "Error encounter during user creation",
+        });
+      if (err?.errors?.[0].code === "form_code_incorrect") {
+        setVerification({
+          ...verification,
+          error:
+            err?.errors?.[0].longMessage ??
+            "Error encounter during user creation",
+        });
+      }
+      console.error("catch error onPressVerify", JSON.stringify(err, null, 2));
     }
   };
 
   return (
     <ScrollView className="flex-1 bg-white">
+      {COMPState.loadingState && (
+        <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )}
       <View className="flex-1 bg-white">
         <View className="relative w-full h-[250px]">
           <Image source={images.signUpCar} className="z-10 w-full h-[250px]" />
@@ -102,11 +191,22 @@ const SignUp = () => {
         </View>
         <View className="p-5">
           <InputField
-            label="Name"
-            placeholder="Enter name"
+            label="Last Name"
+            placeholder="Enter last Name"
             icon={icons.person}
-            value={form.name}
-            onChangeText={(value: string) => setForm({ ...form, name: value })}
+            value={form.lastName}
+            onChangeText={(value: string) =>
+              setForm({ ...form, lastName: value })
+            }
+          />
+          <InputField
+            label="First Name"
+            placeholder="Enter first name"
+            icon={icons.person}
+            value={form.firstName}
+            onChangeText={(value: string) =>
+              setForm({ ...form, firstName: value })
+            }
           />
           <InputField
             label="Email"
@@ -119,10 +219,16 @@ const SignUp = () => {
             label="Password"
             placeholder="Enter password"
             icon={icons.lock}
-            secureTextEntry={true}
-            value={form.password}
+            secureTextEntry={form.password.hidePassword}
+            value={form.password.name}
             onChangeText={(value: string) =>
-              setForm({ ...form, password: value })
+              setForm((form) => ({
+                ...form,
+                password: { ...form.password, name: value },
+              }))
+            }
+            iconRight={
+              <InserterIcon name="password" setForm={setForm} form={form} />
             }
           />
 
@@ -130,6 +236,7 @@ const SignUp = () => {
             title="Sign Up"
             onPress={onSignUpPress}
             className="mt-6"
+            disabled={COMPState.BTNDisabled}
           />
 
           <OAuth />
@@ -144,9 +251,9 @@ const SignUp = () => {
 
         <ReactNativeModal
           isVisible={verification.state === "pending"}
-          onModalHide={() =>
-            setVerification({ ...verification, state: "success" })
-          }
+          // onModalHide={() => {}}
+          /* () =>
+            setVerification({ ...verification, state: "success" }) */
         >
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Text className="text-2xl font-JakartaExtraBold mb-2">
@@ -174,7 +281,8 @@ const SignUp = () => {
             )}
 
             <CustomButton
-              title="Verify Email"
+              title={`${COMPState.BTNDisabled ? "Please wait..." : "Verify Email"} `}
+              disabled={COMPState.BTNDisabled}
               onPress={onPressVerify}
               className="mt-5 bg-success-500"
             />
@@ -182,7 +290,7 @@ const SignUp = () => {
         </ReactNativeModal>
 
         {/* Verification model */}
-        <ReactNativeModal isVisible={verification.state === "success"}>
+        <ReactNativeModal isVisible={verification?.state === "success"}>
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Image
               source={images.check}
@@ -195,7 +303,7 @@ const SignUp = () => {
               You have successfully verified your account.
             </Text>
             <CustomButton
-              title="Browse Home"
+              title="Book Ride"
               onPress={() => {
                 setVerification({
                   ...verification,

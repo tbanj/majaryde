@@ -10,7 +10,7 @@ export async function GET() {
     console.log(error);
     return Response.json(
       { error: "An error occurred while fetching data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

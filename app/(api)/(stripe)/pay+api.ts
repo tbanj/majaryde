@@ -11,14 +11,14 @@ export async function POST(request: Request) {
         JSON.stringify({
           error: "Miss required payment information",
           status: 400,
-        })
+        }),
       );
 
     const paymentMethod = await stripe.paymentMethods.attach(
       payment_method_id,
       {
         customer: customer_id,
-      }
+      },
     );
 
     const result = await stripe.paymentIntents.confirm(payment_intent_id, {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
         success: true,
         message: "Payment confirmed successfully",
         result,
-      })
+      }),
     );
   } catch (error) {
     console.log(error);
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       JSON.stringify({
         error,
         status: 500,
-      })
+      }),
     );
   }
 }

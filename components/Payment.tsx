@@ -123,11 +123,15 @@ const Payment = ({
     }
   };
 
+  const initiateTrackRide = () => {
+    router.replace("/(root)/track-ride");
+  };
   return (
     <>
       <CustomButton
         title="Confirm Ride"
         className="my-10"
+        // temporary once done uncomment this part back
         onPress={openPaymentSheet}
       />
       <ReactNativeModal
@@ -148,7 +152,15 @@ const Payment = ({
           </Text>
 
           <CustomButton
-            className="mt-5"
+            title="Track Ride"
+            className="my-7"
+            onPress={initiateTrackRide}
+          />
+
+          <CustomButton
+            className="shadow-none"
+            bgVariant="outline"
+            textVariant="primary"
             title="Back Home"
             onPress={() => {
               setSuccess(false);

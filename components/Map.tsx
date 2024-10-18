@@ -16,20 +16,26 @@ import { icons } from "@/constants";
 import { useFetch } from "@/app/lib/fetch";
 import MapViewDirections from "react-native-maps-directions";
 
-const Map = () => {
+interface MapProps {
+  isLogout?: boolean;
+  setIsLogout?: (data: boolean) => void;
+}
+const Map = ({ isLogout, setIsLogout }: MapProps) => {
   const {
     data: drivers,
     loading,
     error,
   } = useFetch<Driver[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/driver`);
-  const { selectedDriver, setDrivers } = useDriverStore();
+  const { selectedDriver, setDrivers, clearSelectedDriver } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
   const {
     userLongitude,
     userLatitude,
+    userAddress,
     destinationLatitude,
     destinationLongitude,
+    setDestinationLocation,
   } = useLocationStore();
 
   useEffect(() => {
@@ -49,6 +55,25 @@ const Map = () => {
       setMarkers(newMarkers);
     }
   }, [drivers, userLatitude, userLongitude]);
+
+  const resetUserMapData = () => {
+    setDrivers([]);
+    clearSelectedDriver();
+    setDestinationLocation({
+      latitude: null!,
+      longitude: null!,
+      address: null!,
+    });
+    setIsLogout!(false);
+  };
+
+  useEffect(() => {
+    if (isLogout) {
+      resetUserMapData();
+    }
+
+    return () => {};
+  }, [isLogout]);
 
   useEffect(() => {
     if (markers.length > 0 && destinationLatitude && destinationLongitude) {
@@ -88,6 +113,7 @@ const Map = () => {
   });
 
   /* if you want ur recent ride to show dont enable showUserLocation */
+
   return (
     <MapView
       provider={PROVIDER_GOOGLE}
