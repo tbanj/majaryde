@@ -152,7 +152,7 @@ const Payment = ({
           </Text>
 
           <CustomButton
-            title="Go Track"
+            title="Track Ride"
             className="my-7"
             onPress={initiateTrackRide}
           />

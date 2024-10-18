@@ -66,7 +66,7 @@ const SignUp = () => {
       console.error(JSON.stringify(err, null, 2));
       Alert.alert(
         "Error",
-        err?.errors?.[0].longMessage ?? "Error encounter during user creation",
+        err?.errors?.[0].longMessage ?? "Error encounter during user creation"
       );
       setCOMPState({ ...COMPState, loadingState: false, BTNDisabled: false });
     }
@@ -78,11 +78,14 @@ const SignUp = () => {
     }
 
     try {
+      if (verification.code.length > 6 || verification.code.length < 6) {
+        Alert.alert("Info", "code not accepted");
+        return;
+      }
       setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verification.code,
       });
-
       if (completeSignUp.status === "complete") {
         await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
           method: "POST",
@@ -112,15 +115,23 @@ const SignUp = () => {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
       setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
-      setVerification({
-        ...verification,
-        state: "failed",
-        error:
-          err?.errors?.[0].longMessage ??
-          "Error encounter during user creation",
-      });
-
-      console.error(JSON.stringify(err, null, 2));
+      if (err?.errors?.[0].code !== "form_code_incorrect")
+        setVerification({
+          ...verification,
+          state: "failed",
+          error:
+            err?.errors?.[0].longMessage ??
+            "Error encounter during user creation",
+        });
+      if (err?.errors?.[0].code === "form_code_incorrect") {
+        setVerification({
+          ...verification,
+          error:
+            err?.errors?.[0].longMessage ??
+            "Error encounter during user creation",
+        });
+      }
+      console.error("catch error onPressVerify", JSON.stringify(err, null, 2));
     }
   };
 
@@ -183,9 +194,9 @@ const SignUp = () => {
 
         <ReactNativeModal
           isVisible={verification.state === "pending"}
-          onModalHide={() =>
-            setVerification({ ...verification, state: "success" })
-          }
+          // onModalHide={() => {}}
+          /* () =>
+            setVerification({ ...verification, state: "success" }) */
         >
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Text className="text-2xl font-JakartaExtraBold mb-2">
@@ -222,7 +233,7 @@ const SignUp = () => {
         </ReactNativeModal>
 
         {/* Verification model */}
-        <ReactNativeModal isVisible={verification.state === "success"}>
+        <ReactNativeModal isVisible={verification?.state === "success"}>
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Image
               source={images.check}
