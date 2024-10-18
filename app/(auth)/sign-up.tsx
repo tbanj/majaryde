@@ -227,7 +227,6 @@ const SignUp = () => {
                 password: { ...form.password, name: value },
               }))
             }
-            // editable={form.password.hidePassword}
             iconRight={
               <InserterIcon name="password" setForm={setForm} form={form} />
             }
