@@ -153,6 +153,28 @@ const ResetPassword = () => {
     setIsFormValid(Object.keys(errors).length === 0);
   };
 
+  useEffect(() => {
+    // Trigger form validation when name,
+    // email, or password changes
+    validateFormOTP();
+  }, [verification.code]);
+
+  const validateFormOTP = () => {
+    let errors: any = {};
+
+    // Validate OTP modal
+    setVerification;
+    if (!verification.code) {
+      errors.password = "OTP is required.";
+    } else if (verification.code.length < 6 || verification.code.length > 6) {
+      errors.password = "OTP must be 6 characters.";
+    }
+
+    // Set the errors and update form validity
+    setErrors(errors);
+    setIsFormValid(Object.keys(errors).length === 0);
+  };
+
   const handleStartReset = async () => {
     console.log("start process", form.email);
     const result = await startPasswordReset(form.email);
@@ -195,6 +217,9 @@ const ResetPassword = () => {
   // step 2
   const handleVerify = () => {
     // show modal to input code and validate code
+    setIsFormValid(false);
+    setErrors({});
+
     setVerification((verification) => ({
       ...verification,
       state: "pending",
@@ -256,6 +281,7 @@ const ResetPassword = () => {
               <InputField
                 label="Reset Password"
                 placeholder="Enter email"
+                maxLength={32}
                 icon={icons.email}
                 value={form.email}
                 onChangeText={(value: string) =>
@@ -277,6 +303,7 @@ const ResetPassword = () => {
               <InputField
                 label="Enter Password"
                 placeholder="Enter password"
+                maxLength={20}
                 icon={icons.lock}
                 secureTextEntry={formPass.password.hidePassword}
                 value={formPass.password.name}
@@ -299,6 +326,7 @@ const ResetPassword = () => {
                 label="Confirm Password"
                 placeholder="Enter confirm password"
                 icon={icons.lock}
+                maxLength={20}
                 secureTextEntry={formPass.confirmPassword.hidePassword}
                 value={formPass.confirmPassword.name}
                 onChangeText={(value: string) =>
@@ -372,6 +400,7 @@ const ResetPassword = () => {
             </Text>
 
             <InputField
+              maxLength={6}
               label="Code"
               icon={icons.lock}
               placeholder="12345"
