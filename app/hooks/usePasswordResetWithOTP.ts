@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useClerk } from "@clerk/clerk-expo";
+import SignIn from "../(auth)/sign-in";
 
 const usePasswordResetWithOTP = () => {
   const { client } = useClerk();
@@ -51,20 +52,31 @@ const usePasswordResetWithOTP = () => {
   const verifyOTPAndResetPassword = async (
     firstFactor: any,
     code: string,
-    newPassword: string
+    newPassword: string,
+    verificationCodeFunc: any
   ) => {
     setIsLoading(true);
     setError(null);
+    console.log(
+      "verifyOTPAndResetPassword verificationCodeFunc",
+      verificationCodeFunc
+    );
+    console.log("verifyOTPAndResetPassword firstFactor", firstFactor);
 
     try {
       // Attempt to verify the code
-      await firstFactor.attemptFirstFactor({
+      /* const res = await client.signIn.attemptFirstFactor({
+        strategy: "reset_password_email_code",
+        code,
+      }); */
+      const res: any = await client.signIn.attemptFirstFactor({
         strategy: "reset_password_email_code",
         code,
       });
 
+      console.log("res ll", res);
       // If verification successful, reset the password
-      await firstFactor.resetPassword({
+      await client.signIn.resetPassword({
         password: newPassword,
       });
 
@@ -76,6 +88,7 @@ const usePasswordResetWithOTP = () => {
         message: "Password reset successful",
       };
     } catch (err: any) {
+      console.log("inner 2 catch", err);
       setError(err.message || "Failed to verify code or reset password");
       setIsLoading(false);
       return {

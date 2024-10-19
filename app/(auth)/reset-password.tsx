@@ -1,4 +1,4 @@
-import { useSignIn } from "@clerk/clerk-expo";
+import { useAuth, useSignIn } from "@clerk/clerk-expo";
 import React, { Dispatch, useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -75,9 +75,16 @@ const ResetPassword = () => {
   });
   const [step, setStep] = useState<string>("1");
   const [errors, setErrors] = useState({});
+  const [errorsPass, setErrorsPass] = useState({});
+  const [errorsOTP, setErrorsOTP] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
-
+  const [isFormValidPass, setIsFormValidPass] = useState(false);
+  const [isFormValidOTP, setIsFormValidOTP] = useState(false);
   const [firstFactorRef, setFirstFactorRef] = useState<any>(null);
+  const [verificationCodeFunc, setVerificationCodeFunc] = useState<any>({
+    attemptFirstFactor: null,
+    resetPassword: null,
+  });
 
   const {
     startPasswordReset,
@@ -87,11 +94,7 @@ const ResetPassword = () => {
     verificationStatus,
   } = usePasswordResetWithOTP();
 
-  useEffect(() => {
-    // Trigger form validation when name,
-    // email, or password changes
-    validateForm();
-  }, [form.email]);
+  const { signOut } = useAuth();
 
   const validateForm = () => {
     let errors: any = {};
@@ -112,91 +115,124 @@ const ResetPassword = () => {
   useEffect(() => {
     // Trigger form validation when name,
     // email, or password changes
-    validateFormPass();
+    if (step === "1") validateForm();
+  }, [form.email]);
+
+  useEffect(() => {
+    // Trigger form validation when name,
+    // email, or password changes
+    if (step === "2") validateFormPass();
   }, [formPass.password.name, formPass.confirmPassword.name]);
 
   const validateFormPass = () => {
     let errors: any = {};
-
+    console.log("am here");
     // Validate password field
-    if (!formPass.password) {
+    if (!formPass.password.name) {
       errors.password = "Password is required.";
     } else if (formPass.password.name.length < 6) {
       errors.password = "Password must be at least 6 characters.";
     } else if (
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,16}$/.test(
+      !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,20}$/.test(
         formPass.password.name
       )
     )
       errors.password =
         "Password must have uppercase, lowercase & special character";
-    else if (formPass.password.name.length < 17) {
+    else if (formPass.password.name.length > 20) {
       errors.password = "Password length not accepted.";
     }
 
-    if (!formPass.confirmPassword) {
-      errors.confirmPassword = "Password is required.";
+    if (!formPass.confirmPassword.name) {
+      errors.confirmPassword = "Confirm Password is required.";
     } else if (formPass.confirmPassword.name.length < 6) {
-      errors.confirmPassword = "Password must be at least 6 characters.";
+      errors.confirmPassword =
+        "Confirm Password must be at least 6 characters.";
     } else if (
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,16}$/.test(
-        formPass.password.name
+      !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,20}$/.test(
+        formPass.confirmPassword.name
       )
     )
-      errors.password =
-        "Password must have uppercase, lowercase & special character";
-    else if (formPass.password.name.length < 17) {
-      errors.password = "Password length not accepted.";
+      errors.confirmPassword =
+        "Confirm Password must have uppercase, lowercase & special character";
+    else if (formPass.confirmPassword.name.length > 20) {
+      errors.confirmPassword = "Confirm Password length not accepted.";
     }
     // Set the errors and update form validity
-    setErrors(errors);
-    setIsFormValid(Object.keys(errors).length === 0);
+    setErrorsPass(errors);
+    setIsFormValidPass(Object.keys(errors).length === 0);
   };
 
   useEffect(() => {
     // Trigger form validation when name,
     // email, or password changes
-    validateFormOTP();
+    if (step === "3") validateFormOTP();
   }, [verification.code]);
 
   const validateFormOTP = () => {
     let errors: any = {};
 
     // Validate OTP modal
-    setVerification;
     if (!verification.code) {
-      errors.password = "OTP is required.";
+      errors.code = "OTP is required.";
     } else if (verification.code.length < 6 || verification.code.length > 6) {
-      errors.password = "OTP must be 6 characters.";
+      errors.code = "OTP must be 6 characters.";
     }
 
     // Set the errors and update form validity
-    setErrors(errors);
-    setIsFormValid(Object.keys(errors).length === 0);
+    setErrorsOTP(errors);
+    setIsFormValidOTP(Object.keys(errors).length === 0);
   };
 
   const handleStartReset = async () => {
-    console.log("start process", form.email);
-    const result = await startPasswordReset(form.email);
-    console.log("handleStartReset result", result, isLoading);
-    //
-    if (result.error) {
-      if (result.error === "Failed to start password reset") {
-        Alert.alert(
-          "Info",
-          "You cant change password of account you created through social auth"
-        );
+    if (isFormValid) {
+      setCOMPState((COMPState: any) => ({
+        ...COMPState,
+        loadingState: true,
+        BTNDisabled: true,
+      }));
+      console.log("start process", form.email);
+      const result = await startPasswordReset(form.email);
+      console.log("handleStartReset result", result, isLoading);
+      //
+      if (result.error) {
+        setCOMPState((COMPState: any) => ({
+          ...COMPState,
+          loadingState: false,
+          BTNDisabled: false,
+        }));
+        if (result.error === "Failed to start password reset") {
+          Alert.alert(
+            "Info",
+            "You cant change password of account you created through social auth"
+          );
+          return;
+        }
+        Alert.alert("Info", `${result.error}`);
         return;
       }
-      Alert.alert("Info", `${result.error}`);
-      return;
-    }
-    if (result.success) {
-      setFirstFactorRef(result.firstFactor);
-      // Show password change interface
-      setIsFormValid(false);
-      setErrors({});
-      setStep("2");
+      if (result.success) {
+        setCOMPState((COMPState: any) => ({
+          ...COMPState,
+          loadingState: false,
+          BTNDisabled: false,
+        }));
+        Alert.alert("Success", "OTP has been sent to your email");
+        setFirstFactorRef(result.firstFactor);
+        const { attemptFirstFactor, resetPassword } = result.firstFactor!;
+        setVerificationCodeFunc((prev: any) => ({
+          ...prev,
+          attemptFirstFactor,
+          resetPassword,
+        }));
+        // Show password change interface
+        setIsFormValid(false);
+        setErrors({});
+        setStep("2");
+      }
+    } else {
+      // Email Form is invalid, display error messages
+      console.log("Email Form has errors. Please correct them.");
     }
   };
 
@@ -208,7 +244,6 @@ const ResetPassword = () => {
       state: "default",
     }));
 
-    setForm((form) => ({ ...form, email: "" }));
     setFormPass({
       password: { name: "", hidePassword: true },
       confirmPassword: { name: "", hidePassword: true },
@@ -216,14 +251,36 @@ const ResetPassword = () => {
   };
   // step 2
   const handleVerify = () => {
-    // show modal to input code and validate code
-    setIsFormValid(false);
-    setErrors({});
+    if (isFormValidPass) {
+      setCOMPState((COMPState: any) => ({
+        ...COMPState,
+        loadingState: true,
+        BTNDisabled: true,
+      }));
+      if (
+        formPass.confirmPassword.name.trim() !== formPass.password.name.trim()
+      ) {
+        Alert.alert("Info", "Password need to match");
+        return;
+      }
+      // show modal to input code and validate code
+      setIsFormValidPass(false);
+      setErrorsPass({});
 
-    setVerification((verification) => ({
-      ...verification,
-      state: "pending",
-    }));
+      setVerification((verification) => ({
+        ...verification,
+        state: "pending",
+      }));
+      setStep("3");
+      setCOMPState((COMPState: any) => ({
+        ...COMPState,
+        loadingState: false,
+        BTNDisabled: false,
+      }));
+    } else {
+      // Email Form is invalid, display error messages
+      console.log("New Password Form has errors. Please correct them.");
+    }
   };
 
   const handleVerifyAndReset = async () => {
@@ -234,39 +291,72 @@ const ResetPassword = () => {
       formPass.password
     );
     console.log(
+      "handleVerifyAndReset verificationCodeFunc",
+      verificationCodeFunc
+    );
+    console.log(
       "handleVerifyAndReset firstFactorRef",
       JSON.stringify(firstFactorRef, null, 2)
     );
-    if (!firstFactorRef) {
-      console.error("No first factor reference found");
-      return;
-    }
+    if (isFormValidOTP) {
+      setCOMPState((COMPState: any) => ({
+        ...COMPState,
+        BTNDisabled: true,
+        loadingState: true,
+      }));
+      if (!firstFactorRef) {
+        console.error("No first factor reference found");
+        Alert.alert("Info", "Unable to validate OTP, try again later");
+        return;
+      }
 
-    const result = await verifyOTPAndResetPassword(
-      firstFactorRef,
-      verification.code,
-      formPass.password.name
-    );
+      const result = await verifyOTPAndResetPassword(
+        firstFactorRef,
+        verification.code,
+        formPass.password.name,
+        verificationCodeFunc
+      );
 
-    console.log("handleVerifyAndReset result", result);
-    if (result.success) {
-      // Handle successful password reset (e.g., navigate to login)
-      console.log("Password reset successful");
-      // go to login page
-      // reset OTP Modal form
-      resetAllForms();
-      router.push("/(auth)/sign-in");
+      // result {"error": "Failed to verify code or reset password", "success": false}
+      console.log("handleVerifyAndReset result", result);
+      if (result.success) {
+        // Handle successful password reset (e.g., navigate to login)
+        console.log("Password reset successful");
+        // go to login page
+        // reset OTP Modal form
+        resetAllForms();
+        setIsFormValidOTP(false);
+        await signOut();
+        Alert.alert("Success", `${result?.message}`);
+        router.push("/(auth)/sign-in");
+      } else if (!result.success) {
+        Alert.alert("Error", `${result?.error}`);
+        setIsFormValidOTP(true);
+      }
+
+      setCOMPState((COMPState: any) => ({
+        ...COMPState,
+        BTNDisabled: false,
+        loadingState: false,
+      }));
+    } else {
+      // Email Form is invalid, display error messages
+      // Alert.alert("Error", "OTP Form has errors. Please correct them.");
+      console.log("OTP Form has errors. Please correct them.");
     }
   };
 
+  console.log("Errors", JSON.stringify(errors, null, 2));
+  console.log("ErrorsPass", JSON.stringify(errorsPass, null, 2));
+  console.log("ErrorsOTP", JSON.stringify(errorsOTP, null, 2));
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
-        {/* {COMPState.loadingState && (
+        {COMPState.loadingState && (
           <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
             <ActivityIndicator size="large" color="#000" />
           </View>
-        )} */}
+        )}
 
         <View className="relative w-full h-[250px]">
           <Image source={images.signUpCar} className="z-10 w-full h-[250px]" />
@@ -289,11 +379,16 @@ const ResetPassword = () => {
                 }
               />
 
+              {Object.values(errors).map((errorData: any, index: number) => (
+                <Text key={index} className="text-red-500 text-sm mt-1 px-5">
+                  {errorData}
+                </Text>
+              ))}
               <CustomButton
                 title={`${COMPState.BTNDisabled ? "Please wait..." : "Send Instructions"} `}
                 onPress={handleStartReset}
                 className={`mt-6 ${isFormValid ? "opacity-100" : "opacity-50"}}`}
-                disabled={COMPState.BTNDisabled}
+                disabled={!isFormValid || COMPState.BTNDisabled}
               />
             </View>
           )}
@@ -303,7 +398,7 @@ const ResetPassword = () => {
               <InputField
                 label="Enter Password"
                 placeholder="Enter password"
-                maxLength={20}
+                maxLength={22}
                 icon={icons.lock}
                 secureTextEntry={formPass.password.hidePassword}
                 value={formPass.password.name}
@@ -326,7 +421,7 @@ const ResetPassword = () => {
                 label="Confirm Password"
                 placeholder="Enter confirm password"
                 icon={icons.lock}
-                maxLength={20}
+                maxLength={22}
                 secureTextEntry={formPass.confirmPassword.hidePassword}
                 value={formPass.confirmPassword.name}
                 onChangeText={(value: string) =>
@@ -347,11 +442,18 @@ const ResetPassword = () => {
                 }
               />
 
+              {Object.values(errorsPass).map(
+                (errorData: any, index: number) => (
+                  <Text key={index} className="text-red-500 text-sm mt-1 px-5">
+                    {errorData}
+                  </Text>
+                )
+              )}
               <CustomButton
                 title={`${COMPState.BTNDisabled ? "Please wait..." : "Proceed"} `}
                 onPress={handleVerify}
-                className={`mt-6 ${isFormValid ? "opacity-100" : "opacity-50"}}`}
-                disabled={COMPState.BTNDisabled}
+                className={`mt-6 ${isFormValidPass ? "opacity-100" : "opacity-50"}}`}
+                disabled={!isFormValidPass || COMPState.BTNDisabled}
               />
             </View>
           )}
@@ -386,6 +488,9 @@ const ResetPassword = () => {
 
         {/* Verification model */}
         <ReactNativeModal
+          onBackdropPress={() =>
+            setVerification((prev: any) => ({ ...prev, state: "default" }))
+          }
           isVisible={verification.state === "pending"}
           // onModalHide={() => {}}
           /* () =>
@@ -411,22 +516,31 @@ const ResetPassword = () => {
               }
             />
 
-            {verification.error && (
+            {/* {verification.error && (
               <Text className="text-red-500 text-sm mt-1">
                 {verification.error}
               </Text>
-            )}
+            )} */}
+            {/* Display error messages */}
+            {/* color: 'red',
+        fontSize: 20,
+        marginBottom: 12, */}
+            {Object.values(errorsOTP).map((errorData: any, index: number) => (
+              <Text key={index} className="text-red-500 text-sm mt-1 px-5">
+                {errorData}
+              </Text>
+            ))}
 
             <CustomButton
               title={`${COMPState.BTNDisabled ? "Please wait..." : "Verify OTP"} `}
-              disabled={COMPState.BTNDisabled}
+              disabled={!isFormValidOTP || COMPState.BTNDisabled}
               onPress={handleVerifyAndReset}
-              className={`mt-5 bg-success-500 ${isFormValid ? "opacity-100" : "opacity-50"}}`}
+              className={`mt-5 bg-success-500 ${isFormValidOTP ? "opacity-100" : "opacity-50"}}`}
             />
           </View>
         </ReactNativeModal>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 
