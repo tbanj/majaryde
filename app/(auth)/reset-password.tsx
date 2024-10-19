@@ -1,5 +1,5 @@
 import { useSignIn } from "@clerk/clerk-expo";
-import React, { Dispatch, useCallback, useState } from "react";
+import React, { Dispatch, useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -57,7 +57,6 @@ const ResetPassword = () => {
   const [form, setForm] = useState({
     email: "",
   });
-  const [signInBTN, setSignInBTN] = useState<boolean>(false);
   const [COMPState, setCOMPState] = useState<any>({
     BTNDisabled: false,
     loadingState: false,
@@ -69,13 +68,15 @@ const ResetPassword = () => {
   });
   // const { signIn, setActive, isLoaded } = useSignIn();
   const [otpCode, setOtpCode] = useState("");
-  const [newPassword, setNewPassword] = useState("");
   const [verification, setVerification] = useState({
     state: "default",
     error: "",
     code: "",
   });
   const [step, setStep] = useState<string>("1");
+  const [errors, setErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(false);
+
   const [firstFactorRef, setFirstFactorRef] = useState<any>(null);
 
   const {
@@ -86,15 +87,111 @@ const ResetPassword = () => {
     verificationStatus,
   } = usePasswordResetWithOTP();
 
-  const handleStartReset = async () => {
-    // const result = await startPasswordReset(form.email);
-    // if (result.success) {
-    //   setFirstFactorRef(result.firstFactor);
-    //   // Show OTP input field
-    // }
-    setStep("2");
+  useEffect(() => {
+    // Trigger form validation when name,
+    // email, or password changes
+    validateForm();
+  }, [form.email]);
+
+  const validateForm = () => {
+    let errors: any = {};
+
+    // Validate password field
+    // Validate email field
+    if (!form.email) {
+      errors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      errors.email = "Email is invalid.";
+    }
+
+    // Set the errors and update form validity
+    setErrors(errors);
+    setIsFormValid(Object.keys(errors).length === 0);
   };
 
+  useEffect(() => {
+    // Trigger form validation when name,
+    // email, or password changes
+    validateFormPass();
+  }, [formPass.password.name, formPass.confirmPassword.name]);
+
+  const validateFormPass = () => {
+    let errors: any = {};
+
+    // Validate password field
+    if (!formPass.password) {
+      errors.password = "Password is required.";
+    } else if (formPass.password.name.length < 6) {
+      errors.password = "Password must be at least 6 characters.";
+    } else if (
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,16}$/.test(
+        formPass.password.name
+      )
+    )
+      errors.password =
+        "Password must have uppercase, lowercase & special character";
+    else if (formPass.password.name.length < 17) {
+      errors.password = "Password length not accepted.";
+    }
+
+    if (!formPass.confirmPassword) {
+      errors.confirmPassword = "Password is required.";
+    } else if (formPass.confirmPassword.name.length < 6) {
+      errors.confirmPassword = "Password must be at least 6 characters.";
+    } else if (
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,16}$/.test(
+        formPass.password.name
+      )
+    )
+      errors.password =
+        "Password must have uppercase, lowercase & special character";
+    else if (formPass.password.name.length < 17) {
+      errors.password = "Password length not accepted.";
+    }
+    // Set the errors and update form validity
+    setErrors(errors);
+    setIsFormValid(Object.keys(errors).length === 0);
+  };
+
+  const handleStartReset = async () => {
+    console.log("start process", form.email);
+    const result = await startPasswordReset(form.email);
+    console.log("handleStartReset result", result, isLoading);
+    //
+    if (result.error) {
+      if (result.error === "Failed to start password reset") {
+        Alert.alert(
+          "Info",
+          "You cant change password of account you created through social auth"
+        );
+        return;
+      }
+      Alert.alert("Info", `${result.error}`);
+      return;
+    }
+    if (result.success) {
+      setFirstFactorRef(result.firstFactor);
+      // Show password change interface
+      setIsFormValid(false);
+      setErrors({});
+      setStep("2");
+    }
+  };
+
+  const resetAllForms = () => {
+    setVerification((verification) => ({
+      ...verification,
+      code: "",
+      error: "",
+      state: "default",
+    }));
+
+    setForm((form) => ({ ...form, email: "" }));
+    setFormPass({
+      password: { name: "", hidePassword: true },
+      confirmPassword: { name: "", hidePassword: true },
+    });
+  };
   // step 2
   const handleVerify = () => {
     // show modal to input code and validate code
@@ -105,6 +202,16 @@ const ResetPassword = () => {
   };
 
   const handleVerifyAndReset = async () => {
+    console.log(
+      "handleVerifyAndReset code",
+      verification,
+      "formPass.password",
+      formPass.password
+    );
+    console.log(
+      "handleVerifyAndReset firstFactorRef",
+      JSON.stringify(firstFactorRef, null, 2)
+    );
     if (!firstFactorRef) {
       console.error("No first factor reference found");
       return;
@@ -112,13 +219,18 @@ const ResetPassword = () => {
 
     const result = await verifyOTPAndResetPassword(
       firstFactorRef,
-      otpCode,
-      newPassword
+      verification.code,
+      formPass.password.name
     );
 
+    console.log("handleVerifyAndReset result", result);
     if (result.success) {
       // Handle successful password reset (e.g., navigate to login)
       console.log("Password reset successful");
+      // go to login page
+      // reset OTP Modal form
+      resetAllForms();
+      router.push("/(auth)/sign-in");
     }
   };
 
@@ -152,10 +264,10 @@ const ResetPassword = () => {
               />
 
               <CustomButton
-                title="Send Instructions"
+                title={`${COMPState.BTNDisabled ? "Please wait..." : "Send Instructions"} `}
                 onPress={handleStartReset}
-                className="mt-6"
-                disabled={signInBTN}
+                className={`mt-6 ${isFormValid ? "opacity-100" : "opacity-50"}}`}
+                disabled={COMPState.BTNDisabled}
               />
             </View>
           )}
@@ -185,10 +297,10 @@ const ResetPassword = () => {
 
               <InputField
                 label="Confirm Password"
-                placeholder="Enter password"
+                placeholder="Enter confirm password"
                 icon={icons.lock}
-                secureTextEntry={formPass.password.hidePassword}
-                value={formPass.password.name}
+                secureTextEntry={formPass.confirmPassword.hidePassword}
+                value={formPass.confirmPassword.name}
                 onChangeText={(value: string) =>
                   setFormPass({
                     ...formPass,
@@ -208,10 +320,10 @@ const ResetPassword = () => {
               />
 
               <CustomButton
-                title="Proceed"
+                title={`${COMPState.BTNDisabled ? "Please wait..." : "Proceed"} `}
                 onPress={handleVerify}
-                className="mt-6"
-                disabled={signInBTN}
+                className={`mt-6 ${isFormValid ? "opacity-100" : "opacity-50"}}`}
+                disabled={COMPState.BTNDisabled}
               />
             </View>
           )}
@@ -280,7 +392,7 @@ const ResetPassword = () => {
               title={`${COMPState.BTNDisabled ? "Please wait..." : "Verify OTP"} `}
               disabled={COMPState.BTNDisabled}
               onPress={handleVerifyAndReset}
-              className="mt-5 bg-success-500"
+              className={`mt-5 bg-success-500 ${isFormValid ? "opacity-100" : "opacity-50"}}`}
             />
           </View>
         </ReactNativeModal>

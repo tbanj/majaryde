@@ -1,4 +1,5 @@
 - implementation of forgot password ui
+- implementation of forgot password ui
 - Merge branch 'dev-temi' of https://github.com/tbanj/majaryde into dev-temi
 - implementation signup recommendation
 - implementation signup recommendation
