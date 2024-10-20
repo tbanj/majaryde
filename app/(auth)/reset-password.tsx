@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InputField from "@/components/InputField";
-import { icons, images } from "@/constants";
+import { formData, icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import ReactNativeModal from "react-native-modal";
 import { Link, router } from "expo-router";
@@ -344,7 +344,7 @@ const ResetPassword = () => {
               <InputField
                 label="Reset Password"
                 placeholder="Enter email"
-                maxLength={32}
+                maxLength={formData.nameLen}
                 icon={icons.email}
                 value={form.email}
                 onChangeText={(value: string) =>
@@ -371,7 +371,7 @@ const ResetPassword = () => {
               <InputField
                 label="Enter Password"
                 placeholder="Enter password"
-                maxLength={22}
+                maxLength={formData.passwordLen}
                 icon={icons.lock}
                 secureTextEntry={formPass.password.hidePassword}
                 value={formPass.password.name}
@@ -394,7 +394,7 @@ const ResetPassword = () => {
                 label="Confirm Password"
                 placeholder="Enter confirm password"
                 icon={icons.lock}
-                maxLength={22}
+                maxLength={formData.passwordLen}
                 secureTextEntry={formPass.confirmPassword.hidePassword}
                 value={formPass.confirmPassword.name}
                 onChangeText={(value: string) =>

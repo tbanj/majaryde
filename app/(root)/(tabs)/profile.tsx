@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import InputField from "@/components/InputField";
-import { icons } from "@/constants";
+import { formData, icons } from "@/constants";
 import { Dispatch, useCallback, useEffect, useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI, useFetch } from "@/app/lib/fetch";
@@ -231,7 +231,7 @@ const Profile = () => {
               email: email.name,
               primary_phone_number: phoneNumber.name,
             }),
-          },
+          }
         );
         Alert.alert("Success", res?.message ?? "User detail updated");
       }
@@ -278,6 +278,7 @@ const Profile = () => {
             <InputField
               label="First name"
               icon={icons.person}
+              maxLength={formData.nameLen}
               value={profileFormState.firstName.name}
               onChangeText={(value: string) =>
                 setProfileFormState({
@@ -308,6 +309,7 @@ const Profile = () => {
               }
               containerStyle="w-full"
               inputStyle="p-3.5"
+              maxLength={formData.nameLen}
               editable={profileFormState.lastName.editable}
               iconRight={
                 <InserterIcon
@@ -321,6 +323,7 @@ const Profile = () => {
             <InputField
               label="Email"
               value={profileFormState.email.name}
+              maxLength={formData.nameLen}
               onChangeText={(value: string) =>
                 setProfileFormState({
                   ...profileFormState,
@@ -345,7 +348,7 @@ const Profile = () => {
             <InputField
               label="Phone"
               keyboardType="numeric"
-              maxLength={11}
+              maxLength={formData.phoneNumberLen}
               value={
                 profileFormState?.phoneNumber?.name ||
                 (Array.isArray(userData) && userData.length > 0

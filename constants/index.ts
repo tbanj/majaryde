@@ -108,7 +108,7 @@ export const onboarding = [
 export const formData = {
   passwordLen: 22,
   nameLen: 32,
-  phoneNumberLen: 14,
+  phoneNumberLen: 11,
 };
 export const data = {
   onboarding,

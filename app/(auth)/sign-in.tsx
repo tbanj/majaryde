@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import InputField from "@/components/InputField";
-import { icons, images } from "@/constants";
+import { formData, icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
 import OAuth from "@/components/OAuth";
@@ -119,7 +119,7 @@ const SignIn = () => {
           <InputField
             label="Email"
             placeholder="Enter email"
-            maxLength={32}
+            maxLength={formData.nameLen}
             icon={icons.email}
             value={form.email}
             onChangeText={(value: string) => setForm({ ...form, email: value })}
@@ -128,7 +128,7 @@ const SignIn = () => {
             label="Password"
             placeholder="Enter password"
             icon={icons.lock}
-            maxLength={22}
+            maxLength={formData.passwordLen}
             secureTextEntry={form.password.hidePassword}
             value={form.password.name}
             onChangeText={(value: string) =>

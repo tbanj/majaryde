@@ -12,7 +12,7 @@ import {
 import ReactNativeModal from "react-native-modal";
 import { Link, router } from "expo-router";
 import InputField from "@/components/InputField";
-import { icons, images } from "@/constants";
+import { formData, icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI } from "../lib/fetch";
 import OAuth from "@/components/OAuth";
@@ -193,6 +193,7 @@ const SignUp = () => {
           <InputField
             label="Last Name"
             placeholder="Enter last Name"
+            maxLength={formData.nameLen}
             icon={icons.person}
             value={form.lastName}
             onChangeText={(value: string) =>
@@ -202,6 +203,7 @@ const SignUp = () => {
           <InputField
             label="First Name"
             placeholder="Enter first name"
+            maxLength={formData.nameLen}
             icon={icons.person}
             value={form.firstName}
             onChangeText={(value: string) =>
@@ -210,7 +212,7 @@ const SignUp = () => {
           />
           <InputField
             label="Email"
-            maxLength={32}
+            maxLength={formData.nameLen}
             placeholder="Enter email"
             icon={icons.email}
             value={form.email}
@@ -220,6 +222,7 @@ const SignUp = () => {
             label="Password"
             placeholder="Enter password"
             icon={icons.lock}
+            maxLength={formData.passwordLen}
             secureTextEntry={form.password.hidePassword}
             value={form.password.name}
             onChangeText={(value: string) =>
