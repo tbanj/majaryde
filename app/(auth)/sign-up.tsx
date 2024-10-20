@@ -1,5 +1,5 @@
 import { useSignUp } from "@clerk/clerk-expo";
-import React, { Dispatch, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -72,6 +72,61 @@ const SignUp = () => {
     BTNDisabled: false,
     loadingState: false,
   });
+  const [errors, setErrors] = useState<any>({});
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
+  const validateForm = () => {
+    let errors: any = {};
+
+    // Validate password field
+    if (!form.lastName) {
+      errors.lastName = "Last name is required.";
+    } else if (form.lastName.length < 2) {
+      errors.lastName = "Last name must be at least 3 characters.";
+    } else if (form.lastName.length > 32) {
+      errors.lastName = "Last name length not accepted.";
+    }
+
+    if (!form.firstName) {
+      errors.firstName = "First name is required.";
+    } else if (form.firstName.length < 2) {
+      errors.firstName = "First name must be at least 3 characters.";
+    } else if (form.firstName.length > 32) {
+      errors.firstName = "First name length not accepted.";
+    }
+
+    // Validate email field
+    if (!form.email) {
+      errors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      errors.email = "Email is invalid.";
+    }
+
+    if (!form.password.name) {
+      errors.password = "Password is required.";
+    } else if (form.password.name.length < 6) {
+      errors.password = "Password must be at least 6 characters.";
+    } else if (
+      !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,20}$/.test(
+        form.password.name
+      )
+    )
+      errors.password =
+        "Password must have uppercase, lowercase & special character";
+    else if (form.password.name.length > 20) {
+      errors.password = "Password length not accepted.";
+    }
+
+    // Set the errors and update form validity
+    setErrors(errors);
+    setIsFormValid(Object.keys(errors).length === 0);
+  };
+
+  useEffect(() => {
+    // Trigger form validation when name,
+    // email, or password changes
+    validateForm();
+  }, [form.email, form.password.name, form.firstName, form.lastName]);
 
   const onSignUpPress = async () => {
     if (!isLoaded) return;
@@ -82,26 +137,24 @@ const SignUp = () => {
         Alert.alert("Error", "first name and last name is required");
         return;
       } */
-      if (
-        !form.email ||
-        !form.password.name ||
-        form.email.length < 5 ||
-        form.password.name.length < 5
-      ) {
-        Alert.alert("Error", "All fields are required");
-        return;
-      }
-      setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
-      await signUp.create({
-        emailAddress: form.email,
-        password: form.password.name,
-        firstName: form.firstName,
-        lastName: form.lastName,
-      });
+      if (isFormValid) {
+        setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
+        await signUp.create({
+          emailAddress: form.email,
+          password: form.password.name,
+          firstName: form.firstName,
+          lastName: form.lastName,
+        });
 
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-      setCOMPState({ ...COMPState, loadingState: false, BTNDisabled: false });
-      setVerification({ ...verification, state: "pending" });
+        await signUp.prepareEmailAddressVerification({
+          strategy: "email_code",
+        });
+        setCOMPState({ ...COMPState, loadingState: false, BTNDisabled: false });
+        setVerification({ ...verification, state: "pending" });
+      } else {
+        // Email Form is invalid, display error messages
+        Alert.alert("Info", "Form has errors. Please correct them.");
+      }
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
       Alert.alert(
@@ -200,6 +253,11 @@ const SignUp = () => {
               setForm({ ...form, lastName: value })
             }
           />
+          {errors?.lastName && (
+            <Text className="text-red-500 text-sm mt-1 px-5">
+              {errors?.lastName}
+            </Text>
+          )}
           <InputField
             label="First Name"
             placeholder="Enter first name"
@@ -210,6 +268,11 @@ const SignUp = () => {
               setForm({ ...form, firstName: value })
             }
           />
+          {errors?.firstName && (
+            <Text className="text-red-500 text-sm mt-1 px-5">
+              {errors?.firstName}
+            </Text>
+          )}
           <InputField
             label="Email"
             maxLength={formData.nameLen}
@@ -218,6 +281,12 @@ const SignUp = () => {
             value={form.email}
             onChangeText={(value: string) => setForm({ ...form, email: value })}
           />
+          {errors?.email && (
+            <Text className="text-red-500 text-sm mt-1 px-5">
+              {errors?.email}
+            </Text>
+          )}
+
           <InputField
             label="Password"
             placeholder="Enter password"
@@ -235,12 +304,17 @@ const SignUp = () => {
               <InserterIcon name="password" setForm={setForm} form={form} />
             }
           />
+          {errors?.password && (
+            <Text className="text-red-500 text-sm mt-1 px-5">
+              {errors?.password}
+            </Text>
+          )}
 
           <CustomButton
-            title="Sign Up"
+            title={`${COMPState.BTNDisabled ? "Please wait..." : "Sign Up"} `}
             onPress={onSignUpPress}
             className="mt-6"
-            disabled={COMPState.BTNDisabled}
+            disabled={!isFormValid || COMPState.BTNDisabled}
           />
 
           <OAuth />

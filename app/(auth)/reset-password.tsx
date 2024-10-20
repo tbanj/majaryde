@@ -229,7 +229,7 @@ const ResetPassword = () => {
       }
     } else {
       // Email Form is invalid, display error messages
-      console.log("Email Form has errors. Please correct them.");
+      Alert.alert("Info", "Email Form has errors. Please correct them.");
     }
   };
 
@@ -246,6 +246,7 @@ const ResetPassword = () => {
       confirmPassword: { name: "", hidePassword: true },
     });
   };
+
   // step 2
   const handleVerify = () => {
     if (isFormValidPass) {
@@ -276,7 +277,7 @@ const ResetPassword = () => {
       }));
     } else {
       // Email Form is invalid, display error messages
-      console.log("New Password Form has errors. Please correct them.");
+      Alert.alert("Info", "New Password Form has errors. Please correct them.");
     }
   };
 
@@ -307,7 +308,7 @@ const ResetPassword = () => {
         router.push("/(auth)/sign-in");
       } else if (!result.success) {
         Alert.alert("Error", `${result?.error}`);
-        setIsFormValidOTP(false);
+        setIsFormValidOTP(true);
       }
 
       setCOMPState((COMPState: any) => ({
@@ -316,9 +317,7 @@ const ResetPassword = () => {
         loadingState: false,
       }));
     } else {
-      // Email Form is invalid, display error messages
-      // Alert.alert("Error", "OTP Form has errors. Please correct them.");
-      console.log("OTP Form has errors. Please correct them.");
+      Alert.alert("Info", "OTP Form has errors. Please correct them.");
     }
   };
 
