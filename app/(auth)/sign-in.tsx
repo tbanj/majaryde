@@ -119,6 +119,7 @@ const SignIn = () => {
           <InputField
             label="Email"
             placeholder="Enter email"
+            maxLength={32}
             icon={icons.email}
             value={form.email}
             onChangeText={(value: string) => setForm({ ...form, email: value })}
@@ -127,6 +128,7 @@ const SignIn = () => {
             label="Password"
             placeholder="Enter password"
             icon={icons.lock}
+            maxLength={22}
             secureTextEntry={form.password.hidePassword}
             value={form.password.name}
             onChangeText={(value: string) =>
