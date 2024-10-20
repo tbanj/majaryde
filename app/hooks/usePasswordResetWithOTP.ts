@@ -50,31 +50,17 @@ const usePasswordResetWithOTP = () => {
 
   // Step 2: Verify the OTP code and update password
   const verifyOTPAndResetPassword = async (
-    firstFactor: any,
     code: string,
-    newPassword: string,
-    verificationCodeFunc: any
+    newPassword: string
   ) => {
     setIsLoading(true);
     setError(null);
-    console.log(
-      "verifyOTPAndResetPassword verificationCodeFunc",
-      verificationCodeFunc
-    );
-    console.log("verifyOTPAndResetPassword firstFactor", firstFactor);
-
     try {
-      // Attempt to verify the code
-      /* const res = await client.signIn.attemptFirstFactor({
-        strategy: "reset_password_email_code",
-        code,
-      }); */
-      const res: any = await client.signIn.attemptFirstFactor({
+      await client.signIn.attemptFirstFactor({
         strategy: "reset_password_email_code",
         code,
       });
 
-      console.log("res ll", res);
       // If verification successful, reset the password
       await client.signIn.resetPassword({
         password: newPassword,
@@ -88,7 +74,6 @@ const usePasswordResetWithOTP = () => {
         message: "Password reset successful",
       };
     } catch (err: any) {
-      console.log("inner 2 catch", err);
       setError(err.message || "Failed to verify code or reset password");
       setIsLoading(false);
       return {
