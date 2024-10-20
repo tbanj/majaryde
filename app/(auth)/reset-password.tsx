@@ -126,7 +126,6 @@ const ResetPassword = () => {
 
   const validateFormPass = () => {
     let errors: any = {};
-    console.log("am here");
     // Validate password field
     if (!formPass.password.name) {
       errors.password = "Password is required.";
@@ -191,9 +190,7 @@ const ResetPassword = () => {
         loadingState: true,
         BTNDisabled: true,
       }));
-      console.log("start process", form.email);
       const result = await startPasswordReset(form.email);
-      console.log("handleStartReset result", result, isLoading);
       //
       if (result.error) {
         setCOMPState((COMPState: any) => ({
@@ -284,20 +281,6 @@ const ResetPassword = () => {
   };
 
   const handleVerifyAndReset = async () => {
-    console.log(
-      "handleVerifyAndReset code",
-      verification,
-      "formPass.password",
-      formPass.password
-    );
-    console.log(
-      "handleVerifyAndReset verificationCodeFunc",
-      verificationCodeFunc
-    );
-    console.log(
-      "handleVerifyAndReset firstFactorRef",
-      JSON.stringify(firstFactorRef, null, 2)
-    );
     if (isFormValidOTP) {
       setCOMPState((COMPState: any) => ({
         ...COMPState,
@@ -311,18 +294,11 @@ const ResetPassword = () => {
       }
 
       const result = await verifyOTPAndResetPassword(
-        firstFactorRef,
         verification.code,
-        formPass.password.name,
-        verificationCodeFunc
+        formPass.password.name
       );
 
-      // result {"error": "Failed to verify code or reset password", "success": false}
-      console.log("handleVerifyAndReset result", result);
       if (result.success) {
-        // Handle successful password reset (e.g., navigate to login)
-        console.log("Password reset successful");
-        // go to login page
         // reset OTP Modal form
         resetAllForms();
         setIsFormValidOTP(false);
@@ -331,7 +307,7 @@ const ResetPassword = () => {
         router.push("/(auth)/sign-in");
       } else if (!result.success) {
         Alert.alert("Error", `${result?.error}`);
-        setIsFormValidOTP(true);
+        setIsFormValidOTP(false);
       }
 
       setCOMPState((COMPState: any) => ({
@@ -346,9 +322,6 @@ const ResetPassword = () => {
     }
   };
 
-  console.log("Errors", JSON.stringify(errors, null, 2));
-  console.log("ErrorsPass", JSON.stringify(errorsPass, null, 2));
-  console.log("ErrorsOTP", JSON.stringify(errorsOTP, null, 2));
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
