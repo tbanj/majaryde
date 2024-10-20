@@ -210,6 +210,7 @@ const SignUp = () => {
           />
           <InputField
             label="Email"
+            maxLength={32}
             placeholder="Enter email"
             icon={icons.email}
             value={form.email}
