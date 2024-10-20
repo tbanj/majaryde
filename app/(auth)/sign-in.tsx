@@ -1,5 +1,5 @@
 import { useSignIn } from "@clerk/clerk-expo";
-import React, { Dispatch, useCallback, useState } from "react";
+import React, { Dispatch, useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -60,43 +60,92 @@ const SignIn = () => {
     BTNDisabled: false,
     loadingState: false,
   });
+  const [errors, setErrors] = useState<any>({});
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
 
   const { signIn, setActive, isLoaded } = useSignIn();
 
-  const onSignInPress = useCallback(async () => {
-    if (!form.password || !form.email) {
-      Alert.alert("Error", "email and password are required");
-      return;
+  const validateForm = () => {
+    let errors: any = {};
+
+    // Validate password field
+    // Validate email field
+    if (!form.email) {
+      errors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      errors.email = "Email is invalid.";
     }
+
+    if (!form.password.name) {
+      errors.password = "Password is required.";
+    } else if (form.password.name.length < 6) {
+      errors.password = "Password must be at least 6 characters.";
+    } else if (
+      !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,20}$/.test(
+        form.password.name
+      )
+    )
+      errors.password =
+        "Password must have uppercase, lowercase & special character";
+    else if (form.password.name.length > 20) {
+      errors.password = "Password length not accepted.";
+    }
+
+    // Set the errors and update form validity
+    setErrors(errors);
+    setIsFormValid(Object.keys(errors).length === 0);
+  };
+
+  useEffect(() => {
+    // Trigger form validation when name,
+    // email, or password changes
+    validateForm();
+  }, [form.email, form.password.name]);
+
+  const onSignInPress = useCallback(async () => {
     if (!isLoaded) {
       return;
     }
 
     try {
-      setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
-      if (form.password && form.password) setSignInBTN(true);
-      const signInAttempt = await signIn.create({
-        identifier: form.email,
-        password: form.password.name,
-      });
+      if (isFormValid) {
+        setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
+        if (form.password && form.password) setSignInBTN(true);
+        const signInAttempt = await signIn.create({
+          identifier: form.email,
+          password: form.password.name,
+        });
 
-      if (signInAttempt.status === "complete") {
-        await setActive({ session: signInAttempt.createdSessionId });
-        setSignInBTN(false);
-        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
-        router.replace("/(root)/(tabs)/home");
+        if (signInAttempt.status === "complete") {
+          await setActive({ session: signInAttempt.createdSessionId });
+          setSignInBTN(false);
+          setCOMPState({
+            ...COMPState,
+            BTNDisabled: false,
+            loadingState: false,
+          });
+          router.replace("/(root)/(tabs)/home");
+        } else {
+          // See https://clerk.com/docs/custom-flows/error-handling
+          // for more info on error handling
+          console.error(JSON.stringify(signInAttempt, null, 2));
+          setSignInBTN(false);
+          setCOMPState({
+            ...COMPState,
+            BTNDisabled: false,
+            loadingState: false,
+          });
+        }
       } else {
-        // See https://clerk.com/docs/custom-flows/error-handling
-        // for more info on error handling
-        console.error(JSON.stringify(signInAttempt, null, 2));
-        setSignInBTN(false);
-        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
+        // Email Form is invalid, display error messages
+        Alert.alert("Info", "Form has errors. Please correct them.");
       }
     } catch (err: any) {
       Alert.alert(
         "Error",
         `${err?.errors?.[0].longMessage ?? "invalid email or password"}`
       );
+      setIsFormValid(false);
       setSignInBTN(false);
       setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
     }
@@ -124,6 +173,11 @@ const SignIn = () => {
             value={form.email}
             onChangeText={(value: string) => setForm({ ...form, email: value })}
           />
+          {errors?.email && (
+            <Text className="text-red-500 text-sm mt-1 px-5">
+              {errors?.email}
+            </Text>
+          )}
           <InputField
             label="Password"
             placeholder="Enter password"
@@ -139,11 +193,16 @@ const SignIn = () => {
             }
           />
 
+          {errors?.password && (
+            <Text className="text-red-500 text-sm mt-1 px-5">
+              {errors?.password}
+            </Text>
+          )}
           <CustomButton
-            title="Sign In"
+            title={`${COMPState.BTNDisabled ? "Please wait..." : "Sign In"} `}
             onPress={onSignInPress}
             className="mt-6"
-            disabled={signInBTN}
+            disabled={!isFormValid || signInBTN}
           />
           <Link
             className="text-lg text-center text-general-200 mt-10"
