@@ -22,6 +22,10 @@ const InputField = ({
   inputStyle,
   iconStyle,
   className,
+  textContentType,
+  autoComplete,
+  importantForAutofill,
+  onEndEditing,
   ...props
 }: InputFieldProps) => {
   return (
@@ -43,6 +47,10 @@ const InputField = ({
             <TextInput
               className={`rounded-full p-4 font-JakartaSemiBold text-[15px] flex-1 ${inputStyle} text-left`}
               secureTextEntry={secureTextEntry}
+              textContentType={textContentType}
+              autoComplete={autoComplete}
+              importantForAutofill={importantForAutofill}
+              onEndEditing={onEndEditing}
               {...props}
             />
             {iconRight && iconRight}

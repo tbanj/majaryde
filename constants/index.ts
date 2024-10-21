@@ -36,6 +36,7 @@ import edited_input_icon from "@/assets/icons/edited_input.png";
 import eye_visible from "@/assets/icons/eye_visible.png";
 import eye_hidden from "@/assets/icons/eye_hidden.png";
 import lessThan from "@/assets/icons/less-than.png";
+import phoneCall from "@/assets/icons/phone-call.png";
 
 export const images = {
   onboarding1,
@@ -79,6 +80,7 @@ export const icons = {
   eye_hidden,
   eye_visible,
   lessThan,
+  phoneCall,
 };
 
 export const onboarding = [

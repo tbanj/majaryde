@@ -96,6 +96,8 @@ const Profile = () => {
     BTNDisabled: false,
     loadingState: false,
   });
+  const [errors, setErrors] = useState<any>({});
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
 
   const navigation = useNavigation();
   const {
@@ -186,57 +188,109 @@ const Profile = () => {
     };
   }, [navigation]);
 
+  const validateForm = () => {
+    let errors: any = {};
+
+    // Validate password field
+    if (!profileFormState.lastName.name) {
+      errors.lastName = "Last name is required.";
+    } else if (profileFormState.lastName.name.length < 2) {
+      errors.lastName = "Last name must be at least 3 characters.";
+    } else if (profileFormState.lastName.name.length > 32) {
+      errors.lastName = "Last name length not accepted.";
+    }
+
+    if (!profileFormState.firstName.name) {
+      errors.firstName = "First name is required.";
+    } else if (profileFormState.firstName.name.length < 2) {
+      errors.firstName = "First name must be at least 3 characters.";
+    } else if (profileFormState.firstName.name.length > 32) {
+      errors.firstName = "First name length not accepted.";
+    }
+
+    // Validate email field
+    if (!profileFormState.email.name) {
+      errors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(profileFormState.email.name)) {
+      errors.email = "Email is invalid.";
+    }
+
+    if (!profileFormState.phoneNumber.name) {
+      errors.phoneNumber = "Phone number is required.";
+    } else if (profileFormState?.phoneNumber?.name.length < 11) {
+      errors.phoneNumber = "Phone number must be 11 characters.";
+    } else if (profileFormState?.phoneNumber?.name.length > 11) {
+      errors.phoneNumber = "Phone number length not accepted.";
+    }
+
+    // Set the errors and update form validity
+    setErrors(errors);
+    setIsFormValid(Object.keys(errors).length === 0);
+  };
+
+  useEffect(() => {
+    // Trigger form validation when name,
+    // email, or password changes
+    validateForm();
+  }, [
+    profileFormState.email,
+    profileFormState.firstName.name,
+    profileFormState.lastName.name,
+    profileFormState.phoneNumber.name,
+  ]);
+
+  useEffect(() => {
+    if (Array.isArray(userData)) {
+      setProfileFormState({
+        ...profileFormState,
+        phoneNumber: {
+          ...profileFormState.phoneNumber,
+          name: userData?.[0].primary_phone_number,
+        },
+      });
+    }
+
+    return () => {};
+  }, [userData]);
+
   const updateUserDetails = async () => {
     try {
-      setCOMPState({ ...COMPState, loadingState: true });
-      const { firstName, lastName, phoneNumber, email } = profileFormState;
-      if (
-        phoneNumber.name.length === 0 ||
-        phoneNumber.name.length < 11 ||
-        phoneNumber.name.length > 11
-      ) {
-        Alert.alert("Update Profile", "Valid mobile number is required");
-        return;
-      }
-      if (
-        firstName?.name.length === 0 ||
-        firstName?.name.length < 3 ||
-        lastName?.name.length === 0 ||
-        lastName?.name.length < 3 ||
-        email?.name.length === 0 ||
-        email?.name.length < 3
-      ) {
-        Alert.alert("Update Profile", "Valid data are required in all fields");
-        return;
-      }
+      if (isFormValid) {
+        setCOMPState({ ...COMPState, loadingState: true });
+        const { firstName, lastName, phoneNumber, email } = profileFormState;
 
-      await user?.update({
-        firstName: firstName?.name,
-        lastName: lastName?.name,
-      });
+        await user?.update({
+          firstName: firstName?.name,
+          lastName: lastName?.name,
+        });
 
-      if (
-        profileFormState.phoneNumber.name !== userData?.[0].primary_phone_number
-      ) {
-        const res = await fetchAPI(
-          `${process.env.EXPO_PUBLIC_LIVE_API}/user/update`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: `${firstName.name} ${lastName.name}`,
-              clerkId: `${user?.id}`,
-              email: email.name,
-              primary_phone_number: phoneNumber.name,
-            }),
-          }
-        );
-        Alert.alert("Success", res?.message ?? "User detail updated");
+        if (
+          profileFormState.phoneNumber.name !==
+          userData?.[0].primary_phone_number
+        ) {
+          const res = await fetchAPI(
+            `${process.env.EXPO_PUBLIC_LIVE_API}/user/update`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: `${firstName.name} ${lastName.name}`,
+                clerkId: `${user?.id}`,
+                email: email.name,
+                primary_phone_number: phoneNumber.name,
+              }),
+            }
+          );
+          Alert.alert("Success", res?.message ?? "User detail updated");
+        }
+
+        setCOMPState({ ...COMPState, loadingState: false });
+      } else {
+        // Email Form is invalid, display error messages
+        Alert.alert("Info", "Form has errors. Please correct them.");
       }
-
-      setCOMPState({ ...COMPState, loadingState: false });
     } catch (error) {
       setCOMPState({ ...COMPState, loadingState: false });
       console.error("Failed to update user details:", error);
@@ -297,9 +351,14 @@ const Profile = () => {
                 />
               }
             />
-
+            {errors?.firstName && (
+              <Text className="text-red-500 text-sm mt-1 px-5">
+                {errors?.firstName}
+              </Text>
+            )}
             <InputField
               label="Last name"
+              icon={icons.person}
               value={profileFormState.lastName.name}
               onChangeText={(value: string) =>
                 setProfileFormState({
@@ -319,9 +378,14 @@ const Profile = () => {
                 />
               }
             />
-
+            {errors?.lastName && (
+              <Text className="text-red-500 text-sm mt-1 px-5">
+                {errors?.lastName}
+              </Text>
+            )}
             <InputField
               label="Email"
+              icon={icons.email}
               value={profileFormState.email.name}
               maxLength={formData.nameLen}
               onChangeText={(value: string) =>
@@ -334,7 +398,11 @@ const Profile = () => {
               inputStyle="p-3.5"
               editable={profileFormState.email.editable}
             />
-
+            {errors?.email && (
+              <Text className="text-red-500 text-sm mt-1 px-5">
+                {errors?.email}
+              </Text>
+            )}
             <InputField
               label="Email status"
               containerStyle="w-full"
@@ -344,17 +412,12 @@ const Profile = () => {
               }
               editable={profileFormState.emailStatus.editable}
             />
-
             <InputField
               label="Phone"
+              icon={icons.phoneCall}
               keyboardType="numeric"
               maxLength={formData.phoneNumberLen}
-              value={
-                profileFormState?.phoneNumber?.name ||
-                (Array.isArray(userData) && userData.length > 0
-                  ? userData?.[0].primary_phone_number
-                  : null)
-              }
+              value={profileFormState?.phoneNumber?.name}
               onChangeText={(value: string) =>
                 setProfileFormState({
                   ...profileFormState,
@@ -372,6 +435,11 @@ const Profile = () => {
                 />
               }
             />
+            {errors?.phoneNumber && (
+              <Text className="text-red-500 text-sm mt-1 px-5">
+                {errors?.phoneNumber}
+              </Text>
+            )}
           </View>
           <CustomButton
             disabled={!!COMPState.loadingState}

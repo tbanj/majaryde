@@ -102,7 +102,7 @@ const SignUp = () => {
       errors.email = "Email is invalid.";
     }
 
-    if (!form.password.name) {
+    if (form?.password?.name === null || form?.password?.name === undefined) {
       errors.password = "Password is required.";
     } else if (form.password.name.length < 6) {
       errors.password = "Password must be at least 6 characters.";
@@ -137,6 +137,7 @@ const SignUp = () => {
         Alert.alert("Error", "first name and last name is required");
         return;
       } */
+
       if (isFormValid) {
         setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
         await signUp.create({
