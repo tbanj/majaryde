@@ -4,9 +4,13 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -269,7 +273,7 @@ const ResetPassword = () => {
         ...verification,
         state: "pending",
       }));
-      setStep("3");
+      // setStep("3");
       setCOMPState((COMPState: any) => ({
         ...COMPState,
         loadingState: false,
@@ -316,6 +320,7 @@ const ResetPassword = () => {
         BTNDisabled: false,
         loadingState: false,
       }));
+      setStep("1");
     } else {
       Alert.alert("Info", "OTP Form has errors. Please correct them.");
     }
@@ -339,101 +344,109 @@ const ResetPassword = () => {
 
         <View className="p-5">
           {step === "1" && (
-            <View>
-              <InputField
-                label="Reset Password"
-                placeholder="Enter email"
-                maxLength={formData.nameLen}
-                icon={icons.email}
-                value={form.email}
-                onChangeText={(value: string) =>
-                  setForm({ ...form, email: value })
-                }
-                errors={errors}
-                name="email"
-              />
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View>
+                  <InputField
+                    label="Reset Password"
+                    placeholder="Enter email"
+                    maxLength={formData.nameLen}
+                    icon={icons.email}
+                    value={form.email}
+                    onChangeText={(value: string) =>
+                      setForm({ ...form, email: value })
+                    }
+                    errors={errors}
+                    name="email"
+                  />
 
-              {Object.values(errors).map((errorData: any, index: number) => (
-                <Text key={index} className="text-red-500 text-sm mt-1 px-5">
-                  {errorData}
-                </Text>
-              ))}
-              <CustomButton
-                title={`${COMPState.BTNDisabled ? "Please wait..." : "Send Instructions"} `}
-                onPress={handleStartReset}
-                className={`mt-6 ${isFormValid ? "opacity-100" : "opacity-50"}}`}
-                disabled={!isFormValid || COMPState.BTNDisabled}
-              />
-            </View>
+                  <CustomButton
+                    title={`${COMPState.BTNDisabled ? "Please wait..." : "Send Instructions"} `}
+                    onPress={handleStartReset}
+                    className={`mt-6 ${isFormValid ? "opacity-100" : "opacity-50"}}`}
+                    disabled={!isFormValid || COMPState.BTNDisabled}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
           )}
 
           {step === "2" && (
-            <View>
-              <InputField
-                label="Enter Password"
-                placeholder="Enter password"
-                maxLength={formData.passwordLen}
-                icon={icons.lock}
-                secureTextEntry={formPass.password.hidePassword}
-                value={formPass.password.name}
-                onChangeText={(value: string) =>
-                  setFormPass({
-                    ...formPass,
-                    password: { ...formPass.password, name: value },
-                  })
-                }
-                iconRight={
-                  <InserterIcon
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View>
+                  <InputField
+                    label="Enter Password"
+                    placeholder="Enter password"
+                    maxLength={formData.passwordLen}
+                    icon={icons.lock}
+                    secureTextEntry={formPass.password.hidePassword}
+                    value={formPass.password.name}
+                    onChangeText={(value: string) =>
+                      setFormPass({
+                        ...formPass,
+                        password: { ...formPass.password, name: value },
+                      })
+                    }
+                    iconRight={
+                      <InserterIcon
+                        name="password"
+                        setFormPass={setFormPass}
+                        formPass={formPass}
+                      />
+                    }
+                    errors={errorsPass}
                     name="password"
-                    setFormPass={setFormPass}
-                    formPass={formPass}
                   />
-                }
-                errors={errorsPass}
-                name="password"
-              />
 
-              <InputField
-                label="Confirm Password"
-                placeholder="Enter confirm password"
-                icon={icons.lock}
-                maxLength={formData.passwordLen}
-                secureTextEntry={formPass.confirmPassword.hidePassword}
-                value={formPass.confirmPassword.name}
-                onChangeText={(value: string) =>
-                  setFormPass({
-                    ...formPass,
-                    confirmPassword: {
-                      ...formPass.confirmPassword,
-                      name: value,
-                    },
-                  })
-                }
-                iconRight={
-                  <InserterIcon
+                  <InputField
+                    label="Confirm Password"
+                    placeholder="Enter confirm password"
+                    icon={icons.lock}
+                    maxLength={formData.passwordLen}
+                    secureTextEntry={formPass.confirmPassword.hidePassword}
+                    value={formPass.confirmPassword.name}
+                    onChangeText={(value: string) =>
+                      setFormPass({
+                        ...formPass,
+                        confirmPassword: {
+                          ...formPass.confirmPassword,
+                          name: value,
+                        },
+                      })
+                    }
+                    iconRight={
+                      <InserterIcon
+                        name="confirmPassword"
+                        setFormPass={setFormPass}
+                        formPass={formPass}
+                      />
+                    }
+                    errors={errorsPass}
                     name="confirmPassword"
-                    setFormPass={setFormPass}
-                    formPass={formPass}
                   />
-                }
-                errors={errorsPass}
-                name="confirmPassword"
-              />
 
-              <CustomButton
-                title={`${COMPState.BTNDisabled ? "Please wait..." : "Proceed"} `}
-                onPress={handleVerify}
-                className={`mt-6 ${isFormValidPass ? "opacity-100" : "opacity-50"}}`}
-                disabled={!isFormValidPass || COMPState.BTNDisabled}
-              />
-            </View>
+                  <CustomButton
+                    title={`${COMPState.BTNDisabled ? "Please wait..." : "Proceed"} `}
+                    onPress={handleVerify}
+                    className={`mt-6 ${isFormValidPass ? "opacity-100" : "opacity-50"}}`}
+                    disabled={!isFormValidPass || COMPState.BTNDisabled}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
           )}
           <View className="flex flex-row justify-center mt-6 gap-x-3">
             <View className="flex flex-row">
               <TouchableOpacity
-                onPress={() =>
-                  step === "1" ? router.push("/(auth)/sign-in") : setStep("1")
-                }
+                onPress={() => {
+                  setIsFormValid(true);
+                  step === "1" ? router.push("/(auth)/sign-in") : setStep("1");
+                }}
                 className=" flex flex-row"
               >
                 <Image source={icons.lessThan} className={`w-8 h-8 `} />
@@ -475,19 +488,25 @@ const ResetPassword = () => {
               We've sent a verification code to {form.email}
             </Text>
 
-            <InputField
-              maxLength={6}
-              label="Code"
-              icon={icons.lock}
-              placeholder="12345"
-              value={verification.code}
-              keyboardType="numeric"
-              onChangeText={(code) =>
-                setVerification({ ...verification, code })
-              }
-              errors={errorsOTP}
-              name="code"
-            />
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <InputField
+                  maxLength={6}
+                  label="Code"
+                  icon={icons.lock}
+                  placeholder="12345"
+                  value={verification.code}
+                  keyboardType="numeric"
+                  onChangeText={(code) =>
+                    setVerification({ ...verification, code })
+                  }
+                  errors={errorsOTP}
+                  name="code"
+                />
+              </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
 
             {/* {verification.error && (
               <Text className="text-red-500 text-sm mt-1">

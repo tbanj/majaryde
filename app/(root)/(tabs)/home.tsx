@@ -29,7 +29,7 @@ export default function Page() {
   const [locationPermissionState, setLocationPermissionState] = useState({
     location: null,
     BTNDisabled: false,
-    signOutActivated: NativeModalState.pending,
+    signOutActivated: NativeModalState.default,
   });
 
   const [COMPState, setCOMPState] = useState<any>({
@@ -329,7 +329,7 @@ export default function Page() {
             <CustomButton
               title="No"
               onPress={handleRejectLogout}
-              className="mt-5!text-blue-500 !w-[100px]"
+              className="mt-5 !text-blue-500 !w-[100px]"
               bgVariant="secondary"
             />
 

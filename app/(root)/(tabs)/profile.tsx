@@ -9,6 +9,7 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -307,138 +308,152 @@ const Profile = () => {
           <ActivityIndicator size="large" color="#000" />
         </View>
       )}
-      <ScrollView
-        className="px-5 flex-1"
-        contentContainerStyle={
-          !profileFormState.phoneNumber.keyboard && {
-            paddingBottom: 100,
-          }
-        }
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex-1"
       >
-        <Text className="text-2xl font-JakartaBold my-5">My profile</Text>
+        <ScrollView
+          className="flex-1"
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingHorizontal: 20,
+            paddingBottom: profileFormState.phoneNumber.keyboard ? 0 : 100,
+          }}
+        >
+          <View className=" pt-5">
+            <Text className="text-2xl font-JakartaBold">My profile</Text>
+          </View>
 
-        <View className="flex items-center justify-center my-5">
-          <Image
-            source={{
-              uri: user?.externalAccounts[0]?.imageUrl ?? user?.imageUrl,
-            }}
-            style={{ width: 110, height: 110, borderRadius: 110 / 2 }}
-            className=" rounded-full h-[110px] w-[110px] border-[3px] border-white shadow-sm shadow-neutral-300"
-          />
-        </View>
-
-        <View className="flex flex-col items-start justify-center bg-white rounded-lg shadow-sm shadow-neutral-300 px-5 py-5">
-          <View
-            className={`flex flex-col items-start justify-start w-full  ${profileFormState.phoneNumber.keyboard ? "mb-12" : ""}`}
-          >
-            <InputField
-              label="First name"
-              icon={icons.person}
-              maxLength={formData.nameLen}
-              value={profileFormState.firstName.name}
-              onChangeText={(value: string) =>
-                setProfileFormState({
-                  ...profileFormState,
-                  firstName: { ...profileFormState.firstName, name: value },
-                })
-              }
-              containerStyle="w-full"
-              inputStyle="p-3.5"
-              editable={profileFormState.firstName.editable}
-              iconRight={
-                <InserterIcon
-                  name="firstName"
-                  setProfileFormState={setProfileFormState}
-                  profileFormState={profileFormState}
-                />
-              }
-              errors={errors}
-            />
-            <InputField
-              label="Last name"
-              icon={icons.person}
-              value={profileFormState.lastName.name}
-              onChangeText={(value: string) =>
-                setProfileFormState({
-                  ...profileFormState,
-                  lastName: { ...profileFormState.lastName, name: value },
-                })
-              }
-              containerStyle="w-full"
-              inputStyle="p-3.5"
-              maxLength={formData.nameLen}
-              editable={profileFormState.lastName.editable}
-              iconRight={
-                <InserterIcon
-                  name="lastName"
-                  setProfileFormState={setProfileFormState}
-                  profileFormState={profileFormState}
-                />
-              }
-              errors={errors}
-            />
-            <InputField
-              label="Email"
-              icon={icons.email}
-              value={profileFormState.email.name}
-              maxLength={formData.nameLen}
-              onChangeText={(value: string) =>
-                setProfileFormState({
-                  ...profileFormState,
-                  email: { ...profileFormState.email, name: value },
-                })
-              }
-              containerStyle="w-full"
-              inputStyle="p-3.5"
-              editable={profileFormState.email.editable}
-              errors={errors}
-            />
-
-            <InputField
-              label="Email status"
-              containerStyle="w-full"
-              inputStyle="p-3.5"
-              iconOnly={
-                <EmailStatusButton profileFormState={profileFormState} />
-              }
-              editable={profileFormState.emailStatus.editable}
-            />
-            <InputField
-              label="Phone"
-              icon={icons.phoneCall}
-              keyboardType="numeric"
-              maxLength={formData.phoneNumberLen}
-              value={profileFormState?.phoneNumber?.name}
-              onChangeText={(value: string) =>
-                setProfileFormState({
-                  ...profileFormState,
-                  phoneNumber: {
-                    ...profileFormState.phoneNumber,
-                    name: value,
-                  },
-                })
-              }
-              containerStyle={`w-full `}
-              inputStyle="p-3.5"
-              editable={profileFormState.phoneNumber.editable}
-              iconRight={
-                <InserterIcon
-                  name="phoneNumber"
-                  setProfileFormState={setProfileFormState}
-                  profileFormState={profileFormState}
-                />
-              }
-              errors={errors}
+          <View className="flex items-center justify-center py-5">
+            <Image
+              source={{
+                uri: user?.externalAccounts[0]?.imageUrl ?? user?.imageUrl,
+              }}
+              style={{ width: 110, height: 110, borderRadius: 55 }}
+              className=" rounded-full border-[3px] border-white shadow-sm shadow-neutral-300"
             />
           </View>
-          <CustomButton
-            disabled={!!COMPState.loadingState}
-            title="Update Profile"
-            className={`${profileFormState.phoneNumber.keyboard ? "mt-14" : "mt-3"}`}
-            onPress={updateUserDetails}
-          />
-        </View>
-      </ScrollView>
+          <View className="flex-1 bg-white rounded-lg shadow-sm shadow-neutral-300 p-5">
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View className="flex-1">
+                <View className={`space-y-2`}>
+                  <InputField
+                    label="First name"
+                    icon={icons.person}
+                    maxLength={formData.nameLen}
+                    value={profileFormState.firstName.name}
+                    onChangeText={(value: string) =>
+                      setProfileFormState({
+                        ...profileFormState,
+                        firstName: {
+                          ...profileFormState.firstName,
+                          name: value,
+                        },
+                      })
+                    }
+                    containerStyle="w-full"
+                    inputStyle="p-3.5"
+                    editable={profileFormState.firstName.editable}
+                    iconRight={
+                      <InserterIcon
+                        name="firstName"
+                        setProfileFormState={setProfileFormState}
+                        profileFormState={profileFormState}
+                      />
+                    }
+                    errors={errors}
+                    name="firstName"
+                  />
+                  <InputField
+                    label="Last name"
+                    icon={icons.person}
+                    value={profileFormState.lastName.name}
+                    onChangeText={(value: string) =>
+                      setProfileFormState({
+                        ...profileFormState,
+                        lastName: { ...profileFormState.lastName, name: value },
+                      })
+                    }
+                    containerStyle="w-full"
+                    inputStyle="p-3.5"
+                    maxLength={formData.nameLen}
+                    editable={profileFormState.lastName.editable}
+                    iconRight={
+                      <InserterIcon
+                        name="lastName"
+                        setProfileFormState={setProfileFormState}
+                        profileFormState={profileFormState}
+                      />
+                    }
+                    errors={errors}
+                    name="lastName"
+                  />
+                  <InputField
+                    label="Email"
+                    icon={icons.email}
+                    value={profileFormState.email.name}
+                    maxLength={formData.nameLen}
+                    onChangeText={(value: string) =>
+                      setProfileFormState({
+                        ...profileFormState,
+                        email: { ...profileFormState.email, name: value },
+                      })
+                    }
+                    containerStyle="w-full"
+                    inputStyle="p-3.5"
+                    editable={profileFormState.email.editable}
+                  />
+
+                  <InputField
+                    label="Email status"
+                    containerStyle="w-full"
+                    inputStyle="p-3.5"
+                    iconOnly={
+                      <EmailStatusButton profileFormState={profileFormState} />
+                    }
+                    editable={profileFormState.emailStatus.editable}
+                  />
+                  <InputField
+                    label="Phone"
+                    icon={icons.phoneCall}
+                    keyboardType="numeric"
+                    maxLength={formData.phoneNumberLen}
+                    value={profileFormState?.phoneNumber?.name}
+                    onChangeText={(value: string) =>
+                      setProfileFormState({
+                        ...profileFormState,
+                        phoneNumber: {
+                          ...profileFormState.phoneNumber,
+                          name: value,
+                        },
+                      })
+                    }
+                    containerStyle={`w-full `}
+                    inputStyle="p-3.5"
+                    editable={profileFormState.phoneNumber.editable}
+                    iconRight={
+                      <InserterIcon
+                        name="phoneNumber"
+                        setProfileFormState={setProfileFormState}
+                        profileFormState={profileFormState}
+                      />
+                    }
+                    errors={errors}
+                    name="phoneNumber"
+                  />
+                </View>
+                <CustomButton
+                  disabled={!!COMPState.loadingState}
+                  title="Update Profile"
+                  className={`mt-6`}
+                  onPress={updateUserDetails}
+                />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
