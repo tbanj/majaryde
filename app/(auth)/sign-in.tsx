@@ -225,12 +225,9 @@ const SignIn = () => {
             icon={icons.email}
             value={form.email}
             onChangeText={(value) => handleInputChange("email", value)}
+            errors={errors}
+            name="email"
           />
-          {errors?.email && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors.email}
-            </Text>
-          )}
 
           <InputField
             label="Password"
@@ -247,12 +244,9 @@ const SignIn = () => {
             iconRight={
               <InserterIcon name="password" setForm={setForm} form={form} />
             }
+            errors={errors}
+            name="password"
           />
-          {errors?.password && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors.password}
-            </Text>
-          )}
 
           <View className="hidden">
             <InputField
