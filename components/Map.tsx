@@ -12,13 +12,13 @@ import {
 } from "@/app/lib/map";
 import { useDriverStore, useLocationStore } from "@/store";
 import { Driver, MarkerData } from "@/types/type";
-import { icons } from "@/constants";
+import { icons, NativeModalState } from "@/constants";
 import { useFetch } from "@/app/lib/fetch";
 import MapViewDirections from "react-native-maps-directions";
 
 interface MapProps {
-  isLogout?: boolean;
-  setIsLogout?: (data: boolean) => void;
+  isLogout?: string;
+  setIsLogout?: (data: string) => void;
 }
 const Map = ({ isLogout, setIsLogout }: MapProps) => {
   const {
@@ -64,11 +64,11 @@ const Map = ({ isLogout, setIsLogout }: MapProps) => {
       longitude: null!,
       address: null!,
     });
-    setIsLogout!(false);
+    setIsLogout!(NativeModalState.default);
   };
 
   useEffect(() => {
-    if (isLogout) {
+    if (isLogout === NativeModalState.success) {
       resetUserMapData();
     }
 
