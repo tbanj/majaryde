@@ -4,6 +4,8 @@ import {
   Alert,
   Image,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -421,7 +423,10 @@ const Profile = () => {
               onChangeText={(value: string) =>
                 setProfileFormState({
                   ...profileFormState,
-                  phoneNumber: { ...profileFormState.phoneNumber, name: value },
+                  phoneNumber: {
+                    ...profileFormState.phoneNumber,
+                    name: value,
+                  },
                 })
               }
               containerStyle={`w-full `}
@@ -434,17 +439,13 @@ const Profile = () => {
                   profileFormState={profileFormState}
                 />
               }
+              errors={errors}
             />
-            {errors?.phoneNumber && (
-              <Text className="text-red-500 text-sm mt-1 px-5">
-                {errors?.phoneNumber}
-              </Text>
-            )}
           </View>
           <CustomButton
             disabled={!!COMPState.loadingState}
             title="Update Profile"
-            className={`${profileFormState.phoneNumber.keyboard ? "mt-10" : "mt-5"}`}
+            className={`${profileFormState.phoneNumber.keyboard ? "mt-14" : "mt-3"}`}
             onPress={updateUserDetails}
           />
         </View>

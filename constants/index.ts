@@ -112,6 +112,13 @@ export const formData = {
   nameLen: 32,
   phoneNumberLen: 11,
 };
+
+export const NativeModalState = {
+  pending: "pending",
+  default: "default",
+  success: "success",
+};
+
 export const data = {
   onboarding,
 };

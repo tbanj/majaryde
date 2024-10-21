@@ -94,6 +94,7 @@ declare interface InputFieldProps extends TextInputProps {
   inputStyle?: string;
   iconStyle?: string;
   className?: string;
+  errors?: any;
 }
 
 declare interface PaymentProps {

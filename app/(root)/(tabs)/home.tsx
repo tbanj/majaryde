@@ -2,6 +2,7 @@ import { useAuth, useUser } from "@clerk/clerk-expo";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
+import ReactNativeModal from "react-native-modal";
 // import { useDriverStore, useLocationStore } from "@/store";
 
 import {
@@ -16,25 +17,29 @@ import {
 } from "react-native";
 import RideCard from "@/components/RideCard";
 import { Ride } from "@/types/type";
-import { icons, images } from "@/constants";
+import { icons, images, NativeModalState } from "@/constants";
 import GoogleTextInput from "@/components/GoogleTextInput";
 import Map from "@/components/Map";
 import { useDriverStore, useLocationStore } from "@/store";
 import { useEffect, useState, useCallback } from "react";
 import { useFetch } from "@/app/lib/fetch";
 import CustomButton from "@/components/CustomButton";
-import ReactNativeModal from "react-native-modal";
 
 export default function Page() {
   const [locationPermissionState, setLocationPermissionState] = useState({
     location: null,
     BTNDisabled: false,
-    signOutActivated: false,
+    signOutActivated: NativeModalState.pending,
   });
 
   const [COMPState, setCOMPState] = useState<any>({
     BTNDisabled: false,
     loadingState: false,
+  });
+  const [verification, setVerification] = useState({
+    state: NativeModalState.default,
+    error: "",
+    code: "",
   });
 
   const { setUserLocation, setDestinationLocation, userLatitude } =
@@ -50,13 +55,24 @@ export default function Page() {
 
   const navigation = useNavigation();
 
+  const handleRejectLogout = () => {
+    setLocationPermissionState((prev: any) => ({
+      ...prev,
+      signOutActivated: NativeModalState.default,
+    }));
+  };
+
+  const handleLogoutModal = () => {
+    setLocationPermissionState((prev: any) => ({
+      ...prev,
+      signOutActivated: NativeModalState.pending,
+    }));
+  };
   const handleSignOut = async () => {
     try {
-      // resetUserMapData();
       setLocationPermissionState((prev: any) => ({
         ...prev,
         BTNDisabled: true,
-        signOutActivated: true,
       }));
       setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       await signOut();
@@ -65,7 +81,7 @@ export default function Page() {
       setLocationPermissionState((prev: any) => ({
         ...prev,
         BTNDisabled: false,
-        signOutActivated: true,
+        signOutActivated: NativeModalState.default,
       }));
       setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
       console.error("Failed to log out:", error);
@@ -133,11 +149,13 @@ export default function Page() {
 
       return () => {
         console.log("home route is now unfocused.");
-        if (locationPermissionState.signOutActivated)
+        if (
+          locationPermissionState.signOutActivated === NativeModalState.success
+        )
           setLocationPermissionState((prev: any) => ({
             ...prev,
             location: null,
-            signOutActivated: false,
+            signOutActivated: NativeModalState.default,
             BTNDisabled: false,
           }));
       };
@@ -190,7 +208,7 @@ export default function Page() {
     }));
   };
 
-  const handleLogout = (data: boolean) => {
+  const handleLogout = (data: string) => {
     setCOMPState({
       ...COMPState,
       BTNDisabled: false,
@@ -199,7 +217,7 @@ export default function Page() {
     setLocationPermissionState((prev: any) => ({
       ...prev,
       BTNDisabled: false,
-      signOutActivated: true,
+      signOutActivated: data,
     }));
   };
 
@@ -241,7 +259,7 @@ export default function Page() {
               </Text>
               <TouchableOpacity
                 disabled={locationPermissionState.BTNDisabled}
-                onPress={handleSignOut}
+                onPress={handleLogoutModal}
                 className="justify-center items-center w-10 h-10 rounded-full bg-white"
               >
                 <Image source={icons.out} className="w-4 h-4" />
@@ -286,7 +304,7 @@ export default function Page() {
               )}
               <View className="flex flex-row items-center bg-transparent h-[300px]">
                 <Map
-                  isLogout={COMPState.BTNDisabled}
+                  isLogout={locationPermissionState.signOutActivated}
                   setIsLogout={handleLogout}
                 />
               </View>
@@ -298,6 +316,32 @@ export default function Page() {
           </>
         )}
       />
+      <ReactNativeModal
+        isVisible={
+          locationPermissionState.signOutActivated === NativeModalState.pending
+        }
+      >
+        <View className="bg-white px-7 py-9 rounded-2xl min-h-[150px] flex justify-center items-center">
+          <Text className="text-2xl font-JakartaExtraBold mb-2">Logout</Text>
+          <Text className="font-Jakarta mb-5">Do you want to logout.</Text>
+
+          <View className="flex flex-row items-center space-x-2">
+            <CustomButton
+              title="No"
+              onPress={handleRejectLogout}
+              className="mt-5!text-blue-500 !w-[100px]"
+              bgVariant="secondary"
+            />
+
+            <CustomButton
+              title="Yes"
+              onPress={handleSignOut}
+              disabled={locationPermissionState.BTNDisabled}
+              className="mt-5 !w-[100px]"
+            />
+          </View>
+        </View>
+      </ReactNativeModal>
     </SafeAreaView>
   );
 }

@@ -26,6 +26,7 @@ const InputField = ({
   autoComplete,
   importantForAutofill,
   onEndEditing,
+  errors,
   ...props
 }: InputFieldProps) => {
   return (
@@ -55,6 +56,11 @@ const InputField = ({
             />
             {iconRight && iconRight}
           </View>
+          {errors?.phoneNumber && (
+            <Text className={`text-red-500 text-sm px-5 my-1`}>
+              {errors?.phoneNumber}
+            </Text>
+          )}
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>

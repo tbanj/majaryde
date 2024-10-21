@@ -39,6 +39,7 @@ interface InserterIconProp {
     React.SetStateAction<{
       password: any;
       email: any;
+      formVerify: string;
     }>
   >;
 }
@@ -243,6 +244,9 @@ const SignIn = () => {
             secureTextEntry={form.password.hidePassword}
             value={form.password.name}
             onChangeText={(value) => handleInputChange("password", value)}
+            iconRight={
+              <InserterIcon name="password" setForm={setForm} form={form} />
+            }
           />
           {errors?.password && (
             <Text className="text-red-500 text-sm mt-1 px-5">
