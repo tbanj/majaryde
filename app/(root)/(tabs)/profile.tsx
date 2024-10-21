@@ -352,12 +352,8 @@ const Profile = () => {
                   profileFormState={profileFormState}
                 />
               }
+              errors={errors}
             />
-            {errors?.firstName && (
-              <Text className="text-red-500 text-sm mt-1 px-5">
-                {errors?.firstName}
-              </Text>
-            )}
             <InputField
               label="Last name"
               icon={icons.person}
@@ -379,12 +375,8 @@ const Profile = () => {
                   profileFormState={profileFormState}
                 />
               }
+              errors={errors}
             />
-            {errors?.lastName && (
-              <Text className="text-red-500 text-sm mt-1 px-5">
-                {errors?.lastName}
-              </Text>
-            )}
             <InputField
               label="Email"
               icon={icons.email}
@@ -399,12 +391,9 @@ const Profile = () => {
               containerStyle="w-full"
               inputStyle="p-3.5"
               editable={profileFormState.email.editable}
+              errors={errors}
             />
-            {errors?.email && (
-              <Text className="text-red-500 text-sm mt-1 px-5">
-                {errors?.email}
-              </Text>
-            )}
+
             <InputField
               label="Email status"
               containerStyle="w-full"

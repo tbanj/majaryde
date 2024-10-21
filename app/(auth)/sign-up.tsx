@@ -253,12 +253,9 @@ const SignUp = () => {
             onChangeText={(value: string) =>
               setForm({ ...form, lastName: value })
             }
+            errors={errors}
+            name="lastName"
           />
-          {errors?.lastName && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors?.lastName}
-            </Text>
-          )}
           <InputField
             label="First Name"
             placeholder="Enter first name"
@@ -268,6 +265,8 @@ const SignUp = () => {
             onChangeText={(value: string) =>
               setForm({ ...form, firstName: value })
             }
+            errors={errors}
+            name="firstName"
           />
           {errors?.firstName && (
             <Text className="text-red-500 text-sm mt-1 px-5">
@@ -281,12 +280,9 @@ const SignUp = () => {
             icon={icons.email}
             value={form.email}
             onChangeText={(value: string) => setForm({ ...form, email: value })}
+            errors={errors}
+            name="email"
           />
-          {errors?.email && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors?.email}
-            </Text>
-          )}
 
           <InputField
             label="Password"
@@ -304,12 +300,9 @@ const SignUp = () => {
             iconRight={
               <InserterIcon name="password" setForm={setForm} form={form} />
             }
+            errors={errors}
+            name="password"
           />
-          {errors?.password && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors?.password}
-            </Text>
-          )}
 
           <CustomButton
             title={`${COMPState.BTNDisabled ? "Please wait..." : "Sign Up"} `}

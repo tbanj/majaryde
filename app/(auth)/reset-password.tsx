@@ -349,6 +349,8 @@ const ResetPassword = () => {
                 onChangeText={(value: string) =>
                   setForm({ ...form, email: value })
                 }
+                errors={errors}
+                name="email"
               />
 
               {Object.values(errors).map((errorData: any, index: number) => (
@@ -387,6 +389,8 @@ const ResetPassword = () => {
                     formPass={formPass}
                   />
                 }
+                errors={errorsPass}
+                name="password"
               />
 
               <InputField
@@ -412,15 +416,10 @@ const ResetPassword = () => {
                     formPass={formPass}
                   />
                 }
+                errors={errorsPass}
+                name="confirmPassword"
               />
 
-              {Object.values(errorsPass).map(
-                (errorData: any, index: number) => (
-                  <Text key={index} className="text-red-500 text-sm mt-1 px-5">
-                    {errorData}
-                  </Text>
-                )
-              )}
               <CustomButton
                 title={`${COMPState.BTNDisabled ? "Please wait..." : "Proceed"} `}
                 onPress={handleVerify}
@@ -486,6 +485,8 @@ const ResetPassword = () => {
               onChangeText={(code) =>
                 setVerification({ ...verification, code })
               }
+              errors={errorsOTP}
+              name="code"
             />
 
             {/* {verification.error && (

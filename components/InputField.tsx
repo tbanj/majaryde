@@ -27,6 +27,7 @@ const InputField = ({
   importantForAutofill,
   onEndEditing,
   errors,
+  name,
   ...props
 }: InputFieldProps) => {
   return (
@@ -56,9 +57,9 @@ const InputField = ({
             />
             {iconRight && iconRight}
           </View>
-          {errors?.phoneNumber && (
+          {name && errors && errors[name!] && (
             <Text className={`text-red-500 text-sm px-5 my-1`}>
-              {errors?.phoneNumber}
+              {errors[name!]}
             </Text>
           )}
         </View>
