@@ -74,6 +74,8 @@ const SignUp = () => {
   });
   const [errors, setErrors] = useState<any>({});
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const [errorsOTP, setErrorsOTP] = useState({});
+  const [isFormValidOTP, setIsFormValidOTP] = useState(false);
 
   const validateForm = () => {
     let errors: any = {};
@@ -122,11 +124,32 @@ const SignUp = () => {
     setIsFormValid(Object.keys(errors).length === 0);
   };
 
+  const validateFormOTP = () => {
+    let errors: any = {};
+
+    // Validate OTP modal
+    if (!verification.code) {
+      errors.code = "OTP is required.";
+    } else if (verification.code.length < 6 || verification.code.length > 6) {
+      errors.code = "OTP must be 6 characters.";
+    }
+
+    // Set the errors and update form validity
+    setErrorsOTP(errors);
+    setIsFormValidOTP(Object.keys(errors).length === 0);
+  };
+
   useEffect(() => {
     // Trigger form validation when name,
     // email, or password changes
     validateForm();
   }, [form.email, form.password.name, form.firstName, form.lastName]);
+
+  useEffect(() => {
+    // Trigger form validation when name,
+    // email, or password changes
+    validateFormOTP();
+  }, [verification.code]);
 
   const onSignUpPress = async () => {
     if (!isLoaded) return;
@@ -268,11 +291,6 @@ const SignUp = () => {
             errors={errors}
             name="firstName"
           />
-          {errors?.firstName && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors?.firstName}
-            </Text>
-          )}
           <InputField
             label="Email"
             maxLength={formData.nameLen}
@@ -344,6 +362,8 @@ const SignUp = () => {
               onChangeText={(code) =>
                 setVerification({ ...verification, code })
               }
+              errors={errorsOTP}
+              name="code"
             />
 
             {verification.error && (
