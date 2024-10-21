@@ -41,14 +41,17 @@ export const googleOAuth = async (startOAuthFlow: any) => {
     });
     if (createdSessionId) {
       if (setActive) {
-        setActive!({ session: createdSessionId });
+        await setActive({ session: createdSessionId });
         if (signUp.createdUserId) {
           await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
             method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify({
-              name: `${signUp.firstName} ${signUp.lastName}`,
+              name: `${signUp?.firstName ?? "Not Found"} ${signUp?.lastName ?? "Not Found"}`,
               email: signUp.emailAddress,
-              clerkId: signUp.createdUserId,
+              clerkId: `${signUp.createdUserId}`,
             }),
           });
         }

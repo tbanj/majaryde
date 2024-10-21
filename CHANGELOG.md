@@ -1,3 +1,38 @@
+- implementation of forgot password ot modal ui
+- implementation of forgot password ot modal ui
+- implementation of forgot password ot modal ui
+- implementation of forgot password ot modal ui
+- implementation of forgot password ot modal ui
+- implementation of forgot password ot modal ui
+- implementation of forgot password ui
+- implementation of forgot password ui
+- Merge branch 'dev-temi' of https://github.com/tbanj/majaryde into dev-temi
+- implementation signup recommendation
+- implementation signup recommendation
+- Update README.md
+- Update README.md
+- Update README.md
+- Update README.md
+- updated
+- updated
+- updated
+- updated
+- Update README.md
+- Update README.md
+- Update README.md
+- Update README.md
+- Update README.md
+- Update README.md
+- updated
+- updated
+- updated
+- updated
+- fixed codes in issuee
+- resolve user api
+- removed unwanted code & fix auth issue
+- removed unwanted code & fix auth issue
+- removed unwanted code & fix auth issue
+- removed unwanted code & fix auth issue
 - updated
 - updated
 - updated
