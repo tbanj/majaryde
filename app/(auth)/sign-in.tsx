@@ -7,7 +7,6 @@ import {
   ScrollView,
   Text,
   View,
-  TextInput,
   NativeSyntheticEvent,
   TextInputEndEditingEventData,
   TouchableOpacity,

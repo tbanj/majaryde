@@ -20,7 +20,7 @@ import { Ride } from "@/types/type";
 import { icons, images, NativeModalState } from "@/constants";
 import GoogleTextInput from "@/components/GoogleTextInput";
 import Map from "@/components/Map";
-import { useDriverStore, useLocationStore } from "@/store";
+import { useLocationStore } from "@/store";
 import { useEffect, useState, useCallback } from "react";
 import { useFetch } from "@/app/lib/fetch";
 import CustomButton from "@/components/CustomButton";
@@ -35,11 +35,6 @@ export default function Page() {
   const [COMPState, setCOMPState] = useState<any>({
     BTNDisabled: false,
     loadingState: false,
-  });
-  const [verification, setVerification] = useState({
-    state: NativeModalState.default,
-    error: "",
-    code: "",
   });
 
   const { setUserLocation, setDestinationLocation, userLatitude } =
@@ -100,8 +95,7 @@ export default function Page() {
   const requestLocation = async () => {
     try {
       // Linking.openSettings();
-      let { status, granted } =
-        await Location.requestForegroundPermissionsAsync();
+      let { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== "granted") {
         setLocationPermissionState((prev: any) => ({

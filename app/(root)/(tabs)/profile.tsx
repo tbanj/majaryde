@@ -19,7 +19,7 @@ import { formData, icons } from "@/constants";
 import { Dispatch, useCallback, useEffect, useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI, useFetch } from "@/app/lib/fetch";
-import { useFocusEffect, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 
 interface InserterIconProp {
   name: string;
@@ -73,7 +73,6 @@ const EmailStatusButton = ({ profileFormState }: { profileFormState: any }) => (
 );
 
 const Profile = () => {
-  const [step, setStep] = useState(1);
   const { user } = useUser();
 
   const [profileFormState, setProfileFormState] = useState<any>({

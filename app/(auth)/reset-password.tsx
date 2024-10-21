@@ -1,5 +1,5 @@
-import { useAuth, useSignIn } from "@clerk/clerk-expo";
-import React, { Dispatch, useCallback, useEffect, useState } from "react";
+import { useAuth } from "@clerk/clerk-expo";
+import React, { Dispatch, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -13,13 +13,11 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import InputField from "@/components/InputField";
 import { formData, icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import ReactNativeModal from "react-native-modal";
 import { Link, router } from "expo-router";
-import OAuth from "@/components/OAuth";
 import usePasswordResetWithOTP from "../hooks/usePasswordResetWithOTP";
 
 interface InserterIconProp {
@@ -70,8 +68,6 @@ const ResetPassword = () => {
     password: { name: "", hidePassword: true },
     confirmPassword: { name: "", hidePassword: true },
   });
-  // const { signIn, setActive, isLoaded } = useSignIn();
-  const [otpCode, setOtpCode] = useState("");
   const [verification, setVerification] = useState({
     state: "default",
     error: "",
@@ -85,18 +81,9 @@ const ResetPassword = () => {
   const [isFormValidPass, setIsFormValidPass] = useState(false);
   const [isFormValidOTP, setIsFormValidOTP] = useState(false);
   const [firstFactorRef, setFirstFactorRef] = useState<any>(null);
-  const [verificationCodeFunc, setVerificationCodeFunc] = useState<any>({
-    attemptFirstFactor: null,
-    resetPassword: null,
-  });
 
-  const {
-    startPasswordReset,
-    verifyOTPAndResetPassword,
-    isLoading,
-    error,
-    verificationStatus,
-  } = usePasswordResetWithOTP();
+  const { startPasswordReset, verifyOTPAndResetPassword } =
+    usePasswordResetWithOTP();
 
   const { signOut } = useAuth();
 
@@ -220,12 +207,6 @@ const ResetPassword = () => {
         }));
         Alert.alert("Success", "OTP has been sent to your email");
         setFirstFactorRef(result.firstFactor);
-        const { attemptFirstFactor, resetPassword } = result.firstFactor!;
-        setVerificationCodeFunc((prev: any) => ({
-          ...prev,
-          attemptFirstFactor,
-          resetPassword,
-        }));
         // Show password change interface
         setIsFormValid(false);
         setErrors({});
