@@ -312,7 +312,7 @@ const SignUp = () => {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
       setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
-      if (err?.errors?.[0].code !== "form_code_incorrect")
+      if (err?.errors?.[0].code !== "form_code_incorrect") {
         setVerification({
           ...verification,
           state: "failed",
@@ -320,6 +320,12 @@ const SignUp = () => {
             err?.errors?.[0].longMessage ??
             "Error encounter during user creation",
         });
+        Alert.alert(
+          "Error",
+          err?.errors?.[0].longMessage ?? "Error encounter during user creation"
+        );
+        Alert.alert("Info", "Try the Signup process after 30 minutes. Thanks");
+      }
       if (err?.errors?.[0].code === "form_code_incorrect") {
         setVerification({
           ...verification,

@@ -46,6 +46,8 @@ export default function Page() {
     data: recentRides,
     loading,
     error,
+    isConnected,
+    refetch,
   } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`);
 
   const navigation = useNavigation();
@@ -227,7 +229,9 @@ export default function Page() {
         }}
         ListEmptyComponent={() => (
           <View className="flex flex-col items-center justify-center">
-            {!loading ? (
+            {loading && !error ? (
+              <ActivityIndicator size="small" color="#000" />
+            ) : !loading && !error ? (
               <>
                 <Image
                   source={images.noResult}
@@ -238,12 +242,30 @@ export default function Page() {
                 <Text>No recent rides found</Text>
               </>
             ) : (
-              <ActivityIndicator size="small" color="#000" />
+              error &&
+              !loading && (
+                <>
+                  <Image
+                    source={images.noResult}
+                    className="w-40 h-40"
+                    alt="No recent rides found"
+                    resizeMode="contain"
+                  />
+                  <Text>Error: {error}</Text>
+                </>
+              )
             )}
           </View>
         )}
         ListHeaderComponent={() => (
-          <>
+          <View className="relative">
+            <View className="absolute w-full top-6 bg-yellow-500 ">
+              <View className="flex flex-row justify-center items-center space-x-2 ">
+                <Image source={icons.warningSign} className={`w-6 h-6 ml-4 `} />
+                <Text className="">No internet connection</Text>
+              </View>
+            </View>
+
             <View className="flex flex-row items-center justify-between my-5">
               <Text className="text-1xl font-JakartaExtraBold">
                 Welcome{", "}
@@ -307,7 +329,7 @@ export default function Page() {
             <Text className="text-xl font-JakartaBold mt-5 mb-3">
               Recent Rides
             </Text>
-          </>
+          </View>
         )}
       />
       <ReactNativeModal
