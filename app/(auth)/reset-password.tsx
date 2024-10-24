@@ -319,7 +319,7 @@ const ResetPassword = () => {
         <View className="relative w-full h-[250px]">
           <Image source={images.signUpCar} className="z-10 w-full h-[250px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
-            Reset Password 👏
+            Reset Password
           </Text>
         </View>
 
