@@ -19,6 +19,7 @@ const InputField = ({
   onEndEditing,
   errors,
   name,
+  showError,
   ...props
 }: InputFieldProps) => {
   return (
@@ -44,9 +45,9 @@ const InputField = ({
         />
         {iconRight && iconRight}
       </View>
-      {name && errors && errors[name!] && (
+      {name && errors && errors[name!]?.text && errors[name!]?.showError && (
         <Text className={`text-red-500 text-sm px-5 my-1`}>
-          {errors[name!]}
+          {errors[name!]?.text}
         </Text>
       )}
     </View>

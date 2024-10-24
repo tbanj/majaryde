@@ -27,8 +27,14 @@ interface FormState {
 }
 
 interface FormErrors {
-  email?: string;
-  password?: string;
+  email?: {
+    text?: string;
+    showError?: boolean;
+  };
+  password?: {
+    text?: string;
+    showError?: boolean;
+  };
 }
 
 interface InserterIconProp {
@@ -88,24 +94,36 @@ const SignIn = () => {
 
     // Email validation
     if (!form.email.trim()) {
-      newErrors.email = "Email is required.";
+      newErrors.email = { text: "Email is required.", showError: false };
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      newErrors.email = "Email is invalid.";
+      newErrors.email = {
+        ...newErrors.email,
+        text: "Email is invalid.",
+        showError: true,
+      };
     }
 
     // Password validation
     const password = form.password.name;
     if (!password) {
-      newErrors.password = "Password is required.";
+      newErrors.password = { text: "Password is required.", showError: false };
     } else if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters.";
+      newErrors.password = {
+        text: "Password must be at least 6 characters.",
+        showError: true,
+      };
     } else if (password.length > 20) {
-      newErrors.password = "Password length not accepted.";
+      newErrors.password = {
+        text: "Password length not accepted.",
+        showError: true,
+      };
     } else if (
       !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,20}$/.test(password)
     ) {
-      newErrors.password =
-        "Password must have uppercase, lowercase & special character";
+      newErrors.password = {
+        text: "Password must have uppercase, lowercase & special character",
+        showError: true,
+      };
     }
 
     setErrors(newErrors);
@@ -196,6 +214,12 @@ const SignIn = () => {
     }
   }, [isLoaded, isFormValid, errors]);
 
+  console.log(
+    "errors?",
+    errors.email,
+    "errors.email.showErrro",
+    errors.email?.showError
+  );
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
@@ -226,6 +250,7 @@ const SignIn = () => {
             onChangeText={(value) => handleInputChange("email", value)}
             errors={errors}
             name="email"
+            // showError={errors}
           />
 
           <InputField
@@ -245,6 +270,7 @@ const SignIn = () => {
             }
             errors={errors}
             name="password"
+            // showError={Object.keys(errors)[1]?.password?.showError}
           />
 
           <View className="hidden">

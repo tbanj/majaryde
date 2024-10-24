@@ -485,6 +485,7 @@ const ResetPassword = () => {
                   }
                   errors={errorsOTP}
                   name="code"
+                  showError={COMPState.showError}
                 />
               </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
