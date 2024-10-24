@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useClerk } from "@clerk/clerk-expo";
-import SignIn from "../(auth)/sign-in";
 
 const usePasswordResetWithOTP = () => {
   const { client } = useClerk();
@@ -90,14 +89,6 @@ const usePasswordResetWithOTP = () => {
     error,
     verificationStatus,
   };
-};
-
-// Usage Example Component
-const PasswordResetScreen = () => {
-  return (
-    // Your UI components here
-    null
-  );
 };
 
 export default usePasswordResetWithOTP;

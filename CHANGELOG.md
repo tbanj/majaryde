@@ -1,5 +1,6 @@
 - implementation of autocomplete for profile ui
 - implementation of autocomplete for profile ui
+- implementation of autocomplete for profile ui
 - implementation of autocomplete for sign-in ui
 - implementation of forgot password ot modal ui
 - implementation of forgot password ot modal ui

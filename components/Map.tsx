@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View, Platform } from "react-native";
-import MapView, {
-  Marker,
-  PROVIDER_DEFAULT,
-  PROVIDER_GOOGLE,
-} from "react-native-maps";
+import { ActivityIndicator, Text, View } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   calculateDriverTimes,
   calculateRegion,
