@@ -71,6 +71,7 @@ const SignUp = () => {
   const [COMPState, setCOMPState] = useState<any>({
     BTNDisabled: false,
     loadingState: false,
+    showError: false,
   });
   const [errors, setErrors] = useState<any>({});
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
@@ -118,6 +119,27 @@ const SignUp = () => {
     else if (form.password.name.length > 20) {
       errors.password = "Password length not accepted.";
     }
+
+    if (form.lastName.length > 0)
+      setCOMPState((prev: any) => ({
+        ...prev,
+        showError: true,
+      }));
+    if (form.firstName.length > 0)
+      setCOMPState((prev: any) => ({
+        ...prev,
+        showError: true,
+      }));
+    if (form.email.length > 0)
+      setCOMPState((prev: any) => ({
+        ...prev,
+        showError: true,
+      }));
+    if (form?.password?.name.length > 0)
+      setCOMPState((prev: any) => ({
+        ...prev,
+        showError: true,
+      }));
 
     // Set the errors and update form validity
     setErrors(errors);
@@ -278,6 +300,7 @@ const SignUp = () => {
             }
             errors={errors}
             name="lastName"
+            // showError={COMPState.showError}
           />
           <InputField
             label="First Name"
@@ -290,6 +313,7 @@ const SignUp = () => {
             }
             errors={errors}
             name="firstName"
+            // showError={COMPState.showError}
           />
           <InputField
             label="Email"
@@ -300,6 +324,7 @@ const SignUp = () => {
             onChangeText={(value: string) => setForm({ ...form, email: value })}
             errors={errors}
             name="email"
+            // showError={COMPState.showError}
           />
 
           <InputField
@@ -320,6 +345,7 @@ const SignUp = () => {
             }
             errors={errors}
             name="password"
+            // showError={COMPState.showError}
           />
 
           <CustomButton
