@@ -28,12 +28,12 @@ interface FormState {
 
 interface FormErrors {
   email?: {
-    text?: string;
-    showError?: boolean;
+    text: string;
+    showError: boolean;
   };
   password?: {
-    text?: string;
-    showError?: boolean;
+    text: string;
+    showError: boolean;
   };
 }
 
@@ -91,38 +91,39 @@ const SignIn = () => {
   // Enhanced validation function
   const validateForm = useCallback(() => {
     let newErrors: FormErrors = {};
+    let showError = true;
 
     // Email validation
-    if (!form.email.trim()) {
+    if (!form.email.trim() || form.email.length === 0) {
       newErrors.email = { text: "Email is required.", showError: false };
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
       newErrors.email = {
         ...newErrors.email,
         text: "Email is invalid.",
-        showError: true,
+        showError,
       };
     }
 
     // Password validation
     const password = form.password.name;
-    if (!password) {
+    if (!password || password.length === 0) {
       newErrors.password = { text: "Password is required.", showError: false };
     } else if (password.length < 6) {
       newErrors.password = {
         text: "Password must be at least 6 characters.",
-        showError: true,
+        showError,
       };
     } else if (password.length > 20) {
       newErrors.password = {
         text: "Password length not accepted.",
-        showError: true,
+        showError,
       };
     } else if (
       !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,20}$/.test(password)
     ) {
       newErrors.password = {
         text: "Password must have uppercase, lowercase & special character",
-        showError: true,
+        showError,
       };
     }
 
@@ -250,7 +251,6 @@ const SignIn = () => {
             onChangeText={(value) => handleInputChange("email", value)}
             errors={errors}
             name="email"
-            // showError={errors}
           />
 
           <InputField
@@ -270,7 +270,6 @@ const SignIn = () => {
             }
             errors={errors}
             name="password"
-            // showError={Object.keys(errors)[1]?.password?.showError}
           />
 
           <View className="hidden">
