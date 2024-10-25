@@ -89,13 +89,14 @@ const ResetPassword = () => {
 
   const validateForm = () => {
     let errors: any = {};
+    let showError = true;
 
     // Validate password field
     // Validate email field
-    if (!form.email) {
-      errors.email = "Email is required.";
+    if (!form.email || form.email.length === 0) {
+      errors.email = { text: "Email is required.", showError: false };
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      errors.email = "Email is invalid.";
+      errors.email = { text: "Email is invalid.", showError: false };
     }
 
     // Set the errors and update form validity

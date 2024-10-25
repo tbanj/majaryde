@@ -7,6 +7,7 @@ import { router } from "expo-router";
 import React, { useEffect } from "react";
 import { Alert, Text, View } from "react-native";
 import useNetworkCheck from "../hooks/useNetworkCheck";
+import ISConnectedCard from "@/components/ISConnectedCard";
 
 const FindRide = () => {
   const { state } = useNetworkCheck();
@@ -20,42 +21,45 @@ const FindRide = () => {
 
   return (
     <RideLayout title="Ride">
-      <View className="my-3">
-        <Text className="text-lg font-JakartaBold mb-3">From</Text>
-        <GoogleTextInput
-          icon={icons.target}
-          initialLocation={userAddress!}
-          containerStyle="bg-neutral-100"
-          textInputBackgroundColor="#f5f5f5"
-          handlePress={(location) => setUserLocation(location)}
-        />
-      </View>
+      {!state.isConnected && <ISConnectedCard />}
+      <>
+        <View className="my-3">
+          <Text className="text-lg font-JakartaBold mb-3">From</Text>
+          <GoogleTextInput
+            icon={icons.target}
+            initialLocation={userAddress!}
+            containerStyle="bg-neutral-100"
+            textInputBackgroundColor="#f5f5f5"
+            handlePress={(location) => setUserLocation(location)}
+          />
+        </View>
 
-      <View className="">
-        <Text className="text-lg font-JakartaBold mb-3">To</Text>
-        <GoogleTextInput
-          icon={icons.map}
-          initialLocation={destinationAddress!}
-          containerStyle="bg-neutral-100"
-          textInputBackgroundColor="transparent"
-          handlePress={(location) => setDestinationLocation(location)}
-        />
-      </View>
+        <View className="">
+          <Text className="text-lg font-JakartaBold mb-3">To</Text>
+          <GoogleTextInput
+            icon={icons.map}
+            initialLocation={destinationAddress!}
+            containerStyle="bg-neutral-100"
+            textInputBackgroundColor="transparent"
+            handlePress={(location) => setDestinationLocation(location)}
+          />
+        </View>
 
-      <CustomButton
-        title="Find now"
-        onPress={() => {
-          const dataNotValid = drivers.find(
-            (data: any) => data.price === "NaN"
-          );
-          if (dataNotValid) {
-            Alert.alert("Error", "Choose another closeby destination");
-            return;
-          }
-          router.push("/(root)/confirm-ride");
-        }}
-        className="mt-5"
-      />
+        <CustomButton
+          title="Find now"
+          onPress={() => {
+            const dataNotValid = drivers.find(
+              (data: any) => data.price === "NaN"
+            );
+            if (dataNotValid) {
+              Alert.alert("Error", "Choose another closeby destination");
+              return;
+            }
+            router.push("/(root)/confirm-ride");
+          }}
+          className="mt-5"
+        />
+      </>
     </RideLayout>
   );
 };
