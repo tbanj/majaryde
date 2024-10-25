@@ -96,7 +96,7 @@ const SignUp = () => {
     BTNDisabled: false,
     loadingState: false,
     showError: false,
-    showCatchError: true,
+    showCatchError: false,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isFormValid, setIsFormValid] = useState<boolean>(false);

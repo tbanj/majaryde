@@ -18,6 +18,7 @@ import { Link, router } from "expo-router";
 import OAuth from "@/components/OAuth";
 import useNetworkCheck from "../hooks/useNetworkCheck";
 import ISConnectedCard from "@/components/ISConnectedCard";
+import ShowCatchError from "@/components/ShowCatchError";
 
 interface FormState {
   email: string;
@@ -85,7 +86,7 @@ const SignIn = () => {
   const [COMPState, setCOMPState] = useState({
     BTNDisabled: false,
     loadingState: false,
-    showCatchError: true,
+    showCatchError: false,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
@@ -234,26 +235,18 @@ const SignIn = () => {
     "errors.email.showErrro",
     errors.email?.showError
   );
+  const handleCOMPState = (data: boolean) => (COMPState: any) => ({
+    ...COMPState,
+    showCatchError: data,
+  });
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
         {COMPState.showCatchError && (
-          <View className="absolute w-full top-6 bg-yellow-500 z-20">
-            <TouchableOpacity
-              // disabled={locationPermissionState.BTNDisabled}
-              onPress={() =>
-                setCOMPState({ ...COMPState, showCatchError: false })
-              }
-              className="justify-center items-center "
-            >
-              <View className="flex flex-row justify-center items-center space-x-2 ">
-                <Image source={icons.warningSignDark} className={`w-8 h-8 `} />
-                <Text className="text-base">
-                  Error encounter during api call
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <ShowCatchError
+            text="Error encounter during api call"
+            setCOMPState={handleCOMPState}
+          />
         )}
         {!state.isConnected && <ISConnectedCard />}
         {COMPState.loadingState && (
