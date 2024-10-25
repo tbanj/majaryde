@@ -2,16 +2,17 @@ import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "react-native-reanimated";
 import { tokenCache } from "./lib/auth";
 import { LogBox, Text, View } from "react-native";
 import Bugsnag from "@bugsnag/expo";
+import { checkInternetConnection } from "./lib/fetch";
+import useNetworkCheck from "./hooks/useNetworkCheck";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 
-Bugsnag.start();
 SplashScreen.preventAutoHideAsync();
 
 LogBox.ignoreLogs(["Clerk:", "MapViewDirections Error:"]);
@@ -26,6 +27,16 @@ export default function RootLayout() {
     Jakarta: require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
     "Jakarta-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
   });
+
+  // Subscribe to network state changes
+
+  const { state } = useNetworkCheck();
+
+  useEffect(() => {
+    state.isConnected && Bugsnag.start();
+
+    return () => {};
+  }, []);
 
   useEffect(() => {
     if (loaded) {
@@ -46,6 +57,7 @@ export default function RootLayout() {
     </View>
   );
 
+  console.log("connection status", state.isConnected);
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
       <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
