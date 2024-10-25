@@ -83,6 +83,7 @@ const SignIn = () => {
   const [COMPState, setCOMPState] = useState({
     BTNDisabled: false,
     loadingState: false,
+    showCatchError: true,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
@@ -136,6 +137,15 @@ const SignIn = () => {
   useEffect(() => {
     validateForm();
   }, [form.email, form.password.name, validateForm]);
+
+  useEffect(() => {
+    if (COMPState.showCatchError)
+      setTimeout(() => {
+        setCOMPState({ ...COMPState, showCatchError: false });
+      }, 3000);
+
+    return () => {};
+  }, [COMPState.showCatchError]);
 
   // Enhanced input change handler
   const handleInputChange = (field: keyof FormState, value: string) => {
@@ -224,6 +234,22 @@ const SignIn = () => {
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
+        {COMPState.showCatchError && (
+          <View className="absolute w-full top-6 bg-yellow-500 z-20">
+            <TouchableOpacity
+              // disabled={locationPermissionState.BTNDisabled}
+              onPress={() =>
+                setCOMPState({ ...COMPState, showCatchError: false })
+              }
+              className="justify-center items-center "
+            >
+              <View className="flex flex-row justify-center items-center space-x-2 ">
+                <Image source={icons.warningSignDark} className={`w-8 h-8 `} />
+                <Text className="text-base">No internet connection</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
         {COMPState.loadingState && (
           <View className="absolute top-0 bottom-0 right-0 left-0 z-10 items-center justify-center">
             <ActivityIndicator size="large" color="#000" />

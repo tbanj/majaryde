@@ -94,6 +94,7 @@ const SignUp = () => {
     BTNDisabled: false,
     loadingState: false,
     showError: false,
+    showCatchError: true,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
@@ -231,6 +232,15 @@ const SignUp = () => {
     validateFormOTP();
   }, [verification.code]);
 
+  useEffect(() => {
+    if (COMPState.showCatchError)
+      setTimeout(() => {
+        setCOMPState({ ...COMPState, showCatchError: false });
+      }, 3000);
+
+    return () => {};
+  }, [COMPState.showCatchError]);
+
   const onSignUpPress = async () => {
     if (!isLoaded) return;
 
@@ -296,10 +306,20 @@ const SignUp = () => {
           }),
         });
         await setActive({ session: completeSignUp.createdSessionId });
-        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
+        setCOMPState({
+          ...COMPState,
+          BTNDisabled: false,
+          loadingState: false,
+          showCatchError: false,
+        });
         setVerification({ ...verification, state: "success" });
       } else {
-        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
+        setCOMPState({
+          ...COMPState,
+          BTNDisabled: false,
+          loadingState: false,
+          showCatchError: false,
+        });
         setVerification({
           ...verification,
           state: "failed",
@@ -311,7 +331,12 @@ const SignUp = () => {
     } catch (err: any) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
-      setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
+      setCOMPState({
+        ...COMPState,
+        BTNDisabled: false,
+        loadingState: false,
+        showCatchError: false,
+      });
       if (err?.errors?.[0].code !== "form_code_incorrect") {
         setVerification({
           ...verification,
@@ -340,6 +365,22 @@ const SignUp = () => {
 
   return (
     <ScrollView className="flex-1 bg-white">
+      {COMPState.showCatchError && (
+        <View className="absolute w-full top-6 bg-yellow-500 z-20">
+          <TouchableOpacity
+            // disabled={locationPermissionState.BTNDisabled}
+            onPress={() =>
+              setCOMPState({ ...COMPState, showCatchError: false })
+            }
+            className="justify-center items-center "
+          >
+            <View className="flex flex-row justify-center items-center space-x-2 ">
+              <Image source={icons.warningSignDark} className={`w-8 h-8 `} />
+              <Text className="text-base">No internet connection</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
       {COMPState.loadingState && (
         <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
           <ActivityIndicator size="large" color="#000" />
