@@ -25,6 +25,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useFetch } from "@/app/lib/fetch";
 import CustomButton from "@/components/CustomButton";
 import ISConnectedCard from "@/components/ISConnectedCard";
+import ShowCatchError from "@/components/ShowCatchError";
 
 export default function Page() {
   const [locationPermissionState, setLocationPermissionState] = useState({
@@ -192,6 +193,15 @@ export default function Page() {
     };
   }, [navigation]);
 
+  useEffect(() => {
+    if (COMPState.showCatchError)
+      setTimeout(() => {
+        setCOMPState({ ...COMPState, showCatchError: false });
+      }, 3000);
+
+    return () => {};
+  }, [COMPState.showCatchError]);
+
   const requestPermit = async () => {
     setLocationPermissionState((prev: any) => ({
       ...prev,
@@ -217,6 +227,11 @@ export default function Page() {
       signOutActivated: data,
     }));
   };
+
+  const handleCOMPState = (data: boolean) => (COMPState: any) => ({
+    ...COMPState,
+    showCatchError: data,
+  });
 
   return (
     <SafeAreaView>
@@ -260,6 +275,12 @@ export default function Page() {
         )}
         ListHeaderComponent={() => (
           <View className="relative">
+            {COMPState.showCatchError && (
+              <ShowCatchError
+                text="Error encounter during api call"
+                setCOMPState={handleCOMPState}
+              />
+            )}
             {!isConnected && <ISConnectedCard />}
 
             <View className="flex flex-row items-center justify-between my-5">

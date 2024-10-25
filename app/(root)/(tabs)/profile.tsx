@@ -22,6 +22,7 @@ import { fetchAPI, useFetch } from "@/app/lib/fetch";
 import { useNavigation } from "expo-router";
 import useNetworkCheck from "@/app/hooks/useNetworkCheck";
 import ISConnectedCard from "@/components/ISConnectedCard";
+import ShowCatchError from "@/components/ShowCatchError";
 
 interface InserterIconProp {
   name: string;
@@ -259,6 +260,15 @@ const Profile = () => {
     return () => {};
   }, [userData]);
 
+  useEffect(() => {
+    if (COMPState.showCatchError)
+      setTimeout(() => {
+        setCOMPState({ ...COMPState, showCatchError: false });
+      }, 3000);
+
+    return () => {};
+  }, [COMPState.showCatchError]);
+
   const updateUserDetails = async () => {
     try {
       if (isFormValid) {
@@ -304,8 +314,19 @@ const Profile = () => {
     }
   };
 
+  const handleCOMPState = (data: boolean) => (COMPState: any) => ({
+    ...COMPState,
+    showCatchError: data,
+  });
+
   return (
     <SafeAreaView className="flex-1">
+      {COMPState.showCatchError && (
+        <ShowCatchError
+          text="Error encounter during api call"
+          setCOMPState={handleCOMPState}
+        />
+      )}
       {!isConnected && <ISConnectedCard />}
       {COMPState.loadingState && (
         <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
