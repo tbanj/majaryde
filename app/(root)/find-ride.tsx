@@ -6,8 +6,10 @@ import { useDriverStore, useLocationStore } from "@/store";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
 import { Alert, Text, View } from "react-native";
+import useNetworkCheck from "../hooks/useNetworkCheck";
 
 const FindRide = () => {
+  const { state } = useNetworkCheck();
   const {
     userAddress,
     destinationAddress,
@@ -44,7 +46,7 @@ const FindRide = () => {
         title="Find now"
         onPress={() => {
           const dataNotValid = drivers.find(
-            (data: any) => data.price === "NaN",
+            (data: any) => data.price === "NaN"
           );
           if (dataNotValid) {
             Alert.alert("Error", "Choose another closeby destination");

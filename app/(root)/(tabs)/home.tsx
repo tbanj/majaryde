@@ -24,6 +24,7 @@ import { useLocationStore } from "@/store";
 import { useEffect, useState, useCallback } from "react";
 import { useFetch } from "@/app/lib/fetch";
 import CustomButton from "@/components/CustomButton";
+import ISConnectedCard from "@/components/ISConnectedCard";
 
 export default function Page() {
   const [locationPermissionState, setLocationPermissionState] = useState({
@@ -259,17 +260,7 @@ export default function Page() {
         )}
         ListHeaderComponent={() => (
           <View className="relative">
-            {!isConnected && (
-              <View className="absolute w-full top-2 bg-yellow-500 ">
-                <View className="flex flex-row justify-center items-center space-x-2 ">
-                  <Image
-                    source={icons.warningSignDark}
-                    className={`w-6 h-6 `}
-                  />
-                  <Text className="">No internet connection</Text>
-                </View>
-              </View>
-            )}
+            {!isConnected && <ISConnectedCard />}
 
             <View className="flex flex-row items-center justify-between my-5">
               <Text className="text-1xl font-JakartaExtraBold">
