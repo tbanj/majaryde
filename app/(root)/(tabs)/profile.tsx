@@ -20,6 +20,8 @@ import { Dispatch, useCallback, useEffect, useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI, useFetch } from "@/app/lib/fetch";
 import { useNavigation } from "expo-router";
+import useNetworkCheck from "@/app/hooks/useNetworkCheck";
+import ISConnectedCard from "@/components/ISConnectedCard";
 
 interface InserterIconProp {
   name: string;
@@ -73,6 +75,7 @@ const EmailStatusButton = ({ profileFormState }: { profileFormState: any }) => (
 );
 
 const Profile = () => {
+  const { state } = useNetworkCheck();
   const { user } = useUser();
 
   const [profileFormState, setProfileFormState] = useState<any>({
@@ -106,6 +109,7 @@ const Profile = () => {
     data: userData,
     loading,
     error,
+    isConnected,
   } = useFetch<any[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/user/${user?.id}`);
 
   /* useFocusEffect(
@@ -302,6 +306,7 @@ const Profile = () => {
 
   return (
     <SafeAreaView className="flex-1">
+      {!isConnected && <ISConnectedCard />}
       {COMPState.loadingState && (
         <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
           <ActivityIndicator size="large" color="#000" />

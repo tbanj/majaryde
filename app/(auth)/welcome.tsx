@@ -7,6 +7,7 @@ import { icons, onboarding } from "../../constants";
 import CustomButton from "@/components/CustomButton";
 import { useAuth } from "@clerk/clerk-expo";
 import useNetworkCheck from "../hooks/useNetworkCheck";
+import ISConnectedCard from "@/components/ISConnectedCard";
 
 const Onboarding = () => {
   const { state } = useNetworkCheck();
@@ -19,14 +20,7 @@ const Onboarding = () => {
 
   return (
     <SafeAreaView className="flex h-full items-center justify-between bg-white">
-      {!state.isConnected && (
-        <View className="absolute w-full top-8 bg-yellow-500 ">
-          <View className="flex flex-row justify-center items-center space-x-2 ">
-            <Image source={icons.warningSignDark} className={`w-6 h-6 `} />
-            <Text className="">No internet connection</Text>
-          </View>
-        </View>
-      )}
+      {!state.isConnected && <ISConnectedCard />}
       <TouchableOpacity
         onPress={() => {
           router.replace("/(auth)/sign-up");

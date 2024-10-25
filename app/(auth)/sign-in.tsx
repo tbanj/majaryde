@@ -16,6 +16,8 @@ import { formData, icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { Link, router } from "expo-router";
 import OAuth from "@/components/OAuth";
+import useNetworkCheck from "../hooks/useNetworkCheck";
+import ISConnectedCard from "@/components/ISConnectedCard";
 
 interface FormState {
   email: string;
@@ -87,6 +89,7 @@ const SignIn = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const { state } = useNetworkCheck();
   const { signIn, setActive, isLoaded } = useSignIn();
 
   // Enhanced validation function
@@ -245,11 +248,14 @@ const SignIn = () => {
             >
               <View className="flex flex-row justify-center items-center space-x-2 ">
                 <Image source={icons.warningSignDark} className={`w-8 h-8 `} />
-                <Text className="text-base">No internet connection</Text>
+                <Text className="text-base">
+                  Error encounter during api call
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
         )}
+        {!state.isConnected && <ISConnectedCard />}
         {COMPState.loadingState && (
           <View className="absolute top-0 bottom-0 right-0 left-0 z-10 items-center justify-center">
             <ActivityIndicator size="large" color="#000" />

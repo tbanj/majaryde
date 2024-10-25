@@ -16,6 +16,8 @@ import { formData, icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI } from "../lib/fetch";
 import OAuth from "@/components/OAuth";
+import useNetworkCheck from "../hooks/useNetworkCheck";
+import ISConnectedCard from "@/components/ISConnectedCard";
 
 interface FormErrors {
   lastName?: {
@@ -100,6 +102,8 @@ const SignUp = () => {
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [errorsOTP, setErrorsOTP] = useState({});
   const [isFormValidOTP, setIsFormValidOTP] = useState(false);
+
+  const { state } = useNetworkCheck();
 
   const validateForm = () => {
     let errors: FormErrors = {};
@@ -376,11 +380,14 @@ const SignUp = () => {
           >
             <View className="flex flex-row justify-center items-center space-x-2 ">
               <Image source={icons.warningSignDark} className={`w-8 h-8 `} />
-              <Text className="text-base">No internet connection</Text>
+              <Text className="text-base">
+                For error encounter during api call
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
       )}
+      {!state.isConnected && <ISConnectedCard />}
       {COMPState.loadingState && (
         <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
           <ActivityIndicator size="large" color="#000" />
