@@ -3,11 +3,13 @@ import { Redirect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
 import { useRef, useState } from "react";
-import { onboarding } from "../../constants";
+import { icons, onboarding } from "../../constants";
 import CustomButton from "@/components/CustomButton";
 import { useAuth } from "@clerk/clerk-expo";
+import useNetworkCheck from "../hooks/useNetworkCheck";
 
 const Onboarding = () => {
+  const { state } = useNetworkCheck();
   const { isSignedIn } = useAuth();
   const swiperRef = useRef<Swiper>(null);
   const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -17,6 +19,14 @@ const Onboarding = () => {
 
   return (
     <SafeAreaView className="flex h-full items-center justify-between bg-white">
+      {!state.isConnected && (
+        <View className="absolute w-full top-8 bg-yellow-500 ">
+          <View className="flex flex-row justify-center items-center space-x-2 ">
+            <Image source={icons.warningSignDark} className={`w-6 h-6 `} />
+            <Text className="">No internet connection</Text>
+          </View>
+        </View>
+      )}
       <TouchableOpacity
         onPress={() => {
           router.replace("/(auth)/sign-up");

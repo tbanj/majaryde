@@ -259,12 +259,17 @@ export default function Page() {
         )}
         ListHeaderComponent={() => (
           <View className="relative">
-            <View className="absolute w-full top-6 bg-yellow-500 ">
-              <View className="flex flex-row justify-center items-center space-x-2 ">
-                <Image source={icons.warningSign} className={`w-6 h-6 ml-4 `} />
-                <Text className="">No internet connection</Text>
+            {!isConnected && (
+              <View className="absolute w-full top-2 bg-yellow-500 ">
+                <View className="flex flex-row justify-center items-center space-x-2 ">
+                  <Image
+                    source={icons.warningSignDark}
+                    className={`w-6 h-6 `}
+                  />
+                  <Text className="">No internet connection</Text>
+                </View>
               </View>
-            </View>
+            )}
 
             <View className="flex flex-row items-center justify-between my-5">
               <Text className="text-1xl font-JakartaExtraBold">

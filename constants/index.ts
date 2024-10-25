@@ -38,6 +38,7 @@ import eye_hidden from "@/assets/icons/eye_hidden.png";
 import lessThan from "@/assets/icons/less-than.png";
 import phoneCall from "@/assets/icons/phone-call.png";
 import warningSign from "@/assets/icons/warning-sign.png";
+import warningSignDark from "@/assets/icons/warning-sign-dark.png";
 
 export const images = {
   onboarding1,
@@ -83,6 +84,7 @@ export const icons = {
   lessThan,
   phoneCall,
   warningSign,
+  warningSignDark,
 };
 
 export const onboarding = [
