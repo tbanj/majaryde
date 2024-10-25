@@ -1,4 +1,5 @@
 import { useFetch } from "@/app/lib/fetch";
+import ISConnectedCard from "@/components/ISConnectedCard";
 import RideCard from "@/components/RideCard";
 import { images } from "@/constants";
 import { Ride } from "@/types/type";
@@ -13,6 +14,7 @@ const Rides = () => {
     data: recentRides,
     loading,
     error,
+    isConnected,
   } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`);
   return (
     <SafeAreaView>
@@ -42,9 +44,10 @@ const Rides = () => {
           </View>
         )}
         ListHeaderComponent={() => (
-          <>
+          <View className="flex flex-col">
+            {!isConnected && <ISConnectedCard />}
             <Text className="text-2xl font-JakartaBold my-5">All Rides</Text>
-          </>
+          </View>
         )}
       />
     </SafeAreaView>
