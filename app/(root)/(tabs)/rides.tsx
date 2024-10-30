@@ -1,3 +1,4 @@
+import useNetworkCheck from "@/app/hooks/useNetworkCheck";
 import { useFetch } from "@/app/lib/fetch";
 import ISConnectedCard from "@/components/ISConnectedCard";
 import RideCard from "@/components/RideCard";
@@ -8,16 +9,28 @@ import { useUser } from "@clerk/clerk-expo";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+//
 const Rides = () => {
   const [showCatchError, setShowCatchError] = useState(false);
+  const { state } = useNetworkCheck();
   const { user } = useUser();
-  const {
+  // const userId = state.isConnected ? user?.id : "1";
+  /* const {
     data: recentRides,
     loading,
     error,
     isConnected,
-  } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`);
+  } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`); */
+
+  const {
+    data: recentRides,
+    loading,
+    isOfflineData,
+  } = useFetch<Ride[]>({
+    cacheKey: `majaryde_rides_${user?.id}`,
+    cacheExpiry: 24 * 60 * 60 * 1000, // 24 hours
+    endpoint: `${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`,
+  });
 
   useEffect(() => {
     if (showCatchError)
@@ -40,19 +53,23 @@ const Rides = () => {
           paddingBottom: 100,
         }}
         ListEmptyComponent={() => (
-          <View className="flex flex-col items-center justify-center">
-            {!loading ? (
-              <>
-                <Image
-                  source={images.noResult}
-                  className="w-40 h-40"
-                  alt="No recent rides found"
-                  resizeMode="contain"
-                />
-                <Text>No recent rides found</Text>
-              </>
-            ) : (
-              <ActivityIndicator size="small" color="#000" />
+          <View>
+            {state.isConnected && (
+              <View className="flex flex-col items-center justify-center">
+                {!loading ? (
+                  <>
+                    <Image
+                      source={images.noResult}
+                      className="w-40 h-40"
+                      alt="No recent rides found"
+                      resizeMode="contain"
+                    />
+                    <Text>No recent rides found</Text>
+                  </>
+                ) : (
+                  <ActivityIndicator size="small" color="#000" />
+                )}
+              </View>
             )}
           </View>
         )}
@@ -62,10 +79,15 @@ const Rides = () => {
               <ShowCatchError
                 text="Error encounter during api call"
                 setCOMPState={handleCOMPState}
+                showCatchError={showCatchError}
               />
             )}
-            {!isConnected && <ISConnectedCard />}
-            <Text className="text-2xl font-JakartaBold my-5">All Rides</Text>
+            {!state.isConnected && <ISConnectedCard customClass="!top-3" />}
+            <Text
+              className={`text-2xl font-JakartaBold  ${state.isConnected ? "my-5" : "mt-8"}`}
+            >
+              All Rides
+            </Text>
           </View>
         )}
       />

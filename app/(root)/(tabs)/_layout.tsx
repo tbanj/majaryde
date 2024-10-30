@@ -59,6 +59,7 @@ const Layout = () => {
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} source={icons.home} />
           ),
+          // unmountOnBlur: true,
         }}
       />
       <Tabs.Screen

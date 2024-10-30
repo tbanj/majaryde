@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
-import { checkInternetConnection } from "../lib/fetch";
+import { checkInternetConnection } from "../lib/internetClass";
 
 const useNetworkCheck = () => {
   const [state, setState] = useState<{ isConnected: boolean }>({
@@ -10,9 +10,7 @@ const useNetworkCheck = () => {
   useEffect(() => {
     const checkConnection = async () => {
       const isConnected = await checkInternetConnection();
-      console.log("outside 1, no connection", isConnected);
       if (!isConnected) {
-        console.log("inside 1, no connection");
         setState((prev) => ({
           ...prev,
           isConnected: false,

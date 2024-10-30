@@ -7,8 +7,8 @@ import "react-native-reanimated";
 import { tokenCache } from "./lib/auth";
 import { LogBox, Text, View } from "react-native";
 import Bugsnag from "@bugsnag/expo";
-import { checkInternetConnection } from "./lib/fetch";
 import useNetworkCheck from "./hooks/useNetworkCheck";
+import NetworkAwareWrapper from "@/components/hoc/NetworkAwareWrapperProps";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -16,8 +16,9 @@ const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 SplashScreen.preventAutoHideAsync();
 
 LogBox.ignoreLogs(["Clerk:", "MapViewDirections Error:"]);
-
+Bugsnag.start();
 export default function RootLayout() {
+  // const { state } = useNetworkCheck();
   const [loaded] = useFonts({
     "Jakarta-Bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
     "Jakarta-ExtraBold": require("../assets/fonts/PlusJakartaSans-ExtraBold.ttf"),
@@ -29,14 +30,6 @@ export default function RootLayout() {
   });
 
   // Subscribe to network state changes
-
-  const { state } = useNetworkCheck();
-
-  useEffect(() => {
-    state.isConnected && Bugsnag.start();
-
-    return () => {};
-  }, []);
 
   useEffect(() => {
     if (loaded) {
@@ -57,19 +50,16 @@ export default function RootLayout() {
     </View>
   );
 
-  console.log("connection status", state.isConnected);
   return (
     <ErrorBoundary FallbackComponent={ErrorView}>
-      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-        <ClerkLoaded>
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(root)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </ClerkLoaded>
-      </ClerkProvider>
+      <NetworkAwareWrapper publishableKey={publishableKey}>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(root)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </NetworkAwareWrapper>
     </ErrorBoundary>
   );
 }

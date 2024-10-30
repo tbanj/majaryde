@@ -16,6 +16,7 @@ const Payment = ({
   amount,
   driverId,
   rideTime,
+  isConnected,
 }: PaymentProps) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { userId } = useAuth();
@@ -129,7 +130,8 @@ const Payment = ({
   return (
     <>
       <CustomButton
-        title="Confirm Ride"
+        disabled={!isConnected ? true : false}
+        title={!isConnected ? "Confirm Ride Unavailable" : "Confirm Ride"}
         className="my-10"
         // temporary once done uncomment this part back
         onPress={openPaymentSheet}

@@ -218,7 +218,6 @@ const SignUp = () => {
 
   useEffect(() => {
     if (verification.error && !isFormValidOTP) {
-      console.log("am inside here");
       setVerification({ ...verification, error: null });
     }
     return () => {};
@@ -387,9 +386,11 @@ const SignUp = () => {
           </TouchableOpacity>
         </View>
       )}
-      {!state.isConnected && <ISConnectedCard />}
+
+      {!state.isConnected && <ISConnectedCard customClass="!z-10 !h-8" />}
+
       {COMPState.loadingState && (
-        <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
+        <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center ">
           <ActivityIndicator size="large" color="#000" />
         </View>
       )}
@@ -456,15 +457,23 @@ const SignUp = () => {
             name="password"
             // showError={COMPState.showError}
           />
-
+          {/* 
+{
+                    isOfflineData
+                      ? "Update Unavailable Offline"
+                      : "Update Profile"
+                  }
+*/}
           <CustomButton
-            title={`${COMPState.BTNDisabled ? "Please wait..." : "Sign Up"} `}
+            title={`${COMPState.BTNDisabled ? "Please wait..." : state.isConnected && !COMPState.BTNDisabled ? "Sign Up" : !state.isConnected && "Sign Up Unavailable"} `}
             onPress={onSignUpPress}
             className="mt-6"
-            disabled={!isFormValid || COMPState.BTNDisabled}
+            disabled={
+              state.isConnected && (!isFormValid || COMPState.BTNDisabled)
+            }
           />
 
-          <OAuth />
+          <OAuth isConnected={state.isConnected} />
           <Link
             className="text-lg text-center text-general-200 mt-10"
             href={"/sign-in"}

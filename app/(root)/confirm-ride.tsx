@@ -25,7 +25,10 @@ const ConfirmRide = () => {
         ListFooterComponent={() => (
           <View className="mx-5 mt-10">
             <CustomButton
-              title="Select Ride"
+              disabled={!state.isConnected ? true : false}
+              title={
+                !state.isConnected ? "Select Ride Unavailable" : "Select Ride"
+              }
               onPress={() => router.push("/(root)/book-ride")}
             />
           </View>

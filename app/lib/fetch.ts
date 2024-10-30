@@ -1,20 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
-import NetInfo from "@react-native-community/netinfo";
-import { Platform } from "react-native";
+import { useState, useEffect, useCallback, useRef } from "react";
+import useNetworkCheck from "../hooks/useNetworkCheck";
+import { useOfflineData } from "../hooks/useOfflineData";
+import { checkInternetConnection, NoInternetError } from "./internetClass";
 
-// Custom error for no internet connection
-class NoInternetError extends Error {
-  constructor() {
-    super("No internet connection available");
-    this.name = "NoInternetError";
-  }
+interface ApiConfig {
+  cacheKey: string;
+  cacheExpiry?: number;
+  endpoint: string;
+  apiParams?: string;
 }
-
-// Check if there's an active internet connection
-export const checkInternetConnection = async (): Promise<boolean> => {
-  const netInfo = await NetInfo.fetch();
-  return netInfo.isConnected === true && netInfo.isInternetReachable === true;
-};
 
 export const fetchAPI = async (url: string, options?: RequestInit) => {
   // First check internet connectivity
@@ -40,60 +34,94 @@ export const fetchAPI = async (url: string, options?: RequestInit) => {
   }
 };
 
-interface FetchState<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-  isConnected: boolean;
-}
+export const useFetch = <T>(config: ApiConfig) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const {
+    state: { isConnected },
+  } = useNetworkCheck();
+  const isMounted = useRef(true);
+  const fetchTimeoutRef = useRef<NodeJS.Timeout>();
+  const lastFetchTimeRef = useRef(0);
 
-export const useFetch = <T>(url: string, options?: RequestInit) => {
-  const [state, setState] = useState<FetchState<T>>({
-    data: null,
-    loading: false,
-    error: null,
-    isConnected: true,
+  const {
+    data: offlineData,
+    saveData: saveOfflineData,
+    isOfflineData,
+    clearCacheData,
+  } = useOfflineData<T | null>(config.cacheKey, null, {
+    expireTime: config.cacheExpiry,
+    key: config.cacheKey,
   });
 
-  // Subscribe to network state changes
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setState((prev) => ({
-        ...prev,
-        isConnected: Boolean(state.isConnected && state.isInternetReachable),
-      }));
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   const fetchData = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
+    // Prevent fetching if offline or already loading
+    if (!isConnected || loading) return;
+    // Debounce fetch requests - minimum 1 seconds between calls
+    const now = Date.now();
+    if (now - lastFetchTimeRef.current < 1000) {
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+      fetchTimeoutRef.current = setTimeout(() => {
+        lastFetchTimeRef.current = Date.now();
+        fetchData();
+      }, 1000);
+      return;
+    }
+
+    lastFetchTimeRef.current = now;
+    setLoading(true);
 
     try {
-      const result = await fetchAPI(url, options);
-      setState((prev) => ({
-        ...prev,
-        data: result.data,
-        loading: false,
-      }));
+      const ignoreAPI = config.endpoint.split("/");
+      const notRidesRoute = ignoreAPI[ignoreAPI.length - 1];
+      if (notRidesRoute === "undefined") {
+        // const api = ignoreAPI[ignoreAPI.length - 2];
+        return;
+      }
+      const response = await fetch(config.endpoint);
+      const data = await response.json();
+      // Only update state if component is still mounted
+      if (isMounted.current) {
+        await saveOfflineData(data.data, data);
+        setError(null);
+      }
     } catch (err) {
-      setState((prev) => ({
-        ...prev,
-        error: err instanceof Error ? err.message : "An error occurred",
-        loading: false,
-      }));
+      if (isMounted.current) {
+        setError(err as Error);
+      }
+    } finally {
+      if (isMounted.current) {
+        setLoading(false);
+      }
     }
-  }, [url, options]);
+  }, [isConnected, config.endpoint, loading]);
 
   useEffect(() => {
-    if (state.isConnected) {
+    // Set up cleanup
+    isMounted.current = true;
+
+    // Only fetch if we have no data or we're back online
+    if (!offlineData || isConnected) {
       fetchData();
     }
-  }, [fetchData, state.isConnected]);
+
+    // Cleanup function
+    return () => {
+      isMounted.current = false;
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+    };
+  }, [isConnected, config.endpoint]);
 
   return {
-    ...state,
+    data: offlineData,
+    loading,
+    error,
+    isOfflineData,
     refetch: fetchData,
+    clearCacheData,
   };
 };
