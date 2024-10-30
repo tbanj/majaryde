@@ -7,10 +7,9 @@ import ISConnectedCard from "@/components/ISConnectedCard";
 
 const Chat = () => {
   const { state } = useNetworkCheck();
-
   return (
     <SafeAreaView className="flex-1 bg-white p-5">
-      {!state.isConnected && <ISConnectedCard />}
+      {!state.isConnected && <ISConnectedCard customClass="!ml-5" />}
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Text className="text-2xl font-JakartaBold">Chat</Text>
         <View className="flex-1 h-fit flex justify-center items-center">

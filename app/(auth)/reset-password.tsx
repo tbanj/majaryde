@@ -95,8 +95,8 @@ const ResetPassword = () => {
     // Validate email field
     if (!form.email || form.email.length === 0) {
       errors.email = { text: "Email is required.", showError: false };
-    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      errors.email = { text: "Email is invalid.", showError: false };
+    } else if (form?.email.length > 0 && !/\S+@\S+\.\S+/.test(form.email)) {
+      errors.email = { text: "Email is invalid.", showError };
     }
 
     // Set the errors and update form validity
@@ -118,36 +118,70 @@ const ResetPassword = () => {
 
   const validateFormPass = () => {
     let errors: any = {};
+    let showError = true;
+
     // Validate password field
-    if (!formPass.password.name) {
-      errors.password = "Password is required.";
+    if (!formPass.password.name || formPass.password.name.length === 0) {
+      errors.password = { text: "Password is required.", showError: false };
     } else if (formPass.password.name.length < 6) {
-      errors.password = "Password must be at least 6 characters.";
+      errors.password = {
+        text: "Password must be at least 6 characters.",
+        showError,
+      };
     } else if (
+      formPass?.password.name.length > 0 &&
       !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,20}$/.test(
         formPass.password.name
       )
     )
-      errors.password =
-        "Password must have uppercase, lowercase & special character";
-    else if (formPass.password.name.length > 20) {
-      errors.password = "Password length not accepted.";
+      errors.password = {
+        text: "Password must be at least 6 characters.",
+        showError,
+      };
+    else if (
+      formPass?.password.name.length > 0 &&
+      formPass.password.name.length > 20
+    ) {
+      errors.password = {
+        text: "Password length not accepted.",
+        showError,
+      };
     }
 
-    if (!formPass.confirmPassword.name) {
-      errors.confirmPassword = "Confirm Password is required.";
-    } else if (formPass.confirmPassword.name.length < 6) {
-      errors.confirmPassword =
-        "Confirm Password must be at least 6 characters.";
+    if (
+      formPass?.confirmPassword.name.length > 0 &&
+      !formPass.confirmPassword.name
+    ) {
+      errors.confirmPassword = {
+        text: "Confirm Password is required.",
+        showError,
+      };
     } else if (
+      formPass?.confirmPassword.name.length > 0 &&
+      formPass.confirmPassword.name.length < 6
+    ) {
+      errors.confirmPassword = {
+        text: "Confirm Password must be at least 6 characters.",
+        showError,
+      };
+    } else if (
+      formPass?.confirmPassword.name.length > 0 &&
       !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,20}$/.test(
         formPass.confirmPassword.name
       )
     )
-      errors.confirmPassword =
-        "Confirm Password must have uppercase, lowercase & special character";
-    else if (formPass.confirmPassword.name.length > 20) {
-      errors.confirmPassword = "Confirm Password length not accepted.";
+      errors.confirmPassword = {
+        text: "Confirm Password must have uppercase, lowercase & special character",
+        showError,
+      };
+    else if (
+      formPass?.confirmPassword.name.length > 0 &&
+      formPass.confirmPassword.name.length > 20
+    ) {
+      errors.confirmPassword = {
+        text: "Confirm Password length not accepted.",
+        showError,
+      };
     }
     // Set the errors and update form validity
     setErrorsPass(errors);
@@ -162,11 +196,17 @@ const ResetPassword = () => {
 
   const validateFormOTP = () => {
     let errors: any = {};
-
+    let showError = true;
     // Validate OTP modal
-    if (!verification.code) {
-      errors.code = "OTP is required.";
-    } else if (verification.code.length < 6 || verification.code.length > 6) {
+    if (!verification.code || verification.code.length === 0) {
+      errors.code = errors.confirmPassword = {
+        text: "OTP is required.",
+        showError,
+      };
+    } else if (
+      (verification.code.length > 0 && verification.code.length < 6) ||
+      verification.code.length > 6
+    ) {
       errors.code = "OTP must be 6 characters.";
     }
 
@@ -458,9 +498,8 @@ const ResetPassword = () => {
             setVerification((prev: any) => ({ ...prev, state: "default" }))
           }
           isVisible={verification.state === "pending"}
+          // if you want to trigger a view once the modal is close
           // onModalHide={() => {}}
-          /* () =>
-            setVerification({ ...verification, state: "success" }) */
         >
           <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
             <Text className="text-2xl font-JakartaExtraBold mb-2">

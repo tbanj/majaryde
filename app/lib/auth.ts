@@ -40,6 +40,7 @@ export const googleOAuth = async (startOAuthFlow: any) => {
         scheme: "myapp",
       }),
     });
+    console.log("createdSessionId", createdSessionId, "setActive", setActive);
     if (createdSessionId) {
       if (setActive) {
         await setActive({ session: createdSessionId });

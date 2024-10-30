@@ -6,9 +6,17 @@ export const useLocationStore = create<LocationStore>((set) => ({
   userLatitude: null,
   userLongitude: null,
   userAddress: null,
+  userCountry: null,
+  showMap: false,
   destinationLatitude: null,
   destinationLongitude: null,
   destinationAddress: null,
+  setUserCountry: ({ country }: { country: string }) => {
+    set(() => ({ userCountry: country }));
+  },
+  setShowMap: ({ mapCOMP }: { mapCOMP: boolean }) => {
+    set(() => ({ showMap: mapCOMP }));
+  },
   setUserLocation: ({
     latitude,
     longitude,

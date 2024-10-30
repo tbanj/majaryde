@@ -8,7 +8,6 @@ const Page = () => {
   const { state } = useNetworkCheck();
   {
     const { isSignedIn, isLoaded } = useAuth();
-    console.log("Page checkInternetConnection", state.isConnected);
     if (state.isConnected && isSignedIn && isLoaded) {
       return <Redirect href={`/(root)/(tabs)/home`} />;
     }

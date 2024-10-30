@@ -212,7 +212,6 @@ const SignIn = () => {
         }
       } else {
         Alert.alert("Info", "Form One has errors. Please correct them.");
-        console.log("Form One has errors. Please correct them:", errors);
       }
     } catch (err: any) {
       Alert.alert(
@@ -229,32 +228,26 @@ const SignIn = () => {
     }
   }, [isLoaded, isFormValid, errors]);
 
-  console.log(
-    "errors?",
-    errors.email,
-    "errors.email.showErrro",
-    errors.email?.showError
-  );
   const handleCOMPState = (data: boolean) => (COMPState: any) => ({
     ...COMPState,
     showCatchError: data,
   });
   return (
     <ScrollView className="flex-1 bg-white">
+      {COMPState.showCatchError && (
+        <ShowCatchError
+          text="Error encounter during api call"
+          setCOMPState={handleCOMPState}
+          showCatchError={COMPState.showCatchError}
+        />
+      )}
+      {!state.isConnected && <ISConnectedCard customClass="!z-10 !h-8" />}
+      {COMPState.loadingState && (
+        <View className="absolute top-0 bottom-0 right-0 left-0 z-10 items-center justify-center">
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )}
       <View className="flex-1 bg-white">
-        {COMPState.showCatchError && (
-          <ShowCatchError
-            text="Error encounter during api call"
-            setCOMPState={handleCOMPState}
-          />
-        )}
-        {!state.isConnected && <ISConnectedCard />}
-        {COMPState.loadingState && (
-          <View className="absolute top-0 bottom-0 right-0 left-0 z-10 items-center justify-center">
-            <ActivityIndicator size="large" color="#000" />
-          </View>
-        )}
-
         <View className="relative w-full h-[250px]">
           <Image source={images.signUpCar} className="z-10 w-full h-[250px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
@@ -311,10 +304,10 @@ const SignIn = () => {
           </View>
 
           <CustomButton
-            title={COMPState.BTNDisabled ? "Please wait..." : "Sign In"}
+            title={`${COMPState.BTNDisabled ? "Please wait..." : state.isConnected && !COMPState.BTNDisabled ? "Sign In" : !state.isConnected && "Sign In Unavailable"} `}
             onPress={onSignInPress}
             className="mt-6"
-            disabled={!isFormValid || signInBTN}
+            disabled={state.isConnected && (!isFormValid || signInBTN)}
           />
           <Link
             className="text-lg text-center text-general-200 mt-10"
@@ -322,7 +315,7 @@ const SignIn = () => {
           >
             <Text>Forgot your password? {""}</Text>
           </Link>
-          <OAuth />
+          <OAuth isConnected={state.isConnected} />
           <Link
             className="text-lg text-center text-general-200 mt-10"
             href={"/sign-up"}

@@ -54,6 +54,11 @@ export default {
       ],
       "expo-font",
       "@bugsnag/plugin-expo-eas-sourcemaps",
+      ["expo-build-properties", {
+        "android": {
+          "usesCleartextTraffic": true
+        },
+      }]
     ],
     experiments: {
       typedRoutes: true,

@@ -1,22 +1,27 @@
 import { Alert, Image, Text, View } from "react-native";
 import CustomButton from "./CustomButton";
 import { icons } from "@/constants";
-import { useOAuth } from "@clerk/clerk-expo";
+import { useAuth, useOAuth } from "@clerk/clerk-expo";
 import { useCallback, useState } from "react";
 import { googleOAuth } from "@/app/lib/auth";
 import { router } from "expo-router";
 
-const OAuth = () => {
+const OAuth = ({ isConnected }: { isConnected: boolean }) => {
   const [BTNDisabled, setBTNDisabled] = useState(false);
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
-
+  const { signOut } = useAuth();
   const handleGoogleSignIn = useCallback(async () => {
     try {
       setBTNDisabled(true);
       const result = await googleOAuth(startOAuthFlow);
-      /* result.success === false..when the Google login is cancelled */
-      if (!result.success) {
+      if (
+        (!result.success && result.code === "success") ||
+        result.code === undefined
+      ) {
         setBTNDisabled(false);
+        await signOut();
+        router.push("/(auth)/sign-up");
+        // Oauth {"code": undefined, "message": "You're currently in single session mode. You can only be signed into one account at a time.", "success": false}
         return;
       } else if (
         result.code === "session_exists" ||
@@ -40,8 +45,8 @@ const OAuth = () => {
         <View className="flex-1 h-[1px] bg-general-100" />
       </View>
       <CustomButton
-        disabled={BTNDisabled}
-        title="Log In with Google"
+        disabled={!isConnected && BTNDisabled}
+        title={`${isConnected ? "Log In with Google" : "Log In Unavailable"} `}
         className="mt-5 w-full shadow-none"
         IconLeft={() => (
           <Image

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
@@ -8,21 +8,28 @@ import {
 } from "@/app/lib/map";
 import { useDriverStore, useLocationStore } from "@/store";
 import { Driver, MarkerData } from "@/types/type";
-import { icons, NativeModalState } from "@/constants";
+import { icons } from "@/constants";
 import { useFetch } from "@/app/lib/fetch";
 import MapViewDirections from "react-native-maps-directions";
 
 interface MapProps {
   isLogout?: string;
-  setIsLogout?: (data: string) => void;
+  isConnected: boolean;
 }
-const Map = ({ isLogout, setIsLogout }: MapProps) => {
+
+const Map = ({ isLogout, isConnected }: MapProps) => {
   const {
     data: drivers,
     loading,
     error,
-  } = useFetch<Driver[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/driver`);
-  const { selectedDriver, setDrivers, clearSelectedDriver } = useDriverStore();
+    isOfflineData,
+  } = useFetch<Driver[]>({
+    cacheKey: `majaryde_drivers`,
+    cacheExpiry: 24 * 60 * 60 * 1000,
+    endpoint: `${process.env.EXPO_PUBLIC_LIVE_API}/driver`,
+  });
+
+  const { selectedDriver, setDrivers } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
   const {
@@ -31,84 +38,147 @@ const Map = ({ isLogout, setIsLogout }: MapProps) => {
     userAddress,
     destinationLatitude,
     destinationLongitude,
-    setDestinationLocation,
   } = useLocationStore();
 
-  useEffect(() => {
-    // TODO remove this later
-    // setDrivers(drivers as MarkerData[]);
-    if (Array.isArray(drivers)) {
-      if (!userLatitude || !userLongitude) {
-        console.log("User location is missing or undefined.");
-        return;
-      }
+  // Memoize the region calculation
+  const region = useMemo(
+    () =>
+      calculateRegion({
+        userLatitude: userLatitude || 37.78825,
+        userLongitude: userLongitude || -122.4324,
+        destinationLatitude,
+        destinationLongitude,
+      }),
+    [userLatitude, userLongitude, destinationLatitude, destinationLongitude]
+  );
 
+  // Memoize the user location check
+  const isUserLocationValid = useMemo(
+    () => userLatitude !== null && userLongitude !== null,
+    [userLatitude, userLongitude]
+  );
+
+  // Memoize the destination location check
+  const hasDestination = useMemo(
+    () => destinationLatitude !== null && destinationLongitude !== null,
+    [destinationLatitude, destinationLongitude]
+  );
+
+  // Callback for generating markers
+  const generateMarkers = useCallback(() => {
+    if (Array.isArray(drivers) && isUserLocationValid) {
       const newMarkers = generateMarkersFromData({
-        data: drivers!,
-        userLatitude,
-        userLongitude,
+        data: drivers,
+        userLatitude: userLatitude!,
+        userLongitude: userLongitude!,
       });
       setMarkers(newMarkers);
     }
-  }, [drivers, userLatitude, userLongitude]);
+  }, [drivers, userLatitude, userLongitude, isUserLocationValid]);
 
-  const resetUserMapData = () => {
-    setDrivers([]);
-    clearSelectedDriver();
-    setDestinationLocation({
-      latitude: null!,
-      longitude: null!,
-      address: null!,
-    });
-    setIsLogout!(NativeModalState.default);
-  };
-
-  useEffect(() => {
-    if (isLogout === NativeModalState.success) {
-      resetUserMapData();
-    }
-
-    return () => {};
-  }, [isLogout]);
-
-  useEffect(() => {
-    if (markers.length > 0 && destinationLatitude && destinationLongitude) {
-      calculateDriverTimes({
+  // Callback for calculating driver times
+  const updateDriverTimes = useCallback(async () => {
+    if (markers.length > 0 && hasDestination) {
+      const updatedDrivers = await calculateDriverTimes({
         markers,
-        userLongitude,
-        userLatitude,
-        destinationLatitude,
-        destinationLongitude,
-      }).then((drivers) => {
-        setDrivers(drivers as MarkerData[]);
+        userLongitude: userLongitude!,
+        userLatitude: userLatitude!,
+        destinationLatitude: destinationLatitude!,
+        destinationLongitude: destinationLongitude!,
       });
+      setDrivers(updatedDrivers as MarkerData[]);
     }
-  }, [markers, destinationLatitude, destinationLatitude]);
+  }, [
+    markers,
+    hasDestination,
+    userLongitude,
+    userLatitude,
+    destinationLatitude,
+    destinationLongitude,
+  ]);
 
-  if (loading || !userLatitude || !userLongitude)
+  // Effect for generating markers
+  useEffect(() => {
+    generateMarkers();
+  }, [generateMarkers]);
+
+  // Separate effect for updating driver times
+  useEffect(() => {
+    updateDriverTimes();
+  }, [updateDriverTimes]);
+
+  // Memoized marker components
+  const markerComponents = useMemo(
+    () =>
+      markers.map((marker) => (
+        <Marker
+          key={marker.id}
+          coordinate={{
+            latitude: marker.latitude,
+            longitude: marker.longitude,
+          }}
+          title={marker.title}
+          image={
+            selectedDriver === marker.id ? icons.selectedMarker : icons.marker
+          }
+        />
+      )),
+    [markers, selectedDriver]
+  );
+
+  // Memoized destination marker and directions
+  const destinationComponents = useMemo(
+    () =>
+      hasDestination ? (
+        <>
+          <Marker
+            key="destination"
+            coordinate={{
+              latitude: destinationLatitude!,
+              longitude: destinationLongitude!,
+            }}
+            title="Destination"
+            image={icons.pin}
+          />
+          <MapViewDirections
+            origin={{
+              latitude: userLatitude!,
+              longitude: userLongitude!,
+            }}
+            destination={{
+              latitude: destinationLatitude!,
+              longitude: destinationLongitude!,
+            }}
+            apikey={process.env.EXPO_PUBLIC_GOOGLE_API_KEY!}
+            strokeColor="#0286ff"
+            strokeWidth={2}
+          />
+        </>
+      ) : null,
+    [
+      hasDestination,
+      destinationLatitude,
+      destinationLongitude,
+      userLatitude,
+      userLongitude,
+    ]
+  );
+
+  if (loading || !isUserLocationValid) {
     return (
       <View className="flex justify-between items-center w-full">
         <ActivityIndicator size="small" color="#000" />
       </View>
     );
+  }
 
   if (error) {
-    console.error("API Error:", error);
     return (
       <View className="flex justify-between items-center w-full">
         <Text>Error loading map data. Please try again later.</Text>
       </View>
     );
   }
-
-  const region = calculateRegion({
-    userLatitude: userLatitude || 37.78825, // fallback latitude
-    userLongitude: userLongitude || -122.4324, // fallback longitude
-    destinationLatitude,
-    destinationLongitude,
-  });
-
-  /* if you want ur recent ride to show dont enable showUserLocation */
 
   return (
     <MapView
@@ -121,48 +191,10 @@ const Map = ({ isLogout, setIsLogout }: MapProps) => {
       showsUserLocation={true}
       userInterfaceStyle="light"
     >
-      {markers.map((marker) => (
-        <Marker
-          key={marker.id}
-          coordinate={{
-            latitude: marker.latitude,
-            longitude: marker.longitude,
-          }}
-          title={marker.title}
-          image={
-            selectedDriver === marker.id ? icons.selectedMarker : icons.marker
-          }
-        ></Marker>
-      ))}
-      {destinationLatitude && destinationLongitude && (
-        <>
-          <Marker
-            key="destination"
-            coordinate={{
-              latitude: destinationLatitude,
-              longitude: destinationLongitude,
-            }}
-            title="Destination"
-            image={icons.pin}
-          />
-
-          <MapViewDirections
-            origin={{
-              latitude: userLatitude!,
-              longitude: userLongitude,
-            }}
-            destination={{
-              latitude: destinationLatitude,
-              longitude: destinationLongitude,
-            }}
-            apikey={process.env.EXPO_PUBLIC_GOOGLE_API_KEY!}
-            strokeColor="#0286ff"
-            strokeWidth={2}
-          />
-        </>
-      )}
+      {markerComponents}
+      {destinationComponents}
     </MapView>
   );
 };
 
-export default Map;
+export default React.memo(Map);

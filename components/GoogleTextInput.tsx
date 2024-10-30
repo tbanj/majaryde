@@ -1,3 +1,4 @@
+import useNetworkCheck from "@/app/hooks/useNetworkCheck";
 import { icons } from "@/constants";
 import { GoogleInputProps } from "@/types/type";
 import React, { useRef } from "react";
@@ -16,6 +17,8 @@ const GoogleTextInput = ({
   handlePress,
 }: GoogleInputProps) => {
   const ref = useRef<GooglePlacesAutocompleteRef>(null);
+
+  const { state } = useNetworkCheck();
 
   /* const handleClearText = () => {
     ref?.current?.setAddressText("");
@@ -59,13 +62,14 @@ const GoogleTextInput = ({
             zIndex: 99,
           },
         }}
-        onPress={(data, details = null) =>
-          handlePress({
-            latitude: details?.geometry.location.lat!,
-            longitude: details?.geometry.location.lng!,
-            address: data.description,
-          })
-        }
+        onPress={(data, details = null) => {
+          state.isConnected &&
+            handlePress({
+              latitude: details?.geometry.location.lat!,
+              longitude: details?.geometry.location.lng!,
+              address: data.description,
+            });
+        }}
         query={{
           key: googlePlacesApiKey,
           language: "en",

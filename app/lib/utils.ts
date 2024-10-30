@@ -1,4 +1,5 @@
 import { Ride } from "@/types/type";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const sortRides = (rides: Ride[]): Ride[] => {
   const result = rides.sort((a, b) => {
@@ -44,3 +45,33 @@ export function formatDate(dateString: string): string {
 
   return `${day < 10 ? "0" + day : day} ${month} ${year}`;
 }
+
+const getAllKeys = async () => {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    return keys;
+  } catch (error) {
+    console.error("Error retrieving keys from AsyncStorage", error);
+  }
+};
+
+export const handleClearStoredData = async () => {
+  const derivedDataKeys = await getAllKeys();
+  if (derivedDataKeys && derivedDataKeys.length > 0) {
+    const userKeys = derivedDataKeys.filter((asyncKeys: string) =>
+      asyncKeys.startsWith("majaryde_")
+    );
+    return userKeys;
+  }
+  return null;
+};
+
+export const clearCacheData = async (keysRetrived: any) => {
+  try {
+    await Promise.all(
+      keysRetrived.map((keyVal: string) => AsyncStorage.removeItem(keyVal))
+    );
+  } catch (error) {
+    console.log("Error clearing cache:", error);
+  }
+};

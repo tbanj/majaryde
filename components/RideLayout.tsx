@@ -8,6 +8,9 @@ import BottomSheet, {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import Map from "./Map";
+import useNetworkCheck from "@/app/hooks/useNetworkCheck";
+import ISConnectedCard from "./ISConnectedCard";
+import { useLocationStore } from "@/store";
 
 const RideLayout = ({
   title,
@@ -20,15 +23,34 @@ const RideLayout = ({
   snapPoints?: string[];
   showBackRoute?: boolean;
 }) => {
+  const { state } = useNetworkCheck();
   const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const { setDestinationLocation } = useLocationStore();
+
+  const resetDestination = () => {
+    setDestinationLocation({
+      latitude: null!,
+      longitude: null!,
+      address: null!,
+    });
+  };
 
   return (
     <GestureHandlerRootView className="flex flex-1">
       <View className="flex flex-1 bg-white">
         <View className="flex flex-col h-screen bg-blue-500">
+          {!state.isConnected && <ISConnectedCard customClass=" !z-10" />}
           <View className="flex flex-row absolute z-10 top-16 items-center justify-start px-5">
             {showBackRoute && (
-              <TouchableOpacity onPress={() => router.back()}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (title === "Ride") {
+                    resetDestination();
+                  }
+                  router.back();
+                }}
+              >
                 <View className="w-10 h-10 bg-white rounded-full items-center justify-center">
                   <Image
                     source={icons.backArrow}
@@ -42,14 +64,16 @@ const RideLayout = ({
               {title || "Go Back"}
             </Text>
           </View>
-          <Map />
+          <Map isConnected={state.isConnected} />
         </View>
         <BottomSheet
           ref={bottomSheetRef}
           snapPoints={snapPoints || ["45%", "85%"]}
           index={0}
         >
-          {title === "Choose a Rider" || title === "Ride" ? (
+          {title === "Choose a Rider" ||
+          title === "Ride" ||
+          title === "Ride information" ? (
             <BottomSheetView
               style={{
                 flex: 1,
@@ -63,7 +87,7 @@ const RideLayout = ({
             <BottomSheetScrollView
               style={{
                 flex: 1,
-                padding: 20,
+                padding: 10,
               }}
             >
               {children}

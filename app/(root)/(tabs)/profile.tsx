@@ -24,6 +24,25 @@ import useNetworkCheck from "@/app/hooks/useNetworkCheck";
 import ISConnectedCard from "@/components/ISConnectedCard";
 import ShowCatchError from "@/components/ShowCatchError";
 
+interface FormErrors {
+  lastName?: {
+    text: string;
+    showError: boolean;
+  };
+  firstName?: {
+    text: string;
+    showError: boolean;
+  };
+  email?: {
+    text: string;
+    showError: boolean;
+  };
+  phoneNumber?: {
+    text: string;
+    showError: boolean;
+  };
+}
+
 interface InserterIconProp {
   name: string;
   profileFormState: any | null;
@@ -79,16 +98,26 @@ const Profile = () => {
   const { state } = useNetworkCheck();
   const { user } = useUser();
 
-  const [profileFormState, setProfileFormState] = useState<any>({
-    firstName: { name: user?.firstName || "Not Found", editable: false },
-    lastName: { name: user?.lastName || "Not Found", editable: false },
+  const {
+    data: userData,
+    loading: userDataLoading,
+    isOfflineData,
+  } = useFetch<any[]>({
+    cacheKey: `majaryde_users_${user?.id}`,
+    cacheExpiry: 12 * 60 * 60 * 1000, // 12 hours
+    endpoint: `${process.env.EXPO_PUBLIC_LIVE_API}/user/${user?.id}`,
+  });
+
+  const [profileFormState, setProfileFormState] = useState<any>(() => ({
+    firstName: { name: user?.firstName || "", editable: false },
+    lastName: { name: user?.lastName || "", editable: false },
     email: {
-      name: user?.primaryEmailAddress?.emailAddress || "Not Found",
+      name: user?.primaryEmailAddress?.emailAddress || "",
       editable: false,
       verified: true,
     },
     phoneNumber: {
-      name: user?.primaryPhoneNumber?.phoneNumber,
+      name: userData?.[0]?.primary_phone_number || "",
       editable: false,
       keyboard: false,
     },
@@ -97,7 +126,7 @@ const Profile = () => {
       editable: false,
       name: "Verified",
     },
-  });
+  }));
   const [COMPState, setCOMPState] = useState<any>({
     BTNDisabled: false,
     loadingState: false,
@@ -106,13 +135,6 @@ const Profile = () => {
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
 
   const navigation = useNavigation();
-  const {
-    data: userData,
-    loading,
-    error,
-    isConnected,
-  } = useFetch<any[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/user/${user?.id}`);
-
   /* useFocusEffect(
     useCallback(() => {
       const fetchUserPhone = async () => {
@@ -147,6 +169,45 @@ const Profile = () => {
     }, [])
   ); */
 
+  /* useEffect(() => {
+    if (state.isConnected && user) {
+      setProfileFormState((prev: any) => ({
+        ...prev,
+        firstName: { name: user?.firstName || "Not Found", editable: false },
+        lastName: { name: user?.lastName || "Not Found", editable: false },
+        email: {
+          name: user?.primaryEmailAddress?.emailAddress || "Not Found",
+          editable: false,
+          verified: true,
+        },
+        phoneNumber: {
+          name: user?.primaryPhoneNumber?.phoneNumber,
+          editable: false,
+          keyboard: false,
+        },
+        emailStatus: {
+          state: false,
+          editable: false,
+          name: "Verified",
+        },
+      }));
+    }
+
+    return () => {};
+  }, []); */
+
+  // Update form when offline data is loaded
+  useEffect(() => {
+    if (userData?.[0]) {
+      setProfileFormState((prev: any) => ({
+        ...prev,
+        phoneNumber: {
+          ...prev.phoneNumber,
+          name: userData[0].primary_phone_number,
+        },
+      }));
+    }
+  }, [userData]);
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       navigation.setOptions({
@@ -196,38 +257,99 @@ const Profile = () => {
   }, [navigation]);
 
   const validateForm = () => {
-    let errors: any = {};
+    let errors: FormErrors = {};
+    let showError = true;
 
     // Validate password field
-    if (!profileFormState.lastName.name) {
-      errors.lastName = "Last name is required.";
-    } else if (profileFormState.lastName.name.length < 2) {
-      errors.lastName = "Last name must be at least 3 characters.";
-    } else if (profileFormState.lastName.name.length > 32) {
-      errors.lastName = "Last name length not accepted.";
+
+    if (
+      profileFormState.firstName.name.length === 0 ||
+      !profileFormState.firstName.name
+    ) {
+      errors.firstName = {
+        text: "First name is required.",
+        showError: false,
+      };
+    } else if (
+      profileFormState.firstName.name.length > 0 &&
+      profileFormState.firstName.name.length < 3
+    ) {
+      errors.firstName = {
+        text: "First name is required.",
+        showError,
+      };
+    } else if (
+      profileFormState.firstName.name.length > 0 &&
+      profileFormState.firstName.name.length > 32
+    ) {
+      errors.firstName = {
+        text: "First name length not accepted.",
+        showError,
+      };
     }
 
-    if (!profileFormState.firstName.name) {
-      errors.firstName = "First name is required.";
-    } else if (profileFormState.firstName.name.length < 2) {
-      errors.firstName = "First name must be at least 3 characters.";
-    } else if (profileFormState.firstName.name.length > 32) {
-      errors.firstName = "First name length not accepted.";
+    if (
+      !profileFormState.lastName.name ||
+      profileFormState.lastName.name.length === 0
+    ) {
+      errors.lastName = { text: "Last name is required.", showError: false };
+    } else if (profileFormState.lastName.name.length < 3) {
+      errors.lastName = {
+        text: "Last name must be at least 3 characters.",
+        showError,
+      };
+    } else if (
+      profileFormState.lastName.name.length > 0 &&
+      profileFormState.lastName.name.length > 32
+    ) {
+      errors.lastName = {
+        text: "Last name length not accepted.",
+        showError,
+      };
     }
-
     // Validate email field
-    if (!profileFormState.email.name) {
-      errors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(profileFormState.email.name)) {
-      errors.email = "Email is invalid.";
+    if (
+      profileFormState.email.name.length === 0 ||
+      !profileFormState.email.name
+    ) {
+      errors.email = {
+        text: "Email is required.",
+        showError: false,
+      };
+    } else if (
+      profileFormState.email.name.length > 0 &&
+      !/\S+@\S+\.\S+/.test(profileFormState.email.name)
+    ) {
+      errors.email = {
+        text: "Email is invalid.",
+        showError,
+      };
     }
 
-    if (!profileFormState.phoneNumber.name) {
-      errors.phoneNumber = "Phone number is required.";
-    } else if (profileFormState?.phoneNumber?.name.length < 11) {
-      errors.phoneNumber = "Phone number must be 11 characters.";
-    } else if (profileFormState?.phoneNumber?.name.length > 11) {
-      errors.phoneNumber = "Phone number length not accepted.";
+    if (
+      !profileFormState.phoneNumber.name ||
+      profileFormState.phoneNumber.name.length === 0
+    ) {
+      errors.phoneNumber = {
+        text: "Phone number is required.",
+        showError: false,
+      };
+    } else if (
+      profileFormState.phoneNumber.name.length > 0 &&
+      profileFormState?.phoneNumber?.name.length < 11
+    ) {
+      errors.phoneNumber = {
+        text: "Phone number must be 11 characters.",
+        showError,
+      };
+    } else if (
+      profileFormState.phoneNumber.name.length > 0 &&
+      profileFormState?.phoneNumber?.name.length > 11
+    ) {
+      errors.phoneNumber = {
+        text: "Phone number must be 11 characters.",
+        showError,
+      };
     }
 
     // Set the errors and update form validity
@@ -238,27 +360,13 @@ const Profile = () => {
   useEffect(() => {
     // Trigger form validation when name,
     // email, or password changes
-    validateForm();
+    if (state.isConnected) validateForm();
   }, [
     profileFormState.email,
     profileFormState.firstName.name,
     profileFormState.lastName.name,
     profileFormState.phoneNumber.name,
   ]);
-
-  useEffect(() => {
-    if (Array.isArray(userData)) {
-      setProfileFormState({
-        ...profileFormState,
-        phoneNumber: {
-          ...profileFormState.phoneNumber,
-          name: userData?.[0].primary_phone_number,
-        },
-      });
-    }
-
-    return () => {};
-  }, [userData]);
 
   useEffect(() => {
     if (COMPState.showCatchError)
@@ -270,6 +378,12 @@ const Profile = () => {
   }, [COMPState.showCatchError]);
 
   const updateUserDetails = async () => {
+    if (!isFormValid || isOfflineData) {
+      // Email Form is invalid, display error messages
+      Alert.alert("Info", "Form has errors. Please correct them.");
+      setIsFormValid(true);
+      return;
+    }
     try {
       if (isFormValid) {
         setCOMPState({ ...COMPState, loadingState: true });
@@ -284,6 +398,15 @@ const Profile = () => {
           profileFormState.phoneNumber.name !==
           userData?.[0].primary_phone_number
         ) {
+          console.log(
+            "update data",
+            JSON.stringify({
+              name: `${firstName.name} ${lastName.name}`,
+              clerkId: `${user?.id}`,
+              email: email.name,
+              primary_phone_number: phoneNumber.name,
+            })
+          );
           const res = await fetchAPI(
             `${process.env.EXPO_PUBLIC_LIVE_API}/user/update`,
             {
@@ -303,14 +426,16 @@ const Profile = () => {
         }
 
         setCOMPState({ ...COMPState, loadingState: false });
-      } else {
-        // Email Form is invalid, display error messages
-        Alert.alert("Info", "Form has errors. Please correct them.");
+        setIsFormValid(false);
       }
     } catch (error) {
       setCOMPState({ ...COMPState, loadingState: false });
+      setIsFormValid(true);
       console.error("Failed to update user details:", error);
-      Alert.alert("Error", "Error updating user details");
+      Alert.alert(
+        "Error",
+        "Error updating user details, try with another phone number"
+      );
     }
   };
 
@@ -325,10 +450,11 @@ const Profile = () => {
         <ShowCatchError
           text="Error encounter during api call"
           setCOMPState={handleCOMPState}
+          showCatchError={COMPState.showCatchError}
         />
       )}
-      {!isConnected && <ISConnectedCard />}
-      {COMPState.loadingState && (
+      {!state.isConnected && <ISConnectedCard />}
+      {state.isConnected && userDataLoading && (
         <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
           <ActivityIndicator size="large" color="#000" />
         </View>
@@ -468,9 +594,15 @@ const Profile = () => {
                     name="phoneNumber"
                   />
                 </View>
+                {/* !isFormValid || !!COMPState.loadingState */}
+                {/* "Update Profile" */}
                 <CustomButton
-                  disabled={!!COMPState.loadingState}
-                  title="Update Profile"
+                  disabled={!isFormValid || userDataLoading || isOfflineData}
+                  title={
+                    isOfflineData
+                      ? "Update Unavailable Offline"
+                      : "Update Profile"
+                  }
                   className={`mt-6`}
                   onPress={updateUserDetails}
                 />
