@@ -133,7 +133,7 @@ const LogoutBTN = () => {
             />
 
             <CustomButton
-              title="Yes"
+              title={`${signOutState.BTNDisabled ? "please wait" : "Yes"} `}
               onPress={handleSignOut}
               disabled={signOutState.BTNDisabled}
               className="mt-5 !w-[100px]"

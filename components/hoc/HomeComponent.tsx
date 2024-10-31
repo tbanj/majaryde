@@ -109,6 +109,11 @@ const HomeComponent = () => {
     return () => {};
   }, [COMPState.showCatchError]);
 
+  useEffect(() => {
+    if (user?.id && !recentRides) refetch();
+    return () => {};
+  }, [user?.id]);
+
   const requestLocation = async () => {
     try {
       if (!state.isConnected) return;
@@ -188,6 +193,8 @@ const HomeComponent = () => {
       setShowMap({ mapCOMP: true });
     }, 1200);
   };
+
+  /* //todo implement checker to check if recentRides is empty or null */
 
   const HomeComponentMemoid = useMemo(() => {
     if (user?.id) {
@@ -327,12 +334,6 @@ const HomeComponent = () => {
     locationPermissionState?.location,
     recentRides,
   ]);
-  console.log(
-    "recent rides",
-    recentRides,
-    "locationPermissionState?.location",
-    locationPermissionState?.location
-  );
   return <>{HomeComponentMemoid}</>;
 };
 
