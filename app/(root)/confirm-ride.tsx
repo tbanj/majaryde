@@ -25,7 +25,7 @@ const ConfirmRide = () => {
         ListFooterComponent={() => (
           <View className="mx-5 mt-10">
             <CustomButton
-              disabled={!state.isConnected ? true : false}
+              disabled={!state.isConnected || !selectedDriver ? true : false}
               title={
                 !state.isConnected ? "Select Ride Unavailable" : "Select Ride"
               }
