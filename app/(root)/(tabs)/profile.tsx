@@ -164,7 +164,6 @@ const Profile = () => {
       };
       fetchUserPhone();
       return () => {
-        console.log("profile route is now unfocused.");
       };
     }, [])
   ); */
