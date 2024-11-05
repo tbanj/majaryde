@@ -24,7 +24,9 @@ const InputField = ({
 }: InputFieldProps) => {
   return (
     <View className="my-2 w-full">
-      <Text className={`text-lg font-JakartaSemiBold mb-3 ${labelStyle}`}>
+      <Text
+        className={`dark:text-white text-lg font-JakartaSemiBold mb-3 ${labelStyle}`}
+      >
         {label}
       </Text>
       <View

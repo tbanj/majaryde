@@ -103,7 +103,7 @@ const Profile = () => {
     loading: userDataLoading,
     isOfflineData,
   } = useFetch<any[]>({
-    cacheKey: `majaryde_users_${user?.id}`,
+    cacheKey: `aceeryde_users_${user?.id}`,
     cacheExpiry: 12 * 60 * 60 * 1000, // 12 hours
     endpoint: `${process.env.EXPO_PUBLIC_LIVE_API}/user/${user?.id}`,
   });
@@ -397,15 +397,6 @@ const Profile = () => {
           profileFormState.phoneNumber.name !==
           userData?.[0].primary_phone_number
         ) {
-          console.log(
-            "update data",
-            JSON.stringify({
-              name: `${firstName.name} ${lastName.name}`,
-              clerkId: `${user?.id}`,
-              email: email.name,
-              primary_phone_number: phoneNumber.name,
-            })
-          );
           const res = await fetchAPI(
             `${process.env.EXPO_PUBLIC_LIVE_API}/user/update`,
             {
@@ -444,7 +435,7 @@ const Profile = () => {
   });
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1 bg-white dark:bg-custom-dark">
       {COMPState.showCatchError && (
         <ShowCatchError
           text="Error encounter during api call"
@@ -472,7 +463,9 @@ const Profile = () => {
           }}
         >
           <View className=" pt-5">
-            <Text className="text-2xl font-JakartaBold">My profile</Text>
+            <Text className="text-2xl font-JakartaBold dark:text-white">
+              My profile
+            </Text>
           </View>
 
           <View className="flex items-center justify-center py-5">
@@ -484,7 +477,7 @@ const Profile = () => {
               className=" rounded-full border-[3px] border-white shadow-sm shadow-neutral-300"
             />
           </View>
-          <View className="flex-1 bg-white rounded-lg shadow-sm shadow-neutral-300 p-5">
+          <View className="flex-1 bg-white dark:bg-custom-dark rounded-lg shadow-sm shadow-neutral-300 p-5">
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View className="flex-1">
                 <View className={`space-y-2`}>

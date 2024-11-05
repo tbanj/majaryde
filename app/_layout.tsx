@@ -1,14 +1,12 @@
-import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "react-native-reanimated";
-import { tokenCache } from "./lib/auth";
 import { LogBox, Text, View } from "react-native";
 import Bugsnag from "@bugsnag/expo";
-import useNetworkCheck from "./hooks/useNetworkCheck";
 import NetworkAwareWrapper from "@/components/hoc/NetworkAwareWrapperProps";
+import useNetworkCheck from "./hooks/useNetworkCheck";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -16,9 +14,8 @@ const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 SplashScreen.preventAutoHideAsync();
 
 LogBox.ignoreLogs(["Clerk:", "MapViewDirections Error:"]);
-Bugsnag.start();
+
 export default function RootLayout() {
-  // const { state } = useNetworkCheck();
   const [loaded] = useFonts({
     "Jakarta-Bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
     "Jakarta-ExtraBold": require("../assets/fonts/PlusJakartaSans-ExtraBold.ttf"),
@@ -28,7 +25,7 @@ export default function RootLayout() {
     Jakarta: require("../assets/fonts/PlusJakartaSans-Regular.ttf"),
     "Jakarta-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
   });
-
+  const { state } = useNetworkCheck();
   // Subscribe to network state changes
 
   useEffect(() => {
@@ -36,6 +33,14 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    if (state.isConnected) {
+      Bugsnag.start();
+    }
+
+    return () => {};
+  }, [state.isConnected]);
 
   if (!loaded) {
     return null;

@@ -59,7 +59,7 @@ export const handleClearStoredData = async () => {
   const derivedDataKeys = await getAllKeys();
   if (derivedDataKeys && derivedDataKeys.length > 0) {
     const userKeys = derivedDataKeys.filter((asyncKeys: string) =>
-      asyncKeys.startsWith("majaryde_")
+      asyncKeys.startsWith("aceeryde_")
     );
     return userKeys;
   }

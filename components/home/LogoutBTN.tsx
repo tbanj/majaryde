@@ -1,6 +1,12 @@
 import { icons, NativeModalState } from "@/constants";
 import React, { useCallback, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ReactNativeModal from "react-native-modal";
 import CustomButton from "../CustomButton";
 import { useAuth } from "@clerk/clerk-expo";
@@ -104,6 +110,11 @@ const LogoutBTN = () => {
 
   return (
     <>
+      {signOutState.BTNDisabled && (
+        <View className="flex flex-1 absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )}
       <TouchableOpacity
         disabled={signOutState.BTNDisabled}
         onPress={handleLogoutModal}
@@ -133,7 +144,7 @@ const LogoutBTN = () => {
             />
 
             <CustomButton
-              title={`${signOutState.BTNDisabled ? "please wait" : "Yes"} `}
+              title="Yes"
               onPress={handleSignOut}
               disabled={signOutState.BTNDisabled}
               className="mt-5 !w-[100px]"

@@ -76,9 +76,9 @@ export const useFetch = <T>(config: ApiConfig) => {
     try {
       const ignoreAPI = config.endpoint.split("/");
       const notRidesRoute = ignoreAPI[ignoreAPI.length - 1];
-      if (notRidesRoute === "undefined") {
-        const api = ignoreAPI[ignoreAPI.length - 2];
-        console.log("inside fetch", notRidesRoute, "table name", api);
+      const api = ignoreAPI[ignoreAPI.length - 2];
+      if (notRidesRoute === "undefined" && api === "ride") {
+        console.log(api);
         return;
       }
       const response = await fetch(config.endpoint);

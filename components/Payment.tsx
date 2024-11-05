@@ -32,13 +32,14 @@ const Payment = ({
 
   const initializePaymentSheet = async () => {
     const { error } = await initPaymentSheet({
-      merchantDisplayName: "MajaRyde Inc.",
+      merchantDisplayName: "Aceeryde Inc.",
       intentConfiguration: {
         mode: {
           amount: parseFloat(amount) * 100,
           currencyCode: "USD",
         },
         confirmHandler: async (paymentMethod, _, intentCreationCallback) => {
+          console.log("step 1 create a payment intent");
           const { paymentIntent, customer } = await fetchAPI(
             `${process.env.EXPO_PUBLIC_LIVE_API_STRIPE}/create`,
             {
@@ -56,6 +57,7 @@ const Payment = ({
           );
 
           if (paymentIntent.client_secret) {
+            console.log("step 2 make payment");
             const { result } = await fetchAPI(
               `${process.env.EXPO_PUBLIC_LIVE_API_STRIPE}/pay`,
               {
@@ -71,6 +73,7 @@ const Payment = ({
               }
             );
             if (result.client_secret) {
+              console.log("step 3 create ride");
               await fetchAPI(
                 `${process.env.EXPO_PUBLIC_LIVE_API}/ride/create`,
                 {
@@ -117,7 +120,11 @@ const Payment = ({
       if (error.code === PaymentSheetError.Canceled) {
         Alert.alert(`Error code: ${error.code}`, error.message);
       } else {
-        Alert.alert(`Error code: ${error.code}`, error.message);
+        Alert.alert(
+          `Network error, try again later. Error code: ${error.code}`,
+          error.message
+        );
+        return;
       }
     } else {
       setSuccess(true);
@@ -142,13 +149,17 @@ const Payment = ({
       >
         <View
           className="flex flex-col items-center justify-center
-        bg-white p-7 rounded-2xl"
+        bg-white dark:bg-custom-dark p-7 rounded-2xl"
         >
           <Image source={images.check} className="w-28 h-28 mt-5" />
-          <Text className="text-2xl text-center font-JakartaBold mt-5">
+          <Text className="text-2xl text-center font-JakartaBold mt-5 dark:text-white">
             Ride booked!
           </Text>
-          <Text className="text-md text-general-200 font-JakartaMedium text-center mt-3">
+          <Text
+            className="text-md text-general-200 dark:text-gray-200 (condition) {
+            
+          } font-JakartaMedium text-center mt-3"
+          >
             Thank you for your booking, Your reservation has been placed. Please
             proceed with your trip!
           </Text>

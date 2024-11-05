@@ -349,8 +349,8 @@ const ResetPassword = () => {
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
-      <View className="flex-1 bg-white">
+    <ScrollView className="flex-1 bg-white dark:bg-custom-dark">
+      <View className="flex-1 bg-white dark:bg-custom-dark">
         {COMPState.loadingState && (
           <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
             <ActivityIndicator size="large" color="#000" />
@@ -359,7 +359,7 @@ const ResetPassword = () => {
 
         <View className="relative w-full h-[250px]">
           <Image source={images.signUpCar} className="z-10 w-full h-[250px]" />
-          <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
+          <Text className="text-2xl text-black dark:text-white font-JakartaSemiBold absolute bottom-5 left-5">
             Reset Password
           </Text>
         </View>
@@ -472,17 +472,17 @@ const ResetPassword = () => {
                 className=" flex flex-row"
               >
                 <Image source={icons.lessThan} className={`w-8 h-8 `} />
-                <Text className="text-lg">Back</Text>
+                <Text className="text-lg dark:text-white">Back</Text>
               </TouchableOpacity>
             </View>
-            <View className=" h-[25px] w-[3px] bg-general-100" />
+            <View className=" h-[25px] w-[3px] bg-general-100 dark:bg-white" />
             <Link
               className="text-lg text-center text-general-200 "
               href={"/sign-up"}
             >
               <Text className="text-primary-500">Sign Up</Text>
             </Link>
-            <View className=" h-[25px] w-[3px] bg-general-100" />
+            <View className=" h-[25px] w-[3px] bg-general-100 dark:bg-white" />
             <Link
               className="text-lg text-center text-general-200"
               href={"/sign-in"}
@@ -501,11 +501,11 @@ const ResetPassword = () => {
           // if you want to trigger a view once the modal is close
           // onModalHide={() => {}}
         >
-          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
-            <Text className="text-2xl font-JakartaExtraBold mb-2">
+          <View className="bg-white dark:bg-custom-dark px-7 py-9 rounded-2xl min-h-[300px]">
+            <Text className="text-2xl dark:text-white font-JakartaExtraBold mb-2">
               Verification
             </Text>
-            <Text className="font-Jakarta mb-5">
+            <Text className="font-Jakarta mb-5 dark:text-white">
               We've sent a verification code to {form.email}
             </Text>
 
