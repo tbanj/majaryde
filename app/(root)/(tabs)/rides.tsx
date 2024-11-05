@@ -27,7 +27,7 @@ const Rides = () => {
     loading,
     isOfflineData,
   } = useFetch<Ride[]>({
-    cacheKey: `majaryde_rides_${user?.id}`,
+    cacheKey: `aceeryde_rides_${user?.id}`,
     cacheExpiry: 24 * 60 * 60 * 1000, // 24 hours
     endpoint: `${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`,
   });

@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import * as Location from "expo-location";
 import RideCard from "../RideCard";
@@ -15,7 +15,7 @@ import useNetworkCheck from "@/app/hooks/useNetworkCheck";
 import { useFetch } from "@/app/lib/fetch";
 import { Ride } from "@/types/type";
 import { useLocationStore } from "@/store";
-import { useFocusEffect, useNavigation } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
@@ -50,8 +50,19 @@ const HomeComponent = () => {
 
   const { state } = useNetworkCheck();
 
+  const { signOut } = useAuth();
   const { user } = useUser();
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const clearSignOut = async () => {
+      await signOut();
+      router.replace("/(auth)/sign-up");
+    };
+    if (!user?.id && !user?.getSessions) {
+      clearSignOut();
+    }
+  }, []);
 
   const {
     data: recentRides,
@@ -61,7 +72,7 @@ const HomeComponent = () => {
     refetch,
     clearCacheData,
   } = useFetch<Ride[]>({
-    cacheKey: `majaryde_rides_${user?.id}`,
+    cacheKey: `aceeryde_rides_${user?.id}`,
     cacheExpiry: 24 * 60 * 60 * 1000, // 24 hours
     endpoint: `${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`,
     apiParams: user?.id,
@@ -110,7 +121,9 @@ const HomeComponent = () => {
   }, [COMPState.showCatchError]);
 
   useEffect(() => {
-    if (user?.id && !recentRides) refetch();
+    if (user?.id && !recentRides) {
+      refetch();
+    }
     return () => {};
   }, [user?.id]);
 

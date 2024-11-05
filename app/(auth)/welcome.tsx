@@ -28,13 +28,15 @@ const Onboarding = () => {
     return <Redirect href={"/(root)/(tabs)/home"} />;
 
   return (
-    <SafeAreaView className="flex h-full items-center justify-between bg-white">
+    <SafeAreaView
+      className={`flex h-full items-center justify-between bg-white ${state.isConnected ? "p-5" : "px-5 py-7"}`}
+    >
       {!state.isConnected && <ISConnectedCard />}
       <TouchableOpacity
         onPress={() => {
           router.replace("/(auth)/sign-up");
         }}
-        className={`w-full flex justify-end items-end  ${state.isConnected ? "p-5" : "px-5 py-7"} `}
+        className={`w-full flex justify-end items-end   `}
       >
         <Text className="text-black text-md font-JakartaBold">Skip</Text>
       </TouchableOpacity>

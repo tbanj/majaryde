@@ -1,3 +1,4 @@
+- fix on confirm ride button
 - updated
 - updated
 - resolve crazy loading

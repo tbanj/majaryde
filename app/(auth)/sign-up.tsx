@@ -367,7 +367,7 @@ const SignUp = () => {
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView className="flex-1 bg-white dark:bg-custom-dark">
       {COMPState.showCatchError && (
         <View className="absolute w-full top-6 bg-yellow-500 z-20">
           <TouchableOpacity
@@ -394,7 +394,7 @@ const SignUp = () => {
           <ActivityIndicator size="large" color="#000" />
         </View>
       )}
-      <View className="flex-1 bg-white">
+      <View className="flex-1 bg-white dark:bg-custom-dark">
         <View className="relative w-full h-[250px]">
           <Image source={images.signUpCar} className="z-10 w-full h-[250px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
@@ -475,7 +475,7 @@ const SignUp = () => {
 
           <OAuth isConnected={state.isConnected} />
           <Link
-            className="text-lg text-center text-general-200 mt-10"
+            className="text-lg text-center text-general-200 dark:text-white mt-10"
             href={"/sign-in"}
           >
             <Text>Already have an account {""}</Text>
@@ -489,11 +489,11 @@ const SignUp = () => {
           /* () =>
             setVerification({ ...verification, state: "success" }) */
         >
-          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
-            <Text className="text-2xl font-JakartaExtraBold mb-2">
+          <View className="bg-white dark:bg-custom-dark   px-7 py-9 rounded-2xl min-h-[300px]">
+            <Text className="text-2xl font-JakartaExtraBold mb-2 dark:text-white ">
               Verification
             </Text>
-            <Text className="font-Jakarta mb-5">
+            <Text className="font-Jakarta mb-5 dark:text-white ">
               We've sent a verification code to {form.email}
             </Text>
 

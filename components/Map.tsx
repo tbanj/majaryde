@@ -24,7 +24,7 @@ const Map = ({ isLogout, isConnected }: MapProps) => {
     error,
     isOfflineData,
   } = useFetch<Driver[]>({
-    cacheKey: `majaryde_drivers`,
+    cacheKey: `aceeryde_drivers`,
     cacheExpiry: 24 * 60 * 60 * 1000,
     endpoint: `${process.env.EXPO_PUBLIC_LIVE_API}/driver`,
   });

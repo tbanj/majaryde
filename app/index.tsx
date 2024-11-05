@@ -6,11 +6,9 @@ import useNetworkCheck from "./hooks/useNetworkCheck";
 
 const Page = () => {
   const { state } = useNetworkCheck();
-  {
-    const { isSignedIn, isLoaded } = useAuth();
-    if (state.isConnected && isSignedIn && isLoaded) {
-      return <Redirect href={`/(root)/(tabs)/home`} />;
-    }
+  const { isSignedIn, isLoaded, userId } = useAuth();
+  if (state.isConnected && isSignedIn && isLoaded && userId) {
+    return <Redirect href={`/(root)/(tabs)/home`} />;
   }
   return <Redirect href="/(auth)/welcome" />;
 };
