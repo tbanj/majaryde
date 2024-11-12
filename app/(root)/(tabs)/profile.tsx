@@ -477,7 +477,7 @@ const Profile = () => {
               className=" rounded-full border-[3px] border-white shadow-sm shadow-neutral-300"
             />
           </View>
-          <View className="flex-1 bg-white dark:bg-custom-dark rounded-lg shadow-sm shadow-neutral-300 p-5">
+          <View className="flex-1 bg-white dark:bg-custom-dark rounded-lg shadow-sm shadow-neutral-300 p-5 dark:shadow-white">
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View className="flex-1">
                 <View className={`space-y-2`}>
