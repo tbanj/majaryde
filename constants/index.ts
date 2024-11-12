@@ -121,6 +121,7 @@ export const NativeModalState = {
   pending: "pending",
   default: "default",
   success: "success",
+  dismiss: "dismiss",
 };
 
 export const data = {

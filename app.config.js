@@ -9,6 +9,7 @@ export default {
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: "myapp",
+    host: "https://temitope-port.netlify.app",
     userInterfaceStyle: "automatic",
 
     ios: {

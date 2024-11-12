@@ -1,6 +1,6 @@
 import { Alert, Image, Text, View } from "react-native";
 import CustomButton from "./CustomButton";
-import { icons } from "@/constants";
+import { icons, NativeModalState } from "@/constants";
 import { useAuth, useOAuth } from "@clerk/clerk-expo";
 import { useCallback, useState } from "react";
 import { googleOAuth } from "@/app/lib/auth";
@@ -14,15 +14,17 @@ const OAuth = ({ isConnected }: { isConnected: boolean }) => {
     try {
       setBTNDisabled(true);
       const result = await googleOAuth(startOAuthFlow);
-      if (
+      if (result.message === NativeModalState.dismiss) {
+        return;
+      } else if (
         (!result.success && result.code === "success") ||
         result.code === undefined
       ) {
         setBTNDisabled(false);
         await signOut();
         router.push("/(auth)/sign-up");
+        // return;
         // Oauth {"code": undefined, "message": "You're currently in single session mode. You can only be signed into one account at a time.", "success": false}
-        return;
       } else if (
         result.code === "session_exists" ||
         result.code === "success"
