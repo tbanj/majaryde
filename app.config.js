@@ -2,15 +2,21 @@ import "dotenv/config";
 
 export default {
   expo: {
+    newArchEnabled: "false",
     jsEngine: "hermes",
     name: "aceeryde",
     slug: "aceeryde",
-    version: "1.0.0",
+    version: "1.0.3",
     orientation: "portrait",
+    userInterfaceStyle: "automatic",
+    splash: {
+      image: "./assets/images/splash-light.png",
+      resizeMode: "contain",
+      backgroundColor: "#2F80ED",
+    },
     icon: "./assets/images/icon.png",
     scheme: "myapp",
-    host: "https://temitope-port.netlify.app",
-    userInterfaceStyle: "automatic",
+    // host: "https://temitope-port.netlify.app",
 
     ios: {
       bundleIdentifier: "com.tbanj.aceeryde",
@@ -19,15 +25,15 @@ export default {
         googleMapsApiKey:
           process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
       },
-      userInterfaceStyle: "automatic",
+      // userInterfaceStyle: "automatic",
       // Dark mode splash for iOS
-      splash: {
+      /*  splash: {
         dark: {
           image: "./assets/images/splash-dark.png",
           resizeMode: "contain",
           backgroundColor: "#121212",
         },
-      },
+      }, */
     },
     // Dark mode splash screen
     android: {
@@ -35,8 +41,8 @@ export default {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
-      userInterfaceStyle: "automatic",
-      splash: {
+      // userInterfaceStyle: "automatic",
+      /* splash: {
         image: "./assets/images/splash-light.png",
         resizeMode: "contain",
         backgroundColor: "#2F80ED",
@@ -45,7 +51,7 @@ export default {
           resizeMode: "contain",
           backgroundColor: "#121212",
         },
-      },
+      }, */
       permissions: [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
@@ -58,11 +64,7 @@ export default {
         },
       },
     },
-    splash: {
-      image: "./assets/images/splash-light.png",
-      resizeMode: "contain",
-      backgroundColor: "#2F80ED",
-    },
+
     web: {
       bundler: "metro",
       output: "server",
@@ -83,6 +85,18 @@ export default {
           android: {
             usesCleartextTraffic: true,
           },
+        },
+      ],
+      [
+        "expo-splash-screen",
+        {
+          backgroundColor: "#2F80ED",
+          image: "./assets/images/splash-light.png",
+          dark: {
+            image: "./assets/images/splash-dark.png",
+            backgroundColor: "#121212",
+          },
+          imageWidth: 200,
         },
       ],
     ],

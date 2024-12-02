@@ -14,3 +14,5 @@ export const checkInternetConnection = async (): Promise<boolean> => {
   const netInfo = await NetInfo.fetch();
   return netInfo.isConnected === true && netInfo.isInternetReachable === true;
 };
+
+export default {};

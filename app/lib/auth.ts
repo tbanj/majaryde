@@ -1,7 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import * as Linking from "expo-linking";
 import { fetchAPI } from "./fetch";
-import { NativeModalState } from "@/constants";
+// import { NativeModalState } from "@/constants";
 export interface TokenCache {
   getToken: (key: string) => Promise<string | undefined | null>;
   saveToken: (key: string, token: string) => Promise<void>;
@@ -84,3 +84,5 @@ export const googleOAuth = async (startOAuthFlow: any) => {
     };
   }
 };
+
+export default {};
