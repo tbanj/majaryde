@@ -1,3 +1,4 @@
+- rsolve google auth login
 - updated
 - updated with new assets
 - change assets
