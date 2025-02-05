@@ -13,7 +13,6 @@ export const useOfflineData = <T>(
   config?: CacheConfig
 ) => {
   const [data, setData] = useState<T>(defaultValue);
-  const [completeData, setCompleteData] = useState<T>(defaultValue);
   const [lastUpdated, setLastUpdated] = useState<number>(0);
   const {
     state: { isConnected },
@@ -26,12 +25,12 @@ export const useOfflineData = <T>(
         const timestampString = await AsyncStorage.getItem(`${key}_timestamp`);
 
         // `${key}_full_data`,`${key}_full_data_timestamp`
-        const savedCompleteDataString = await AsyncStorage.getItem(
+        /* const savedCompleteDataString = await AsyncStorage.getItem(
           `${key}_full_data`
         );
         const timestampCompleteString = await AsyncStorage.getItem(
           `${key}_full_data_timestamp`
-        );
+        ); */
 
         if (savedDataString) {
           const savedData = JSON.parse(savedDataString);
@@ -93,7 +92,7 @@ export const useOfflineData = <T>(
     }
   };
 
-  const oldClearCache = async () => {
+  /* const oldClearCache = async () => {
     try {
       await Promise.all([
         AsyncStorage.removeItem(key),
@@ -107,7 +106,7 @@ export const useOfflineData = <T>(
     } catch (error) {
       console.log("Error clearing cache:", error);
     }
-  };
+  }; */
 
   return {
     data,
@@ -117,3 +116,4 @@ export const useOfflineData = <T>(
     isOfflineData: !isConnected,
   };
 };
+export default {};

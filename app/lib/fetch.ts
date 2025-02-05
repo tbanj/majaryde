@@ -126,3 +126,5 @@ export const useFetch = <T>(config: ApiConfig) => {
     clearCacheData,
   };
 };
+
+export default {};

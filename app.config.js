@@ -2,15 +2,22 @@ import "dotenv/config";
 
 export default {
   expo: {
+    newArchEnabled: "true",
     jsEngine: "hermes",
     name: "aceeryde",
     slug: "aceeryde",
-    version: "1.0.0",
+    version: "1.0.4",
     orientation: "portrait",
+    userInterfaceStyle: "automatic",
+    splash: {
+      image: "./assets/images/icon.png",
+      resizeMode: "contain",
+      // backgroundColor: "#2F80ED",
+      backgroundColor: "#FFFFFF",
+    },
     icon: "./assets/images/icon.png",
     scheme: "myapp",
     host: "https://temitope-port.netlify.app",
-    userInterfaceStyle: "automatic",
 
     ios: {
       bundleIdentifier: "com.tbanj.aceeryde",
@@ -21,13 +28,13 @@ export default {
       },
       userInterfaceStyle: "automatic",
       // Dark mode splash for iOS
-      splash: {
+      /*  splash: {
         dark: {
           image: "./assets/images/splash-dark.png",
           resizeMode: "contain",
           backgroundColor: "#121212",
         },
-      },
+      }, */
     },
     // Dark mode splash screen
     android: {
@@ -36,7 +43,7 @@ export default {
         backgroundColor: "#ffffff",
       },
       userInterfaceStyle: "automatic",
-      splash: {
+      /* splash: {
         image: "./assets/images/splash-light.png",
         resizeMode: "contain",
         backgroundColor: "#2F80ED",
@@ -45,7 +52,7 @@ export default {
           resizeMode: "contain",
           backgroundColor: "#121212",
         },
-      },
+      }, */
       permissions: [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
@@ -58,14 +65,10 @@ export default {
         },
       },
     },
-    splash: {
-      image: "./assets/images/splash-light.png",
-      resizeMode: "contain",
-      backgroundColor: "#2F80ED",
-    },
+
     web: {
       bundler: "metro",
-      output: "server",
+      output: "static",
       favicon: "./assets/images/favicon.png",
     },
     plugins: [
@@ -83,6 +86,18 @@ export default {
           android: {
             usesCleartextTraffic: true,
           },
+        },
+      ],
+      [
+        "expo-splash-screen",
+        {
+          backgroundColor: "#FFFFFF",
+          image: "./assets/images/splash-light.png",
+          dark: {
+            image: "./assets/images/splash-dark.png",
+            backgroundColor: "#121212",
+          },
+          imageWidth: 200,
         },
       ],
     ],

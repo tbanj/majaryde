@@ -75,3 +75,5 @@ export const clearCacheData = async (keysRetrived: any) => {
     console.log("Error clearing cache:", error);
   }
 };
+
+export default {};

@@ -1,12 +1,17 @@
 import * as SecureStore from "expo-secure-store";
 import * as Linking from "expo-linking";
 import { fetchAPI } from "./fetch";
-import { NativeModalState } from "@/constants";
+// import { NativeModalState } from "@/constants";
 export interface TokenCache {
   getToken: (key: string) => Promise<string | undefined | null>;
   saveToken: (key: string, token: string) => Promise<void>;
   clearToken?: (key: string) => void;
 }
+
+export const clearCacheToken = async (key: string) => {
+  await SecureStore.deleteItemAsync(key);
+  return null;
+};
 
 export const tokenCache = {
   async getToken(key: string) {
@@ -84,3 +89,5 @@ export const googleOAuth = async (startOAuthFlow: any) => {
     };
   }
 };
+
+export default {};
