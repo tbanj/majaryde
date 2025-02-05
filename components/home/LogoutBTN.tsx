@@ -110,11 +110,11 @@ const LogoutBTN = () => {
 
   return (
     <>
-      {signOutState.BTNDisabled && (
-        <View className="flex flex-1 absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
+      {/* {signOutState.BTNDisabled && (
+        <View className="flex  absolute w-full h-full   z-10 items-center justify-center">
           <ActivityIndicator size="large" color="#000" />
         </View>
-      )}
+      )} */}
       <TouchableOpacity
         disabled={signOutState.BTNDisabled}
         onPress={handleLogoutModal}
@@ -130,27 +130,35 @@ const LogoutBTN = () => {
         }
         onModalHide={() => {}}
       >
-        <View className="bg-white px-7 py-9 rounded-2xl min-h-[150px] flex justify-center items-center">
-          <Text className="text-2xl font-JakartaExtraBold mb-2">Logout</Text>
-          <Text className="font-Jakarta mb-5">Do you want to logout.</Text>
+        <>
+          {signOutState.BTNDisabled && (
+            <View className="flex  absolute w-full h-full   z-10 items-center justify-center">
+              <ActivityIndicator size="large" color="#000" />
+            </View>
+          )}
 
-          <View className="flex flex-row items-center space-x-2">
-            <CustomButton
-              title="No"
-              onPress={handleRejectLogout}
-              className="mt-5 !text-blue-500 !w-[100px]"
-              bgVariant="secondary"
-              disabled={signOutState.BTNDisabled}
-            />
+          <View className="bg-white px-7 py-9 rounded-2xl min-h-[150px] flex justify-center items-center">
+            <Text className="text-2xl font-JakartaExtraBold mb-2">Logout</Text>
+            <Text className="font-Jakarta mb-5">Do you want to logout.</Text>
 
-            <CustomButton
-              title="Yes"
-              onPress={handleSignOut}
-              disabled={signOutState.BTNDisabled}
-              className="mt-5 !w-[100px]"
-            />
+            <View className="flex flex-row items-center space-x-2">
+              <CustomButton
+                title="No"
+                onPress={handleRejectLogout}
+                className="mt-5 !text-blue-500 !w-[100px]"
+                bgVariant="secondary"
+                disabled={signOutState.BTNDisabled}
+              />
+
+              <CustomButton
+                title="Yes"
+                onPress={handleSignOut}
+                disabled={signOutState.BTNDisabled}
+                className="mt-5 !w-[100px]"
+              />
+            </View>
           </View>
-        </View>
+        </>
       </ReactNativeModal>
     </>
   );

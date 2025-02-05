@@ -2,21 +2,22 @@ import "dotenv/config";
 
 export default {
   expo: {
-    newArchEnabled: "false",
+    newArchEnabled: "true",
     jsEngine: "hermes",
     name: "aceeryde",
     slug: "aceeryde",
-    version: "1.0.3",
+    version: "1.0.4",
     orientation: "portrait",
     userInterfaceStyle: "automatic",
     splash: {
-      image: "./assets/images/splash-light.png",
+      image: "./assets/images/icon.png",
       resizeMode: "contain",
-      backgroundColor: "#2F80ED",
+      // backgroundColor: "#2F80ED",
+      backgroundColor: "#FFFFFF",
     },
     icon: "./assets/images/icon.png",
     scheme: "myapp",
-    // host: "https://temitope-port.netlify.app",
+    host: "https://temitope-port.netlify.app",
 
     ios: {
       bundleIdentifier: "com.tbanj.aceeryde",
@@ -25,7 +26,7 @@ export default {
         googleMapsApiKey:
           process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
       },
-      // userInterfaceStyle: "automatic",
+      userInterfaceStyle: "automatic",
       // Dark mode splash for iOS
       /*  splash: {
         dark: {
@@ -41,7 +42,7 @@ export default {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
-      // userInterfaceStyle: "automatic",
+      userInterfaceStyle: "automatic",
       /* splash: {
         image: "./assets/images/splash-light.png",
         resizeMode: "contain",
@@ -67,7 +68,7 @@ export default {
 
     web: {
       bundler: "metro",
-      output: "server",
+      output: "static",
       favicon: "./assets/images/favicon.png",
     },
     plugins: [
@@ -90,7 +91,7 @@ export default {
       [
         "expo-splash-screen",
         {
-          backgroundColor: "#2F80ED",
+          backgroundColor: "#FFFFFF",
           image: "./assets/images/splash-light.png",
           dark: {
             image: "./assets/images/splash-dark.png",

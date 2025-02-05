@@ -25,6 +25,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const HomeComponent = () => {
   const [locationPermissionState, setLocationPermissionState] = useState({
@@ -54,15 +55,21 @@ const HomeComponent = () => {
   const { user } = useUser();
   const navigation = useNavigation();
 
-  useEffect(() => {
+  /* useEffect(() => {
     const clearSignOut = async () => {
       await signOut();
       router.replace("/(auth)/sign-up");
     };
-    if (!user?.id && !user?.getSessions) {
-      clearSignOut();
-    }
-  }, []);
+
+    setTimeout(() => {
+      console.log("ll", user?.id);
+      if (!user?.id && !user?.getSessions) {
+        // (auth)/sign-in
+        console.log("home clear", user?.id, user?.getSessions);
+        clearSignOut();
+      }
+    }, 4000);
+  }, []); */
 
   const {
     data: recentRides,
@@ -114,7 +121,10 @@ const HomeComponent = () => {
   useEffect(() => {
     if (COMPState.showCatchError)
       setTimeout(() => {
-        setCOMPState({ ...COMPState, showCatchError: false });
+        setCOMPState({
+          ...COMPState,
+          showCatchError: false,
+        });
       }, 3000);
 
     return () => {};
@@ -188,7 +198,7 @@ const HomeComponent = () => {
       ...prev,
       BTNDisabled: true,
     }));
-    if (locationPermissionState?.location === "denied") Linking.openSettings();
+    // if (locationPermissionState?.location === "denied") Linking.openSettings();
     await requestLocation();
     setLocationPermissionState((prev: any) => ({
       ...prev,
@@ -263,7 +273,7 @@ const HomeComponent = () => {
               )}
               {!state.isConnected && <ISConnectedCard customClass="!top-2" />}
 
-              <View className="flex flex-row items-center justify-between my-5">
+              <View className="flex flex-row items-center justify-between my-5 relative">
                 <Text className="text-1xl font-JakartaExtraBold">
                   Welcome{", "}
                   {(state.isConnected &&
@@ -282,6 +292,7 @@ const HomeComponent = () => {
                 >
                   <Image source={icons.out} className="w-4 h-4" />
                 </TouchableOpacity> */}
+
                 <LogoutBTN />
               </View>
 

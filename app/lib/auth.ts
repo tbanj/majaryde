@@ -8,6 +8,11 @@ export interface TokenCache {
   clearToken?: (key: string) => void;
 }
 
+export const clearCacheToken = async (key: string) => {
+  await SecureStore.deleteItemAsync(key);
+  return null;
+};
+
 export const tokenCache = {
   async getToken(key: string) {
     try {

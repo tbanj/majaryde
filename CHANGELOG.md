@@ -1,3 +1,4 @@
+- updated
 - updated with new assets
 - change assets
 - fix on confirm ride button

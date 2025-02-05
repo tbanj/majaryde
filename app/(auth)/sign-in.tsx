@@ -1,5 +1,6 @@
 import { useSignIn } from "@clerk/clerk-expo";
 import React, { Dispatch, useCallback, useEffect, useState } from "react";
+import * as WebBrowser from "expo-web-browser";
 import {
   ActivityIndicator,
   Alert,
@@ -76,7 +77,21 @@ const InserterIcon = ({ name, setForm, form }: InserterIconProp) => {
   );
 };
 
+const useWarmUpBrowser = () => {
+  React.useEffect(() => {
+    // Warm up the android browser to improve UX
+    // https://docs.expo.dev/guides/authentication/#improving-user-experience
+    void WebBrowser.warmUpAsync();
+    return () => {
+      void WebBrowser.coolDownAsync();
+    };
+  }, []);
+};
+
+WebBrowser.maybeCompleteAuthSession();
+
 const SignIn = () => {
+  useWarmUpBrowser();
   const [form, setForm] = useState<FormState>({
     email: "",
     password: { name: "", hidePassword: true },

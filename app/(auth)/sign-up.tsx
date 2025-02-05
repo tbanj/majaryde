@@ -547,7 +547,7 @@ const SignUp = () => {
                   error: "",
                   code: "",
                 });
-                router.push("/(root)/(tabs)/home");
+                router.push("/");
               }}
               className="mt-5"
             />

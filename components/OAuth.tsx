@@ -1,19 +1,25 @@
 import { Alert, Image, Text, View } from "react-native";
+import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 import CustomButton from "./CustomButton";
 import { icons, NativeModalState } from "@/constants";
-import { useAuth, useOAuth } from "@clerk/clerk-expo";
+import { useAuth, useOAuth, useUser } from "@clerk/clerk-expo";
 import { useCallback, useState } from "react";
 import { googleOAuth } from "@/app/lib/auth";
 import { router } from "expo-router";
+import React from "react";
 
 const OAuth = ({ isConnected }: { isConnected: boolean }) => {
   const [BTNDisabled, setBTNDisabled] = useState(false);
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
   const { signOut } = useAuth();
+  const { user } = useUser();
+
   const handleGoogleSignIn = useCallback(async () => {
     try {
       setBTNDisabled(true);
       const result = await googleOAuth(startOAuthFlow);
+      console.log("handleGoogleSignIn", result);
       if (result.message === NativeModalState.dismiss) {
         return;
       } else if (
@@ -22,8 +28,13 @@ const OAuth = ({ isConnected }: { isConnected: boolean }) => {
       ) {
         setBTNDisabled(false);
         await signOut();
-        router.push("/(auth)/sign-up");
-        // return;
+        console.log("user", user?.id, user?.getSessions);
+        if (!user?.id) {
+          router.replace("/(auth)/sign-up");
+          return;
+        }
+        // if (logoutCompleted) router.push("/(auth)/sign-up");
+
         // Oauth {"code": undefined, "message": "You're currently in single session mode. You can only be signed into one account at a time.", "success": false}
       } else if (
         result.code === "session_exists" ||

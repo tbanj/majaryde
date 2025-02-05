@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Tabs } from "expo-router";
-import { Image, ImageSourcePropType, View } from "react-native";
+import { Image, ImageSourcePropType, Text, View } from "react-native";
 import { icons } from "@/constants";
 
 const TabIcon = ({
@@ -11,7 +11,7 @@ const TabIcon = ({
   source: ImageSourcePropType;
 }) => (
   <View
-    className={`flex flex-row justify-center items-center rounded-full ${focused ? "bg-general-300" : ""}`}
+    className={`flex flex-1 flex-row h-full  justify-center items-center rounded-full ${focused ? "bg-general-300" : ""}`}
   >
     <View
       className={`rounded-full w-12 h-12 items-center justify-center
@@ -30,7 +30,6 @@ const TabIcon = ({
 const Layout = () => {
   return (
     <Tabs
-      initialRouteName="index"
       screenOptions={{
         tabBarActiveTintColor: "white",
         tabBarInactiveTintColor: "white",
@@ -38,16 +37,21 @@ const Layout = () => {
         tabBarStyle: {
           backgroundColor: "#333333",
           borderRadius: 50,
-          paddingBottom: 0,
           overflow: "hidden",
           marginHorizontal: 20,
-          marginBottom: 20,
+          marginBottom: 10,
           height: 78,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           flexDirection: "row",
           position: "absolute",
+        },
+        tabBarIconStyle: {
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          height: "100%",
         },
       }}
     >
@@ -56,6 +60,7 @@ const Layout = () => {
         options={{
           title: "Home",
           headerShown: false,
+
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} source={icons.home} />
           ),
