@@ -6,15 +6,9 @@ export default {
     jsEngine: "hermes",
     name: "aceeryde",
     slug: "aceeryde",
-    version: "1.0.5",
+    version: "1.0.6",
     orientation: "portrait",
     userInterfaceStyle: "automatic",
-    // splash: {
-    //   image: "./assets/images/icon.png",
-    //   resizeMode: "contain",
-    //   // backgroundColor: "#2F80ED",
-    //   backgroundColor: "#FFFFFF",
-    // },
     icon: "./assets/images/icon.png",
     scheme: "myapp",
     host: "https://temitope-port.netlify.app",
@@ -27,32 +21,13 @@ export default {
           process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
       },
       userInterfaceStyle: "automatic",
-      // Dark mode splash for iOS
-      /*  splash: {
-        dark: {
-          image: "./assets/images/splash-dark.png",
-          resizeMode: "contain",
-          backgroundColor: "#121212",
-        },
-      }, */
     },
-    // Dark mode splash screen
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
       userInterfaceStyle: "automatic",
-      /* splash: {
-        image: "./assets/images/splash-light.png",
-        resizeMode: "contain",
-        backgroundColor: "#2F80ED",
-        dark: {
-          image: "./assets/images/splash-dark.png",
-          resizeMode: "contain",
-          backgroundColor: "#121212",
-        },
-      }, */
       permissions: [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
