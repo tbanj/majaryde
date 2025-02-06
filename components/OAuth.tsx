@@ -19,7 +19,6 @@ const OAuth = ({ isConnected }: { isConnected: boolean }) => {
     try {
       setBTNDisabled(true);
       const result = await googleOAuth(startOAuthFlow);
-      console.log("handleGoogleSignIn", result);
       if (result.message === NativeModalState.dismiss) {
         return;
       } else if (
@@ -28,7 +27,6 @@ const OAuth = ({ isConnected }: { isConnected: boolean }) => {
       ) {
         setBTNDisabled(false);
         await signOut();
-        console.log("user", user?.id, user?.getSessions);
         if (!user?.id) {
           router.replace("/(auth)/sign-up");
           return;

@@ -9,6 +9,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import ReactNativeModal from "react-native-modal";
 import { images } from "@/constants";
 import { router } from "expo-router";
+import React from "react";
 
 const Payment = ({
   fullName,

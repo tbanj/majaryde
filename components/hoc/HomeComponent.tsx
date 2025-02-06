@@ -55,22 +55,6 @@ const HomeComponent = () => {
   const { user } = useUser();
   const navigation = useNavigation();
 
-  /* useEffect(() => {
-    const clearSignOut = async () => {
-      await signOut();
-      router.replace("/(auth)/sign-up");
-    };
-
-    setTimeout(() => {
-      console.log("ll", user?.id);
-      if (!user?.id && !user?.getSessions) {
-        // (auth)/sign-in
-        console.log("home clear", user?.id, user?.getSessions);
-        clearSignOut();
-      }
-    }, 4000);
-  }, []); */
-
   const {
     data: recentRides,
     loading,
