@@ -164,7 +164,7 @@ const SignIn = () => {
       }, 3000);
 
     return () => {};
-  }, [COMPState.showCatchError]);
+  }, [COMPState, COMPState.showCatchError]);
 
   // Enhanced input change handler
   const handleInputChange = (field: keyof FormState, value: string) => {

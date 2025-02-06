@@ -180,7 +180,6 @@ const Map = ({ isLogout, isConnected }: MapProps) => {
     );
   }
 
-  console.log("nn", error);
   return (
     <MapView
       provider={PROVIDER_GOOGLE}
