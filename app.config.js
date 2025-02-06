@@ -9,12 +9,12 @@ export default {
     version: "1.0.5",
     orientation: "portrait",
     userInterfaceStyle: "automatic",
-    splash: {
-      image: "./assets/images/icon.png",
-      resizeMode: "contain",
-      // backgroundColor: "#2F80ED",
-      backgroundColor: "#FFFFFF",
-    },
+    // splash: {
+    //   image: "./assets/images/icon.png",
+    //   resizeMode: "contain",
+    //   // backgroundColor: "#2F80ED",
+    //   backgroundColor: "#FFFFFF",
+    // },
     icon: "./assets/images/icon.png",
     scheme: "myapp",
     host: "https://temitope-port.netlify.app",
@@ -91,7 +91,7 @@ export default {
       [
         "expo-splash-screen",
         {
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "#2F80ED",
           image: "./assets/images/splash-light.png",
           dark: {
             image: "./assets/images/splash-dark.png",

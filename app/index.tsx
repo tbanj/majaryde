@@ -9,7 +9,6 @@ const Page = () => {
   const { state } = useNetworkCheck();
   const { isSignedIn, isLoaded, userId } = useAuth();
   if (state.isConnected && isSignedIn && isLoaded && userId) {
-    console.log("userId", userId, isSignedIn);
     return <Redirect href={`/(root)/(tabs)/home`} />;
   }
   return <Redirect href="/(auth)/welcome" />;
