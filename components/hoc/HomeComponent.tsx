@@ -34,7 +34,6 @@ const HomeComponent = () => {
     signOutActivated: NativeModalState.default,
     signOutDone: NativeModalState.default,
   });
-  // const [showMap, setShowMap] = useState(true);
   const [COMPState, setCOMPState] = useState<any>({
     BTNDisabled: false,
     loadingState: false,
@@ -269,27 +268,10 @@ const HomeComponent = () => {
                     "Guest"}{" "}
                   👋
                 </Text>
-                {/* <TouchableOpacity
-                  disabled={locationPermissionState.BTNDisabled}
-                  onPress={handleLogoutModal}
-                  className="justify-center items-center w-10 h-10 rounded-full bg-white"
-                >
-                  <Image source={icons.out} className="w-4 h-4" />
-                </TouchableOpacity> */}
 
                 <LogoutBTN />
               </View>
 
-              {/* <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-            >
-              
-            </KeyboardAvoidingView> */}
-              {/* <GoogleTextInput
-                icon={icons.search}
-                containerStyle="bg-white shadow-neutral-300"
-                handlePress={handleDestinationPress}
-              /> */}
               <HomeGoogleTextInput />
               <>
                 <Text className="text-xl font-JakartaBold mt-5 mb-3">
@@ -317,13 +299,6 @@ const HomeComponent = () => {
                   </ReactNativeModal>
                 )}
                 <View className="flex flex-row items-center bg-transparent h-[300px]">
-                  {/* {showMap && (
-                    <Map
-                      // isLogout={locationPermissionState.signOutActivated}
-                      isLogout="pending"
-                      isConnected={state.isConnected}
-                    />
-                  )} */}
                   <MapComponent />
                 </View>
               </>

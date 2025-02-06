@@ -16,7 +16,6 @@ import { clearCacheData, handleClearStoredData } from "@/app/lib/utils";
 import { router, useFocusEffect } from "expo-router";
 
 const LogoutBTN = () => {
-  //   const [showNow, setShowNow] = useState(false);
   const [signOutState, setSignOutState] = useState({
     signOutActivated: false,
     signOutDone: NativeModalState.default,
@@ -28,7 +27,6 @@ const LogoutBTN = () => {
   const { setDestinationLocation, setShowMap, showMap } = useLocationStore();
 
   const handleRejectLogout = () => {
-    // setShowNow(false);
     setSignOutState((prev: any) => ({
       ...prev,
       signOutActivated: false,
@@ -36,12 +34,6 @@ const LogoutBTN = () => {
   };
 
   const handleLogoutModal = () => {
-    /* setLocationPermissionState((prev: any) => ({
-      ...prev,
-      signOutActivated: NativeModalState.pending,
-      signOutDone: NativeModalState.success,
-    })); */
-    // setShowNow(false);
     setSignOutState((prev: any) => ({
       ...prev,
       signOutActivated: true,
@@ -57,7 +49,6 @@ const LogoutBTN = () => {
       longitude: null!,
       address: null!,
     });
-    // setIsLogout!(NativeModalState.success);
   };
   const handleSignOut = async () => {
     try {
@@ -65,9 +56,7 @@ const LogoutBTN = () => {
         ...prev,
         BTNDisabled: true,
       }));
-      // setShowMap(false);
       setShowMap({ mapCOMP: false });
-      //   setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
       setTimeout(async () => {
         if (state.isConnected) {
           const data = await handleClearStoredData();
