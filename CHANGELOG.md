@@ -1,3 +1,4 @@
+- updated the build number
 - rsolve google auth login
 - updated
 - updated with new assets

@@ -110,11 +110,6 @@ const LogoutBTN = () => {
 
   return (
     <>
-      {/* {signOutState.BTNDisabled && (
-        <View className="flex  absolute w-full h-full   z-10 items-center justify-center">
-          <ActivityIndicator size="large" color="#000" />
-        </View>
-      )} */}
       <TouchableOpacity
         disabled={signOutState.BTNDisabled}
         onPress={handleLogoutModal}
