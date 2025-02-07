@@ -28,9 +28,13 @@ export default function RootLayout() {
   const { state } = useNetworkCheck();
   // Subscribe to network state changes
 
+  const removeSplashScreen = async () => {
+    await SplashScreen.hideAsync();
+  };
+
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      removeSplashScreen();
     }
   }, [loaded]);
 

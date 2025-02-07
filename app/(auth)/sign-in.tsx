@@ -107,6 +107,7 @@ const SignIn = () => {
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const { state } = useNetworkCheck();
   const { signIn, setActive, isLoaded } = useSignIn();
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Enhanced validation function
   const validateForm = useCallback(() => {
@@ -249,6 +250,11 @@ const SignIn = () => {
   });
   return (
     <ScrollView className="flex-1 bg-white dark:bg-custom-dark">
+      {loading && (
+        <View className="absolute h-full w-full z-10 items-center justify-center">
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )}
       {COMPState.showCatchError && (
         <ShowCatchError
           text="Error encounter during api call"
@@ -330,7 +336,7 @@ const SignIn = () => {
           >
             <Text>Forgot your password? {""}</Text>
           </Link>
-          <OAuth isConnected={state.isConnected} />
+          <OAuth isConnected={state.isConnected} setLoading={setLoading} />
           <Link
             className="text-lg text-center text-general-200 dark:text-white mt-10"
             href={"/sign-up"}

@@ -6,19 +6,34 @@ import { icons, NativeModalState } from "@/constants";
 import { useAuth, useOAuth, useUser } from "@clerk/clerk-expo";
 import { useCallback, useState } from "react";
 import { googleOAuth } from "@/app/lib/auth";
-import { router } from "expo-router";
-import React from "react";
+import { router, usePathname } from "expo-router";
+import React, { Dispatch } from "react";
 
-const OAuth = ({ isConnected }: { isConnected: boolean }) => {
+interface Iresult {
+  success: boolean;
+  code: string;
+  message: string;
+  type: string;
+}
+
+interface IOAuth {
+  isConnected: boolean;
+  setLoading: Dispatch<React.SetStateAction<boolean>>;
+}
+
+const OAuth = ({ isConnected, setLoading }: IOAuth) => {
   const [BTNDisabled, setBTNDisabled] = useState(false);
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
   const { signOut } = useAuth();
   const { user } = useUser();
 
+  const path = usePathname();
   const handleGoogleSignIn = useCallback(async () => {
     try {
       setBTNDisabled(true);
-      const result = await googleOAuth(startOAuthFlow);
+      const result: Iresult = (await googleOAuth(startOAuthFlow, path)) as any;
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 500));
       if (result.message === NativeModalState.dismiss) {
         return;
       } else if (
@@ -36,12 +51,13 @@ const OAuth = ({ isConnected }: { isConnected: boolean }) => {
         // Oauth {"code": undefined, "message": "You're currently in single session mode. You can only be signed into one account at a time.", "success": false}
       } else if (
         result.code === "session_exists" ||
-        result.code === "success"
+        (result.code === "success" && result.success)
       ) {
         // Alert.alert("Success", result.message);
         setBTNDisabled(false);
         router.replace("/(root)/(tabs)/home");
       }
+      setLoading(false);
     } catch (err) {
       setBTNDisabled(false);
       console.error("OAuth error", err);

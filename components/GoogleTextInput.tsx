@@ -8,7 +8,8 @@ import {
   GooglePlacesAutocompleteRef,
 } from "react-native-google-places-autocomplete";
 
-const googlePlacesApiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
+const googlePlacesApiKey =
+  process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY;
 const GoogleTextInput = ({
   icon,
   initialLocation,
