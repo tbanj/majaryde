@@ -22,6 +22,7 @@ import {
   Image,
   Keyboard,
   Linking,
+  ScrollView,
   Text,
   View,
 } from "react-native";
@@ -38,6 +39,37 @@ const HomeComponent = () => {
     BTNDisabled: false,
     loadingState: false,
   });
+  /* const [debugInfo, setDebugInfo] = useState<{
+    apiKey: string;
+    AndroidApiKey: string;
+    region: any;
+    markersCount: number;
+    hasValidUserLocation: boolean;
+    hasValidDestination: boolean;
+    permissions: string[] | null;
+    directionsError: string | null;
+    userLat: number | null;
+    userLong: number | null;
+    destLat: number | null;
+    destLong: number | null;
+    error: any;
+  }>({
+    apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY || "not set",
+    AndroidApiKey:
+      process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY || "not set",
+    region: null,
+    markersCount: 0,
+    hasValidUserLocation: false,
+    hasValidDestination: false,
+    permissions: null,
+    directionsError: null,
+    userLat: null,
+    userLong: null,
+    destLat: null,
+    destLong: null,
+    error: null,
+  }); */
+
   const {
     setUserLocation,
     setDestinationLocation,
@@ -121,59 +153,102 @@ const HomeComponent = () => {
   }, [user?.id]);
 
   const requestLocation = async () => {
-    try {
-      if (!state.isConnected) return;
-      let { status } = await Location.requestForegroundPermissionsAsync();
-
-      if (status !== "granted") {
-        setLocationPermissionState((prev: any) => ({
-          ...prev,
-          location: status,
-        }));
-        return;
-      } else {
-        let location = await Location.getCurrentPositionAsync();
-        if (location) {
-          const address = await Location.reverseGeocodeAsync({
-            latitude: location.coords?.latitude,
-            longitude: location.coords?.longitude,
-          });
-          setShowMap({ mapCOMP: true });
-          setUserLocation({
-            latitude: location.coords?.latitude,
-            longitude: location.coords?.longitude,
-            /* latitude: 37.78825,
-        longitude: -122.4324, */
-            address: `${address[0].name}, ${address[0].region}`,
-          });
-          setUserCountry({ country: address[0].country! });
-          setLocationPermissionState((prev: any) => ({
+    return new Promise(async (resolve, reject) => {
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        // await new Promise((resolve) => setTimeout(resolve, 500));
+        if (status !== "granted") {
+          /* setLocationPermissionState((prev: any) => ({
             ...prev,
             location: status,
-          }));
+          })); */
+          resolve({ location: status });
+          // return;
+        } else {
+          let location = await Location.getCurrentPositionAsync();
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          if (location) {
+            const address = await Location.reverseGeocodeAsync({
+              latitude: location.coords?.latitude,
+              longitude: location.coords?.longitude,
+            });
+            //     setShowMap({ mapCOMP: true });
+            //     setUserLocation({
+            //       latitude: location.coords?.latitude,
+            //       longitude: location.coords?.longitude,
+            //       /* latitude: 37.78825,
+            // longitude: -122.4324, */
+            //       address: `${address[0].name}, ${address[0].region}`,
+            //     });
+
+            // setUserCountry({ country: address[0].country! });
+            // setLocationPermissionState((prev: any) => ({
+            //   ...prev,
+            //   location: status,
+            // }));
+            resolve({
+              mapCOMP: true,
+              latitude: location.coords?.latitude,
+              longitude: location.coords?.longitude,
+              address: `${address[0].name}, ${address[0].region}`,
+              country: address[0].country!,
+              location: status,
+            });
+          }
         }
+      } catch (error: any) {
+        /* setLocationPermissionState((prev: any) => ({
+          ...prev,
+          location: "denied",
+        })); */
+        reject({ location: "denied" });
       }
-    } catch (error: any) {
-      setLocationPermissionState((prev: any) => ({
-        ...prev,
-        location: "denied",
-      }));
-    }
+    });
   };
 
   useFocusEffect(
     useCallback(() => {
+      async function initialLocationData() {
+        if (!state.isConnected) return;
+        const fetchedLOCData: any = await requestLocation();
+        // location: status
+        const { location, latitude, longitude, address, country, mapCOMP } =
+          fetchedLOCData;
+        if (fetchedLOCData.location !== "granted") {
+          setLocationPermissionState((prev: any) => ({
+            ...prev,
+            location,
+          }));
+        } else {
+          if (longitude) {
+            setUserLocation({
+              latitude,
+              longitude,
+              /* latitude: 37.78825,
+            longitude: -122.4324, */
+              address,
+            });
+            setUserCountry({ country });
+            setLocationPermissionState((prev: any) => ({
+              ...prev,
+              location,
+            }));
+            await new Promise((resolve) => setTimeout(resolve, 800));
+            setShowMap({ mapCOMP });
+          }
+        }
+      }
       if (
-        !locationPermissionState?.location ||
-        locationPermissionState?.location === "denied" ||
+        locationPermissionState.location === null ||
+        locationPermissionState.location === "denied" ||
         !userLatitude
       ) {
-        requestLocation();
+        initialLocationData();
       }
       return () => {
         console.log("home aware  route unfocus");
       };
-    }, [locationPermissionState.location])
+    }, [locationPermissionState.location, userLatitude])
   );
 
   const requestPermit = async () => {
@@ -202,6 +277,15 @@ const HomeComponent = () => {
 
   /* //todo implement checker to check if recentRides is empty or null */
 
+  /* useFocusEffect(
+    useCallback(
+      () => {
+        first
+      },
+      [second],
+    )
+    
+  ) */
   const HomeComponentMemoid = useMemo(() => {
     if (user?.id) {
       return (
@@ -301,6 +385,50 @@ const HomeComponent = () => {
                 <View className="flex flex-row items-center bg-transparent h-[300px]">
                   <MapComponent />
                 </View>
+                {/* {debugInfo.hasValidUserLocation && (
+                  <View>
+                    <ScrollView className="w-full  bg-gray-100 p-2">
+                      <Text className="font-bold">Debug Information:</Text>
+                      <Text>
+                        API Key: {debugInfo.apiKey.substring(0, 6)}...
+                      </Text>
+                      <Text>
+                        Android API Key:{" "}
+                        {debugInfo.AndroidApiKey.substring(0, 6)}
+                        ...
+                      </Text>
+                      <Text>
+                        Directions Error: {debugInfo.directionsError || "None"}
+                      </Text>
+                      <Text>Markers Count: {debugInfo.markersCount}</Text>
+                      <Text>
+                        Valid User Location:{" "}
+                        {String(debugInfo.hasValidUserLocation)}
+                      </Text>
+                      <Text>User Lat: {debugInfo.userLat}</Text>
+                      <Text>User Long: {debugInfo.userLong}</Text>
+                      <Text>
+                        Has Destination: {String(debugInfo.hasValidDestination)}
+                      </Text>
+                      <Text>Dest Lat: {debugInfo.destLat}</Text>
+                      <Text>Dest Long: {debugInfo.destLong}</Text>
+                      <Text>
+                        Initial Region:{" "}
+                        {JSON.stringify(debugInfo.region, null, 2)}
+                      </Text>
+                      {debugInfo.error && (
+                        <Text className="text-red-500">
+                          Fetch Error:{" "}
+                          {JSON.stringify(debugInfo.error, null, 2)}{" "}
+                        </Text>
+                      )}
+                      {loading && <Text>Loading: {String(loading)}</Text>}
+                      {isOfflineData && (
+                        <Text>Using Offline Data: {String(isOfflineData)}</Text>
+                      )}
+                    </ScrollView>
+                  </View>
+                )} */}
               </>
 
               <Text className="text-xl font-JakartaBold mt-5 mb-3">
@@ -317,6 +445,7 @@ const HomeComponent = () => {
     locationPermissionState?.location,
     recentRides,
   ]);
+
   return <>{HomeComponentMemoid}</>;
 };
 

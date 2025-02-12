@@ -27,7 +27,7 @@ const OAuth = ({ isConnected, setLoading }: IOAuth) => {
   const { signOut } = useAuth();
   const { user } = useUser();
 
-  const path = usePathname();
+  const path: any = usePathname();
   const handleGoogleSignIn = useCallback(async () => {
     try {
       setBTNDisabled(true);
@@ -43,7 +43,7 @@ const OAuth = ({ isConnected, setLoading }: IOAuth) => {
         setBTNDisabled(false);
         await signOut();
         if (!user?.id) {
-          router.replace("/(auth)/sign-up");
+          router.replace(path);
           return;
         }
         // if (logoutCompleted) router.push("/(auth)/sign-up");

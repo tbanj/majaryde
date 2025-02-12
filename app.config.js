@@ -6,15 +6,9 @@ export default {
     jsEngine: "hermes",
     name: "aceeryde",
     slug: "aceeryde",
-    version: "1.0.7",
+    version: "1.0.10",
     orientation: "portrait",
     userInterfaceStyle: "automatic",
-    // splash: {
-    //   image: "./assets/images/icon.png",
-    //   resizeMode: "contain",
-    //   // backgroundColor: "#2F80ED",
-    //   backgroundColor: "#FFFFFF",
-    // },
     icon: "./assets/images/icon.png",
     scheme: "myapp",
     host: "https://temitope-port.netlify.app",
@@ -23,18 +17,9 @@ export default {
       bundleIdentifier: "com.tbanj.aceeryde",
       supportsTablet: true,
       config: {
-        googleMapsApiKey:
-          process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
+        googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
       },
       userInterfaceStyle: "automatic",
-      // Dark mode splash for iOS
-      /*  splash: {
-        dark: {
-          image: "./assets/images/splash-dark.png",
-          resizeMode: "contain",
-          backgroundColor: "#121212",
-        },
-      }, */
     },
     // Dark mode splash screen
     android: {
@@ -43,25 +28,19 @@ export default {
         backgroundColor: "#ffffff",
       },
       userInterfaceStyle: "automatic",
-      /* splash: {
-        image: "./assets/images/splash-light.png",
-        resizeMode: "cover",
-        backgroundColor: "#2F80ED",
-        dark: {
-          image: "./assets/images/splash-dark.png",
-          resizeMode: "contain",
-          backgroundColor: "#121212",
-        },
-      }, */
       permissions: [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "ACCESS_BACKGROUND_LOCATION",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "ACCESS_WIFI_STATE",
+        "CAMERA",
       ],
       package: "com.tbanj.aceeryde",
       config: {
         googleMaps: {
-          apiKey: process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
+          apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
         },
       },
     },
@@ -72,6 +51,13 @@ export default {
       favicon: "./assets/images/favicon.png",
     },
     plugins: [
+      [
+        "expo-location",
+        {
+          locationAlwaysAndWhenInUsePermission:
+            "Allow $(PRODUCT_NAME) to use your location.",
+        },
+      ],
       [
         "expo-router",
         {
