@@ -16,7 +16,27 @@ import { formData, icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import { fetchAPI } from "../lib/fetch";
 import OAuth from "@/components/OAuth";
+import useNetworkCheck from "../hooks/useNetworkCheck";
+import ISConnectedCard from "@/components/ISConnectedCard";
 
+interface FormErrors {
+  lastName?: {
+    text: string;
+    showError: boolean;
+  };
+  firstName?: {
+    text: string;
+    showError: boolean;
+  };
+  email?: {
+    text: string;
+    showError: boolean;
+  };
+  password?: {
+    text: string;
+    showError: boolean;
+  };
+}
 interface InserterIconProp {
   name: string;
   form: any | null;
@@ -63,58 +83,107 @@ const SignUp = () => {
     email: "",
     password: { name: "", hidePassword: true },
   });
-  const [verification, setVerification] = useState({
+  const [verification, setVerification] = useState<{
+    state: string;
+    error: string | null;
+    code: string;
+  }>({
     state: "default",
-    error: "",
+    error: null,
     code: "",
   });
   const [COMPState, setCOMPState] = useState<any>({
     BTNDisabled: false,
     loadingState: false,
+    showError: false,
+    showCatchError: false,
   });
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const [errorsOTP, setErrorsOTP] = useState({});
+  const [isFormValidOTP, setIsFormValidOTP] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { state } = useNetworkCheck();
 
   const validateForm = () => {
-    let errors: any = {};
+    let errors: FormErrors = {};
+    let showError = true;
 
     // Validate password field
-    if (!form.lastName) {
-      errors.lastName = "Last name is required.";
+    if (!form.lastName || form.lastName.length === 0) {
+      errors.lastName = { text: "Last name is required.", showError: false };
     } else if (form.lastName.length < 2) {
-      errors.lastName = "Last name must be at least 3 characters.";
+      errors.lastName = {
+        text: "Last name must be at least 3 characters.",
+        showError,
+      };
     } else if (form.lastName.length > 32) {
-      errors.lastName = "Last name length not accepted.";
+      errors.lastName = {
+        text: "Last name length not accepted.",
+        showError,
+      };
     }
 
-    if (!form.firstName) {
-      errors.firstName = "First name is required.";
+    if (!form.firstName || form.firstName.length === 0) {
+      errors.firstName = {
+        text: "First name is required.",
+        showError: false,
+      };
     } else if (form.firstName.length < 2) {
-      errors.firstName = "First name must be at least 3 characters.";
+      errors.firstName = {
+        text: "First name must be at least 3 characters.",
+        showError,
+      };
     } else if (form.firstName.length > 32) {
-      errors.firstName = "First name length not accepted.";
+      errors.firstName = {
+        text: "First name length not accepted.",
+        showError,
+      };
     }
 
     // Validate email field
-    if (!form.email) {
-      errors.email = "Email is required.";
+    if (!form.email || form.email.length === 0) {
+      errors.email = {
+        text: "Email is required.",
+        showError: false,
+      };
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      errors.email = "Email is invalid.";
+      errors.email = {
+        text: "Email is invalid.",
+        showError,
+      };
     }
 
-    if (!form.password.name) {
-      errors.password = "Password is required.";
-    } else if (form.password.name.length < 6) {
-      errors.password = "Password must be at least 6 characters.";
+    if (
+      form?.password?.name === null ||
+      form?.password?.name === undefined ||
+      form.firstName.length === 0
+    ) {
+      errors.password = {
+        text: "Password is required.",
+        showError: false,
+      };
+    } else if (form.password.name.length > 0 && form.password.name.length < 6) {
+      errors.password = {
+        text: "Password must be at least 6 characters.",
+        showError,
+      };
     } else if (
       !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[-+_!@#$%^&*.,?]).{6,20}$/.test(
         form.password.name
-      )
+      ) &&
+      form.password.name.length > 0
     )
-      errors.password =
-        "Password must have uppercase, lowercase & special character";
-    else if (form.password.name.length > 20) {
-      errors.password = "Password length not accepted.";
+      errors.password = {
+        text: "Password must have uppercase, lowercase & special character",
+        showError,
+      };
+    else if (form.password.name.length > 0 && form.password.name.length > 20) {
+      errors.password = {
+        text: "Password length not accepted.",
+        showError,
+      };
     }
 
     // Set the errors and update form validity
@@ -122,11 +191,59 @@ const SignUp = () => {
     setIsFormValid(Object.keys(errors).length === 0);
   };
 
+  const validateFormOTP = () => {
+    let errors: any = {};
+    let showError = true;
+    // Validate OTP modal
+
+    if (!verification.code || verification.code.length === 0) {
+      errors.code = {
+        text: "OTP is required.",
+        showError: false,
+      };
+    } else if (
+      (verification.code.length > 0 && verification.code.length < 6) ||
+      verification.code.length > 6
+    ) {
+      errors.code = {
+        text: "OTP must be 6 characters.",
+        showError,
+      };
+    }
+
+    // Set the errors and update form validity
+
+    setErrorsOTP(errors);
+    setIsFormValidOTP(Object.keys(errors).length === 0);
+  };
+
+  useEffect(() => {
+    if (verification.error && !isFormValidOTP) {
+      setVerification({ ...verification, error: null });
+    }
+    return () => {};
+  }, [isFormValidOTP]);
+
   useEffect(() => {
     // Trigger form validation when name,
     // email, or password changes
     validateForm();
   }, [form.email, form.password.name, form.firstName, form.lastName]);
+
+  useEffect(() => {
+    // Trigger form validation when name,
+    // email, or password changes
+    validateFormOTP();
+  }, [verification.code]);
+
+  useEffect(() => {
+    if (COMPState.showCatchError)
+      setTimeout(() => {
+        setCOMPState({ ...COMPState, showCatchError: false });
+      }, 3000);
+
+    return () => {};
+  }, [COMPState.showCatchError]);
 
   const onSignUpPress = async () => {
     if (!isLoaded) return;
@@ -137,6 +254,7 @@ const SignUp = () => {
         Alert.alert("Error", "first name and last name is required");
         return;
       } */
+
       if (isFormValid) {
         setCOMPState({ ...COMPState, BTNDisabled: true, loadingState: true });
         await signUp.create({
@@ -192,10 +310,20 @@ const SignUp = () => {
           }),
         });
         await setActive({ session: completeSignUp.createdSessionId });
-        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
+        setCOMPState({
+          ...COMPState,
+          BTNDisabled: false,
+          loadingState: false,
+          showCatchError: false,
+        });
         setVerification({ ...verification, state: "success" });
       } else {
-        setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
+        setCOMPState({
+          ...COMPState,
+          BTNDisabled: false,
+          loadingState: false,
+          showCatchError: false,
+        });
         setVerification({
           ...verification,
           state: "failed",
@@ -207,8 +335,13 @@ const SignUp = () => {
     } catch (err: any) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
-      setCOMPState({ ...COMPState, BTNDisabled: false, loadingState: false });
-      if (err?.errors?.[0].code !== "form_code_incorrect")
+      setCOMPState({
+        ...COMPState,
+        BTNDisabled: false,
+        loadingState: false,
+        showCatchError: false,
+      });
+      if (err?.errors?.[0].code !== "form_code_incorrect") {
         setVerification({
           ...verification,
           state: "failed",
@@ -216,6 +349,12 @@ const SignUp = () => {
             err?.errors?.[0].longMessage ??
             "Error encounter during user creation",
         });
+        Alert.alert(
+          "Error",
+          err?.errors?.[0].longMessage ?? "Error encounter during user creation"
+        );
+        Alert.alert("Info", "Try the Signup process after 30 minutes. Thanks");
+      }
       if (err?.errors?.[0].code === "form_code_incorrect") {
         setVerification({
           ...verification,
@@ -229,13 +368,39 @@ const SignUp = () => {
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
-      {COMPState.loadingState && (
-        <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center">
+    <ScrollView className="flex-1 bg-white dark:bg-custom-dark">
+      {loading && (
+        <View className="absolute h-full w-full z-10 items-center justify-center">
           <ActivityIndicator size="large" color="#000" />
         </View>
       )}
-      <View className="flex-1 bg-white">
+      {COMPState.showCatchError && (
+        <View className="absolute w-full top-6 bg-yellow-500 z-20">
+          <TouchableOpacity
+            // disabled={locationPermissionState.BTNDisabled}
+            onPress={() =>
+              setCOMPState({ ...COMPState, showCatchError: false })
+            }
+            className="justify-center items-center "
+          >
+            <View className="flex flex-row justify-center items-center space-x-2 ">
+              <Image source={icons.warningSignDark} className={`w-8 h-8 `} />
+              <Text className="text-base">
+                For error encounter during api call
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {!state.isConnected && <ISConnectedCard customClass="!z-10 !h-8" />}
+
+      {COMPState.loadingState && (
+        <View className="absolute top-0 bottom-0 right-0 left-0  z-10 items-center justify-center ">
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )}
+      <View className="flex-1 bg-white dark:bg-custom-dark">
         <View className="relative w-full h-[250px]">
           <Image source={images.signUpCar} className="z-10 w-full h-[250px]" />
           <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
@@ -252,12 +417,9 @@ const SignUp = () => {
             onChangeText={(value: string) =>
               setForm({ ...form, lastName: value })
             }
+            errors={errors}
+            name="lastName"
           />
-          {errors?.lastName && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors?.lastName}
-            </Text>
-          )}
           <InputField
             label="First Name"
             placeholder="Enter first name"
@@ -267,12 +429,9 @@ const SignUp = () => {
             onChangeText={(value: string) =>
               setForm({ ...form, firstName: value })
             }
+            errors={errors}
+            name="firstName"
           />
-          {errors?.firstName && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors?.firstName}
-            </Text>
-          )}
           <InputField
             label="Email"
             maxLength={formData.nameLen}
@@ -280,12 +439,9 @@ const SignUp = () => {
             icon={icons.email}
             value={form.email}
             onChangeText={(value: string) => setForm({ ...form, email: value })}
+            errors={errors}
+            name="email"
           />
-          {errors?.email && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors?.email}
-            </Text>
-          )}
 
           <InputField
             label="Password"
@@ -303,23 +459,29 @@ const SignUp = () => {
             iconRight={
               <InserterIcon name="password" setForm={setForm} form={form} />
             }
+            errors={errors}
+            name="password"
+            // showError={COMPState.showError}
           />
-          {errors?.password && (
-            <Text className="text-red-500 text-sm mt-1 px-5">
-              {errors?.password}
-            </Text>
-          )}
-
+          {/* 
+{
+                    isOfflineData
+                      ? "Update Unavailable Offline"
+                      : "Update Profile"
+                  }
+*/}
           <CustomButton
-            title={`${COMPState.BTNDisabled ? "Please wait..." : "Sign Up"} `}
+            title={`${COMPState.BTNDisabled ? "Please wait..." : state.isConnected && !COMPState.BTNDisabled ? "Sign Up" : !state.isConnected && "Sign Up Unavailable"} `}
             onPress={onSignUpPress}
             className="mt-6"
-            disabled={!isFormValid || COMPState.BTNDisabled}
+            disabled={
+              state.isConnected && (!isFormValid || COMPState.BTNDisabled)
+            }
           />
 
-          <OAuth />
+          <OAuth isConnected={state.isConnected} setLoading={setLoading} />
           <Link
-            className="text-lg text-center text-general-200 mt-10"
+            className="text-lg text-center text-general-200 dark:text-white mt-10"
             href={"/sign-in"}
           >
             <Text>Already have an account {""}</Text>
@@ -333,11 +495,11 @@ const SignUp = () => {
           /* () =>
             setVerification({ ...verification, state: "success" }) */
         >
-          <View className="bg-white px-7 py-9 rounded-2xl min-h-[300px]">
-            <Text className="text-2xl font-JakartaExtraBold mb-2">
+          <View className="bg-white dark:bg-custom-dark   px-7 py-9 rounded-2xl min-h-[300px]">
+            <Text className="text-2xl font-JakartaExtraBold mb-2 dark:text-white ">
               Verification
             </Text>
-            <Text className="font-Jakarta mb-5">
+            <Text className="font-Jakarta mb-5 dark:text-white ">
               We've sent a verification code to {form.email}
             </Text>
 
@@ -350,6 +512,8 @@ const SignUp = () => {
               onChangeText={(code) =>
                 setVerification({ ...verification, code })
               }
+              errors={errorsOTP}
+              name="code"
             />
 
             {verification.error && (
@@ -389,7 +553,7 @@ const SignUp = () => {
                   error: "",
                   code: "",
                 });
-                router.push("/(root)/(tabs)/home");
+                router.push("/");
               }}
               className="mt-5"
             />

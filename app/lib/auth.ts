@@ -7,6 +7,11 @@ export interface TokenCache {
   clearToken?: (key: string) => void;
 }
 
+export const clearCacheToken = async (key: string) => {
+  await SecureStore.deleteItemAsync(key);
+  return null;
+};
+
 export const tokenCache = {
   async getToken(key: string) {
     try {
@@ -27,53 +32,64 @@ export const tokenCache = {
     try {
       return SecureStore.setItemAsync(key, value);
     } catch (err) {
+      console.log(err);
       return;
     }
   },
 };
 
-export const googleOAuth = async (startOAuthFlow: any) => {
-  try {
-    const { createdSessionId, signUp, setActive } = await startOAuthFlow({
-      redirectUrl: Linking.createURL(`${process.env.EXPO_PUBLIC_HOME_URL}`, {
-        scheme: "myapp",
-      }),
-    });
-    if (createdSessionId) {
-      if (setActive) {
-        await setActive({ session: createdSessionId });
-        if (signUp.createdUserId) {
-          await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: `${signUp?.firstName ?? "Not Found"} ${signUp?.lastName ?? "Not Found"}`,
-              email: signUp.emailAddress,
-              clerkId: `${signUp.createdUserId}`,
-            }),
+export const googleOAuth = async (startOAuthFlow: any, path: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await startOAuthFlow({
+        redirectUrl: Linking.createURL(`${path}`, {
+          scheme: "myapp",
+        }),
+      });
+
+      const { createdSessionId, signUp, setActive, authSessionResult } = res;
+      if (createdSessionId) {
+        if (setActive) {
+          await setActive({ session: createdSessionId });
+          if (signUp.createdUserId) {
+            await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: `${signUp?.firstName ?? "Not Found"} ${signUp?.lastName ?? "Not Found"}`,
+                email: signUp.emailAddress,
+                clerkId: `${signUp.createdUserId}`,
+              }),
+            });
+          }
+
+          resolve({
+            success: true,
+            code: "success",
+            message: "You have successfully authenticated",
+            type: authSessionResult?.type,
           });
         }
-
-        return {
-          success: true,
-          code: "success",
-          message: "You have successfully authenticated",
-        };
       }
+      resolve({
+        success: false,
+        code: "success",
+        message: "An error occurred",
+        type: authSessionResult?.type,
+      });
+    } catch (error: any) {
+      console.log(error);
+
+      reject({
+        success: false,
+        code: error.code,
+        message: error?.errors[0]?.longMessage || "An error occurred",
+        type: "error",
+      });
     }
-    return {
-      success: false,
-      code: "success",
-      message: "An error occurred",
-    };
-  } catch (error: any) {
-    console.log(error);
-    return {
-      success: false,
-      code: error.code,
-      message: error?.errors[0]?.longMessage || "An error occurred",
-    };
-  }
+  });
 };
+
+export default {};

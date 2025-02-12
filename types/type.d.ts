@@ -94,6 +94,9 @@ declare interface InputFieldProps extends TextInputProps {
   inputStyle?: string;
   iconStyle?: string;
   className?: string;
+  errors?: any;
+  name?: string;
+  showError?: any;
 }
 
 declare interface PaymentProps {
@@ -102,12 +105,15 @@ declare interface PaymentProps {
   amount: string;
   driverId: number;
   rideTime: number;
+  isConnected: boolean;
 }
 
 declare interface LocationStore {
   userLatitude: number | null;
   userLongitude: number | null;
   userAddress: string | null;
+  userCountry: string | null;
+  showMap: boolean;
   destinationLatitude: number | null;
   destinationLongitude: number | null;
   destinationAddress: string | null;
@@ -120,6 +126,9 @@ declare interface LocationStore {
     longitude: number;
     address: string;
   }) => void;
+  setUserCountry: ({ country }: { country: string }) => void;
+  setShowMap: ({ mapCOMP }: { mapCOMP: boolean }) => void;
+
   setDestinationLocation: ({
     latitude,
     longitude,

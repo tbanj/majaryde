@@ -1,3 +1,32 @@
+- code cleanup in progress
+- remove unwanted code
+- cleanup
+- updated the environment variable
+- updated the build number
+- updated the build number
+- rsolve google auth login
+- updated
+- updated with new assets
+- change assets
+- fix on confirm ride button
+- updated
+- updated
+- resolve crazy loading
+- update form validation
+- update form validation
+- update form validation
+- update form validation
+- update form validation
+- implemented pop for no internet indicator
+- update form validation
+- update form validation
+- update form validation
+- implementation of autocomplete for profile ui
+- implementation of autocomplete for profile ui
+- implementation of autocomplete for profile ui
+- implementation of autocomplete for profile ui
+- implementation of autocomplete for sign-in ui
+- implementation of forgot password ot modal ui
 - implementation of forgot password ot modal ui
 - implementation of forgot password ot modal ui
 - implementation of forgot password ot modal ui

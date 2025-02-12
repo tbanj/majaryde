@@ -1,4 +1,4 @@
-# majaryde
+# aceeryde
 
 This is a MVP app for a ride hailing app for customers to order a ride. A user can book a ride, chat with the driver, update his details.
 
@@ -43,6 +43,5 @@ Link: https://drive.google.com/file/d/1lnoKWpzni1h64qDtHQKACHbbMsPWvQXv/view
 <img src="https://github.com/user-attachments/assets/0f794816-25fc-4dab-9ce2-dff2650ce2b2" alt="SplashScreenOne" width="288" height="512">&nbsp;
 <img src="https://github.com/user-attachments/assets/44fe9f91-13aa-4da6-b54d-07e219679163" alt="SplashScreenOne" width="288" height="512">&nbsp;
 <img src="https://github.com/user-attachments/assets/46d064ab-a9d1-4e4f-abd6-06910c471bf3" alt="SplashScreenTwo" width="288" height="512">&nbsp;
-
 
 # Author : Alabi Temitope [<img src="https://github.com/user-attachments/assets/4003d179-03a5-43ff-a4b8-37ce150dbcb5">](https://www.linkedin.com/in/alabi-temitope-aa036b103/)

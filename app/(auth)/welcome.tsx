@@ -3,25 +3,40 @@ import { Redirect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
 import { useRef, useState } from "react";
-import { onboarding } from "../../constants";
+import { icons, onboarding } from "../../constants";
 import CustomButton from "@/components/CustomButton";
 import { useAuth } from "@clerk/clerk-expo";
+import useNetworkCheck from "../hooks/useNetworkCheck";
+import ISConnectedCard from "@/components/ISConnectedCard";
 
 const Onboarding = () => {
+  const { state } = useNetworkCheck();
   const { isSignedIn } = useAuth();
   const swiperRef = useRef<Swiper>(null);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const isLastSlide = activeIndex === onboarding.length - 1;
 
-  if (isSignedIn) return <Redirect href={"/(root)/(tabs)/home"} />;
+  const handleNavigation = () => {
+    if (isLastSlide) {
+      router.replace("/(auth)/sign-up");
+    } else {
+      swiperRef.current?.scrollBy(1);
+    }
+  };
+
+  if (state.isConnected && isSignedIn)
+    return <Redirect href={"/(root)/(tabs)/home"} />;
 
   return (
-    <SafeAreaView className="flex h-full items-center justify-between bg-white">
+    <SafeAreaView
+      className={`flex h-full items-center justify-between bg-white ${state.isConnected ? "p-5" : "px-5 py-7"}`}
+    >
+      {!state.isConnected && <ISConnectedCard />}
       <TouchableOpacity
         onPress={() => {
           router.replace("/(auth)/sign-up");
         }}
-        className="w-full flex justify-end items-end p-5"
+        className={`w-full flex justify-end items-end   `}
       >
         <Text className="text-black text-md font-JakartaBold">Skip</Text>
       </TouchableOpacity>
@@ -57,11 +72,7 @@ const Onboarding = () => {
       <CustomButton
         className="!w-11/12"
         title={isLastSlide ? "Get Started" : "Next"}
-        onPress={() =>
-          isLastSlide
-            ? router.replace("/(auth)/sign-up")
-            : swiperRef.current?.scrollBy(1)
-        }
+        onPress={handleNavigation}
       />
     </SafeAreaView>
   );

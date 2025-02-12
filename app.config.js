@@ -2,50 +2,62 @@ import "dotenv/config";
 
 export default {
   expo: {
+    newArchEnabled: "true",
     jsEngine: "hermes",
-    name: "majaryde",
-    slug: "majaryde",
-    version: "1.0.1",
+    name: "aceeryde",
+    slug: "aceeryde",
+    version: "1.0.10",
     orientation: "portrait",
+    userInterfaceStyle: "automatic",
     icon: "./assets/images/icon.png",
     scheme: "myapp",
-    userInterfaceStyle: "automatic",
-    splash: {
-      image: "./assets/images/splash.png",
-      resizeMode: "contain",
-      backgroundColor: "#2F80ED",
-    },
+    host: "https://temitope-port.netlify.app",
+
     ios: {
-      bundleIdentifier: "com.tbanj.majaryde",
+      bundleIdentifier: "com.tbanj.aceeryde",
       supportsTablet: true,
       config: {
-        googleMapsApiKey:
-          process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
+        googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
       },
+      userInterfaceStyle: "automatic",
     },
+    // Dark mode splash screen
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
+      userInterfaceStyle: "automatic",
       permissions: [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "ACCESS_BACKGROUND_LOCATION",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "ACCESS_WIFI_STATE",
+        "CAMERA",
       ],
-      package: "com.tbanj.majaryde",
+      package: "com.tbanj.aceeryde",
       config: {
         googleMaps: {
-          apiKey: process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
+          apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
         },
       },
     },
+
     web: {
       bundler: "metro",
-      output: "server",
+      output: "static",
       favicon: "./assets/images/favicon.png",
     },
     plugins: [
+      [
+        "expo-location",
+        {
+          locationAlwaysAndWhenInUsePermission:
+            "Allow $(PRODUCT_NAME) to use your location.",
+        },
+      ],
       [
         "expo-router",
         {
@@ -53,14 +65,35 @@ export default {
         },
       ],
       "expo-font",
+      "expo-secure-store",
       "@bugsnag/plugin-expo-eas-sourcemaps",
+      [
+        "expo-build-properties",
+        {
+          android: {
+            usesCleartextTraffic: true,
+          },
+        },
+      ],
+      [
+        "expo-splash-screen",
+        {
+          backgroundColor: "#FFFFFF",
+          image: "./assets/images/splash-light.png",
+          dark: {
+            image: "./assets/images/splash-dark.png",
+            backgroundColor: "#121212",
+          },
+          imageWidth: 200,
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,
     },
     extra: {
       eas: {
-        projectId: "ef2825e6-74f7-49f8-b731-abdb75c17dbd",
+        projectId: "18b4b654-d4e5-4e1e-9940-bbe1c22476e9",
       },
       bugsnag: {
         apiKey: process.env.EXPO_PUBLIC_BUGSNAG_API_KEY,

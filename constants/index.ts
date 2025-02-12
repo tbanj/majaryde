@@ -36,6 +36,9 @@ import edited_input_icon from "@/assets/icons/edited_input.png";
 import eye_visible from "@/assets/icons/eye_visible.png";
 import eye_hidden from "@/assets/icons/eye_hidden.png";
 import lessThan from "@/assets/icons/less-than.png";
+import phoneCall from "@/assets/icons/phone-call.png";
+import warningSign from "@/assets/icons/warning-sign.png";
+import warningSignDark from "@/assets/icons/warning-sign-dark.png";
 
 export const images = {
   onboarding1,
@@ -79,6 +82,9 @@ export const icons = {
   eye_hidden,
   eye_visible,
   lessThan,
+  phoneCall,
+  warningSign,
+  warningSignDark,
 };
 
 export const onboarding = [
@@ -110,6 +116,14 @@ export const formData = {
   nameLen: 32,
   phoneNumberLen: 11,
 };
+
+export const NativeModalState = {
+  pending: "pending",
+  default: "default",
+  success: "success",
+  dismiss: "dismiss",
+};
+
 export const data = {
   onboarding,
 };
