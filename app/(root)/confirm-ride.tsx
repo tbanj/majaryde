@@ -1,11 +1,11 @@
+import { FlatList, View } from "react-native";
 import CustomButton from "@/components/CustomButton";
 import DriverCard from "@/components/DriverCard";
 import ISConnectedCard from "@/components/ISConnectedCard";
 import RideLayout from "@/components/RideLayout";
 import { useDriverStore } from "@/store";
 import { router } from "expo-router";
-import { useState } from "react";
-import { FlatList, Text, View } from "react-native";
+
 import useNetworkCheck from "../hooks/useNetworkCheck";
 
 const ConfirmRide = () => {

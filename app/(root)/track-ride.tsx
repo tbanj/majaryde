@@ -1,13 +1,9 @@
-import { useUser } from "@clerk/clerk-expo";
 import { Image, Text, View } from "react-native";
 
 import RideLayout from "@/components/RideLayout";
 import { icons } from "@/constants";
 import { useDriverStore, useLocationStore } from "@/store";
 import { formatTime } from "../lib/utils";
-import Payment from "@/components/Payment";
-
-import { StripeProvider } from "@stripe/stripe-react-native";
 import { useEffect, useState } from "react";
 import CustomButton from "@/components/CustomButton";
 import { router } from "expo-router";
@@ -17,7 +13,6 @@ import ISConnectedCard from "@/components/ISConnectedCard";
 const BookRide = () => {
   const [driverDetails, setDriverDetails] = useState<any>(null);
   const { state } = useNetworkCheck();
-  const { user } = useUser();
   const { userAddress, destinationAddress } = useLocationStore();
   const { drivers, selectedDriver } = useDriverStore();
 

@@ -4,9 +4,8 @@ import RideLayout from "@/components/RideLayout";
 import { icons } from "@/constants";
 import { useDriverStore, useLocationStore } from "@/store";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React from "react";
 import { Alert, Text, View } from "react-native";
-import ISConnectedCard from "@/components/ISConnectedCard";
 import useNetworkCheck from "@/app/hooks/useNetworkCheck";
 
 const FindRide = () => {

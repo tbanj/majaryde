@@ -9,7 +9,6 @@ import Payment from "@/components/Payment";
 
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { useEffect, useState } from "react";
-import ISConnectedCard from "@/components/ISConnectedCard";
 import useNetworkCheck from "../hooks/useNetworkCheck";
 import { ScrollView } from "react-native-gesture-handler";
 
