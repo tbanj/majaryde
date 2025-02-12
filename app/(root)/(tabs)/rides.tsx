@@ -14,13 +14,6 @@ const Rides = () => {
   const [showCatchError, setShowCatchError] = useState(false);
   const { state } = useNetworkCheck();
   const { user } = useUser();
-  // const userId = state.isConnected ? user?.id : "1";
-  /* const {
-    data: recentRides,
-    loading,
-    error,
-    isConnected,
-  } = useFetch<Ride[]>(`${process.env.EXPO_PUBLIC_LIVE_API}/ride/${user?.id}`); */
 
   const {
     data: recentRides,

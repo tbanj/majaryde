@@ -1,7 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import * as Linking from "expo-linking";
 import { fetchAPI } from "./fetch";
-// import { NativeModalState } from "@/constants";
 export interface TokenCache {
   getToken: (key: string) => Promise<string | undefined | null>;
   saveToken: (key: string, token: string) => Promise<void>;
@@ -42,7 +41,6 @@ export const tokenCache = {
 export const googleOAuth = async (startOAuthFlow: any, path: string) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // `${process.env.EXPO_PUBLIC_HOME_URL}`
       const res = await startOAuthFlow({
         redirectUrl: Linking.createURL(`${path}`, {
           scheme: "myapp",
@@ -67,12 +65,6 @@ export const googleOAuth = async (startOAuthFlow: any, path: string) => {
             });
           }
 
-          /* return {
-            success: true,
-            code: "success",
-            message: "You have successfully authenticated",
-            type: authSessionResult?.type,
-          }; */
           resolve({
             success: true,
             code: "success",
@@ -81,12 +73,6 @@ export const googleOAuth = async (startOAuthFlow: any, path: string) => {
           });
         }
       }
-      /* return {
-        success: false,
-        code: "success",
-        message: "An error occurred",
-        type: authSessionResult?.type,
-      }; */
       resolve({
         success: false,
         code: "success",
@@ -96,12 +82,6 @@ export const googleOAuth = async (startOAuthFlow: any, path: string) => {
     } catch (error: any) {
       console.log(error);
 
-      /* return {
-        success: false,
-        code: error.code,
-        message: error?.errors[0]?.longMessage || "An error occurred",
-        type: "error",
-      }; */
       reject({
         success: false,
         code: error.code,

@@ -1,7 +1,7 @@
 import { useAuth } from "@clerk/clerk-expo";
 import { Redirect } from "expo-router";
 import React from "react";
-import { ActivityIndicator, Alert, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import useNetworkCheck from "./hooks/useNetworkCheck";
 import "react-native-get-random-values";
 
