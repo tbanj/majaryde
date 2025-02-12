@@ -12,8 +12,13 @@ const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 
 SplashScreen.preventAutoHideAsync();
-
-LogBox.ignoreLogs(["Clerk:", "MapViewDirections Error:"]);
+LogBox.ignoreLogs([
+  "Clerk:",
+  "MapViewDirections Error:",
+  "MapViewDirections error:",
+  "MapViewDirections ready:",
+  "OAuth error",
+]);
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -28,9 +33,13 @@ export default function RootLayout() {
   const { state } = useNetworkCheck();
   // Subscribe to network state changes
 
+  const removeSplashScreen = async () => {
+    await SplashScreen.hideAsync();
+  };
+
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      removeSplashScreen();
     }
   }, [loaded]);
 
@@ -50,7 +59,7 @@ export default function RootLayout() {
   const ErrorBoundary = Bugsnag.getPlugin("react").createErrorBoundary(React);
 
   const ErrorView = () => (
-    <View>
+    <View className="flex flex-1 items-center justify-center">
       <Text>Inform users of an error in the component tree.</Text>
     </View>
   );

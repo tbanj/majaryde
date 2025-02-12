@@ -39,55 +39,77 @@ export const tokenCache = {
   },
 };
 
-export const googleOAuth = async (startOAuthFlow: any) => {
-  try {
-    const res = await startOAuthFlow({
-      redirectUrl: Linking.createURL(`${process.env.EXPO_PUBLIC_HOME_URL}`, {
-        scheme: "myapp",
-      }),
-    });
+export const googleOAuth = async (startOAuthFlow: any, path: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // `${process.env.EXPO_PUBLIC_HOME_URL}`
+      const res = await startOAuthFlow({
+        redirectUrl: Linking.createURL(`${path}`, {
+          scheme: "myapp",
+        }),
+      });
 
-    const { createdSessionId, signUp, setActive, authSessionResult } = res;
-    if (createdSessionId) {
-      if (setActive) {
-        await setActive({ session: createdSessionId });
-        if (signUp.createdUserId) {
-          await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: `${signUp?.firstName ?? "Not Found"} ${signUp?.lastName ?? "Not Found"}`,
-              email: signUp.emailAddress,
-              clerkId: `${signUp.createdUserId}`,
-            }),
+      const { createdSessionId, signUp, setActive, authSessionResult } = res;
+      if (createdSessionId) {
+        if (setActive) {
+          await setActive({ session: createdSessionId });
+          if (signUp.createdUserId) {
+            await fetchAPI(`${process.env.EXPO_PUBLIC_LIVE_API}/user`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: `${signUp?.firstName ?? "Not Found"} ${signUp?.lastName ?? "Not Found"}`,
+                email: signUp.emailAddress,
+                clerkId: `${signUp.createdUserId}`,
+              }),
+            });
+          }
+
+          /* return {
+            success: true,
+            code: "success",
+            message: "You have successfully authenticated",
+            type: authSessionResult?.type,
+          }; */
+          resolve({
+            success: true,
+            code: "success",
+            message: "You have successfully authenticated",
+            type: authSessionResult?.type,
           });
         }
-
-        return {
-          success: true,
-          code: "success",
-          message: "You have successfully authenticated",
-          type: authSessionResult?.type,
-        };
       }
+      /* return {
+        success: false,
+        code: "success",
+        message: "An error occurred",
+        type: authSessionResult?.type,
+      }; */
+      resolve({
+        success: false,
+        code: "success",
+        message: "An error occurred",
+        type: authSessionResult?.type,
+      });
+    } catch (error: any) {
+      console.log(error);
+
+      /* return {
+        success: false,
+        code: error.code,
+        message: error?.errors[0]?.longMessage || "An error occurred",
+        type: "error",
+      }; */
+      reject({
+        success: false,
+        code: error.code,
+        message: error?.errors[0]?.longMessage || "An error occurred",
+        type: "error",
+      });
     }
-    return {
-      success: false,
-      code: "success",
-      message: "An error occurred",
-      type: authSessionResult?.type,
-    };
-  } catch (error: any) {
-    console.log(error);
-    return {
-      success: false,
-      code: error.code,
-      message: error?.errors[0]?.longMessage || "An error occurred",
-      type: "error",
-    };
-  }
+  });
 };
 
 export default {};

@@ -1,14 +1,13 @@
 import useNetworkCheck from "@/app/hooks/useNetworkCheck";
 import { icons } from "@/constants";
 import { GoogleInputProps } from "@/types/type";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Image, View } from "react-native";
 import {
   GooglePlacesAutocomplete,
   GooglePlacesAutocompleteRef,
 } from "react-native-google-places-autocomplete";
 
-const googlePlacesApiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
 const GoogleTextInput = ({
   icon,
   initialLocation,
@@ -16,9 +15,12 @@ const GoogleTextInput = ({
   textInputBackgroundColor,
   handlePress,
 }: GoogleInputProps) => {
+  const [loding, setLoding] = useState<boolean>(false);
   const ref = useRef<GooglePlacesAutocompleteRef>(null);
 
   const { state } = useNetworkCheck();
+  const googlePlacesApiKey =
+    process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY;
 
   /* const handleClearText = () => {
     ref?.current?.setAddressText("");

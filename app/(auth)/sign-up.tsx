@@ -102,6 +102,7 @@ const SignUp = () => {
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [errorsOTP, setErrorsOTP] = useState({});
   const [isFormValidOTP, setIsFormValidOTP] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { state } = useNetworkCheck();
 
@@ -368,6 +369,11 @@ const SignUp = () => {
 
   return (
     <ScrollView className="flex-1 bg-white dark:bg-custom-dark">
+      {loading && (
+        <View className="absolute h-full w-full z-10 items-center justify-center">
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )}
       {COMPState.showCatchError && (
         <View className="absolute w-full top-6 bg-yellow-500 z-20">
           <TouchableOpacity
@@ -473,7 +479,7 @@ const SignUp = () => {
             }
           />
 
-          <OAuth isConnected={state.isConnected} />
+          <OAuth isConnected={state.isConnected} setLoading={setLoading} />
           <Link
             className="text-lg text-center text-general-200 dark:text-white mt-10"
             href={"/sign-in"}

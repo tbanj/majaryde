@@ -6,7 +6,7 @@ export default {
     jsEngine: "hermes",
     name: "aceeryde",
     slug: "aceeryde",
-    version: "1.0.6",
+    version: "1.0.10",
     orientation: "portrait",
     userInterfaceStyle: "automatic",
     icon: "./assets/images/icon.png",
@@ -17,11 +17,11 @@ export default {
       bundleIdentifier: "com.tbanj.aceeryde",
       supportsTablet: true,
       config: {
-        googleMapsApiKey:
-          process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
+        googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
       },
       userInterfaceStyle: "automatic",
     },
+    // Dark mode splash screen
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
@@ -32,11 +32,15 @@ export default {
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "ACCESS_BACKGROUND_LOCATION",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "ACCESS_WIFI_STATE",
+        "CAMERA",
       ],
       package: "com.tbanj.aceeryde",
       config: {
         googleMaps: {
-          apiKey: process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY,
+          apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
         },
       },
     },
@@ -48,12 +52,20 @@ export default {
     },
     plugins: [
       [
+        "expo-location",
+        {
+          locationAlwaysAndWhenInUsePermission:
+            "Allow $(PRODUCT_NAME) to use your location.",
+        },
+      ],
+      [
         "expo-router",
         {
           origin: process.env.EXPO_PUBLIC_SERVER_URL,
         },
       ],
       "expo-font",
+      "expo-secure-store",
       "@bugsnag/plugin-expo-eas-sourcemaps",
       [
         "expo-build-properties",
@@ -66,7 +78,7 @@ export default {
       [
         "expo-splash-screen",
         {
-          backgroundColor: "#2F80ED",
+          backgroundColor: "#FFFFFF",
           image: "./assets/images/splash-light.png",
           dark: {
             image: "./assets/images/splash-dark.png",

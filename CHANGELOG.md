@@ -1,3 +1,5 @@
+- remove unwanted code
+- cleanup
 - updated the environment variable
 - updated the build number
 - updated the build number

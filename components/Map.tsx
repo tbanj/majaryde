@@ -1,5 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import React, {
+  Dispatch,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   calculateDriverTimes,
@@ -11,10 +17,28 @@ import { Driver, MarkerData } from "@/types/type";
 import { icons } from "@/constants";
 import { useFetch } from "@/app/lib/fetch";
 import MapViewDirections from "react-native-maps-directions";
+import { useFocusEffect } from "expo-router";
 
 interface MapProps {
   isLogout?: string;
   isConnected: boolean;
+  /* setDebugInfo: Dispatch<
+    React.SetStateAction<{
+      apiKey: string;
+      AndroidApiKey: string;
+      region: any;
+      markersCount: number;
+      hasValidUserLocation: boolean;
+      hasValidDestination: boolean;
+      permissions: string[] | null;
+      directionsError: string | null;
+      userLat: number | null;
+      userLong: number | null;
+      destLat: number | null;
+      destLong: number | null;
+      error: any;
+    }>
+  >; */
 }
 
 const Map = ({ isLogout, isConnected }: MapProps) => {
@@ -31,6 +55,7 @@ const Map = ({ isLogout, isConnected }: MapProps) => {
 
   const { selectedDriver, setDrivers } = useDriverStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
+  const [directionsError, setDirectionsError] = useState<string | null>(null);
 
   const {
     userLongitude,
@@ -149,9 +174,20 @@ const Map = ({ isLogout, isConnected }: MapProps) => {
               latitude: destinationLatitude!,
               longitude: destinationLongitude!,
             }}
-            apikey={process.env.EXPO_PUBLIC_GOOGLE_API_KEY!}
+            apikey={`${process.env.EXPO_PUBLIC_GOOGLE_API_KEY!}`}
             strokeColor="#0286ff"
             strokeWidth={2}
+            onError={(errorMessage) => {
+              console.error("MapViewDirections error:");
+              setDirectionsError(errorMessage);
+            }}
+            onReady={(result) => {
+              console.log("MapViewDirections ready:");
+            }}
+            resetOnChange={false}
+            mode="DRIVING"
+            precision="high"
+            timePrecision="now"
           />
         </>
       ) : null,
@@ -164,36 +200,69 @@ const Map = ({ isLogout, isConnected }: MapProps) => {
     ]
   );
 
+  /* useFocusEffect(
+    useCallback(() => {
+      //  for debug
+      if (isUserLocationValid || hasDestination) {
+        setDebugInfo((prev: any) => ({
+          ...prev,
+          region,
+          hasValidUserLocation: isUserLocationValid,
+          userLat: userLatitude,
+          userLong: userLongitude,
+          markersCount: markers.length,
+          hasValidDestination: hasDestination,
+          destLat: destinationLatitude,
+          destLong: destinationLongitude,
+          directionsError,
+        }));
+      }
+    }, [isUserLocationValid, hasDestination])
+  ); */
+
   if (loading || !isUserLocationValid) {
     return (
-      <View className="flex justify-between items-center w-full">
+      <View className="flex flex-1 h-auto  justify-between items-center w-full">
         <ActivityIndicator size="small" color="#000" />
       </View>
     );
   }
 
-  if (error) {
+  if (error || directionsError) {
     return (
       <View className="flex justify-between items-center w-full">
-        <Text>Error loading map data. Please try again later.</Text>
+        <Text>
+          Error loading map data. Please try again later. {directionsError}
+        </Text>
       </View>
     );
   }
 
   return (
-    <MapView
-      provider={PROVIDER_GOOGLE}
-      className="w-full h-full rounded-2xl"
-      tintColor="black"
-      mapType="standard"
-      showsPointsOfInterest={false}
-      initialRegion={region}
-      showsUserLocation={true}
-      userInterfaceStyle="light"
-    >
-      {markerComponents}
-      {destinationComponents}
-    </MapView>
+    <>
+      {isUserLocationValid && (
+        <MapView
+          // key={`${userLatitude}-${userLongitude}-${destinationLatitude}-${destinationLongitude}`}
+          provider={PROVIDER_GOOGLE}
+          className="w-full h-full rounded-2xl"
+          tintColor="black"
+          mapType="standard"
+          showsPointsOfInterest={false}
+          initialRegion={region}
+          /* initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }} */
+          showsUserLocation={true}
+          userInterfaceStyle="light"
+        >
+          {markerComponents}
+          {destinationComponents}
+        </MapView>
+      )}
+    </>
   );
 };
 
