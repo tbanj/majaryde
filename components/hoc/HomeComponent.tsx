@@ -100,14 +100,8 @@ const HomeComponent = () => {
     apiParams: user?.id,
   });
 
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      navigation.setOptions({
-        tabBarStyle: { display: "none" },
-      });
-    });
-
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+  const hideKeyboardSub = useCallback(() => {
+    return Keyboard.addListener("keyboardDidHide", () => {
       navigation.setOptions({
         tabBarStyle: {
           backgroundColor: "#333333",
@@ -125,6 +119,16 @@ const HomeComponent = () => {
         },
       });
     });
+  }, []);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      navigation.setOptions({
+        tabBarStyle: { display: "none" },
+      });
+    });
+
+    const hideSubscription = hideKeyboardSub();
 
     // Clean up listeners on unmount
     return () => {
@@ -208,6 +212,7 @@ const HomeComponent = () => {
 
   useFocusEffect(
     useCallback(() => {
+      const hideSubscription = hideKeyboardSub();
       async function initialLocationData() {
         if (!state.isConnected) return;
         const fetchedLOCData: any = await requestLocation();
@@ -245,8 +250,10 @@ const HomeComponent = () => {
       ) {
         initialLocationData();
       }
+
       return () => {
         console.log("home aware  route unfocus");
+        hideSubscription.remove();
       };
     }, [locationPermissionState.location, userLatitude])
   );

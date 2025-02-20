@@ -9,7 +9,6 @@ import { useAuth } from "@clerk/clerk-expo";
 import ReactNativeModal from "react-native-modal";
 import { images } from "@/constants";
 import { router } from "expo-router";
-import React from "react";
 
 const Payment = ({
   fullName,
@@ -17,7 +16,6 @@ const Payment = ({
   amount,
   driverId,
   rideTime,
-  isConnected,
 }: PaymentProps) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const { userId } = useAuth();
@@ -32,16 +30,15 @@ const Payment = ({
   } = useLocationStore();
 
   const initializePaymentSheet = async () => {
-    const { error } = await initPaymentSheet({
-      merchantDisplayName: "Aceeryde Inc.",
+    const data = await initPaymentSheet({
+      merchantDisplayName: "MajaRyde Inc.",
       intentConfiguration: {
         mode: {
           amount: parseFloat(amount) * 100,
           currencyCode: "USD",
         },
         confirmHandler: async (paymentMethod, _, intentCreationCallback) => {
-          console.log("step 1 create a payment intent");
-          const { paymentIntent, customer } = await fetchAPI(
+          const data = await fetchAPITest(
             `${process.env.EXPO_PUBLIC_LIVE_API_STRIPE}/create`,
             {
               method: "POST",
@@ -56,61 +53,37 @@ const Payment = ({
               }),
             }
           );
-
-          if (paymentIntent.client_secret) {
-            console.log("step 2 make payment");
-            const { result } = await fetchAPI(
-              `${process.env.EXPO_PUBLIC_LIVE_API_STRIPE}/pay`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  payment_method_id: paymentMethod.id,
-                  payment_intent_id: paymentIntent.id,
-                  customer_id: customer,
-                }),
-              }
-            );
-            if (result.client_secret) {
-              console.log("step 3 create ride");
-              await fetchAPI(
-                `${process.env.EXPO_PUBLIC_LIVE_API}/ride/create`,
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    origin_address: userAddress,
-                    destination_address: destinationAddress,
-                    origin_latitude: userLatitude,
-                    origin_longitude: userLongitude,
-                    destination_latitude: destinationLatitude,
-                    destination_longitude: destinationLongitude,
-                    ride_time: rideTime.toFixed(0),
-                    fare_price: parseInt(amount) * 100,
-                    payment_status: "paid",
-                    driver_id: driverId,
-                    user_id: userId,
-                  }),
-                }
-              );
-
-              intentCreationCallback({
-                clientSecret: result.client_secret,
-              });
-            }
-          }
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          console.log("ttetette", data);
         },
       },
       returnURL: "myapp://book-ride",
     });
-    if (error) {
+
+    if (data.error) {
       // handle error
-      console.log(error);
+      console.log(data.error);
     }
+  };
+
+  const fetchAPITest = async (url: string, options?: RequestInit) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log("we are here now");
+        const response = await fetch(url, options);
+        if (!response.ok) {
+          new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: any = await response.json();
+        console.log("fetchAPI", data);
+        // return data;
+        resolve(data);
+      } catch (error) {
+        console.error("Fetch error:", error);
+        reject({ error });
+        throw error;
+      }
+    });
   };
 
   const openPaymentSheet = async () => {
@@ -121,11 +94,7 @@ const Payment = ({
       if (error.code === PaymentSheetError.Canceled) {
         Alert.alert(`Error code: ${error.code}`, error.message);
       } else {
-        Alert.alert(
-          `Network error, try again later. Error code: ${error.code}`,
-          error.message
-        );
-        return;
+        Alert.alert(`Error code: ${error.code}`, error.message);
       }
     } else {
       setSuccess(true);
@@ -138,8 +107,7 @@ const Payment = ({
   return (
     <>
       <CustomButton
-        disabled={!isConnected ? true : false}
-        title={!isConnected ? "Confirm Ride Unavailable" : "Confirm Ride"}
+        title="Confirm Ride"
         className="my-10"
         // temporary once done uncomment this part back
         onPress={openPaymentSheet}
@@ -150,17 +118,13 @@ const Payment = ({
       >
         <View
           className="flex flex-col items-center justify-center
-        bg-white dark:bg-custom-dark p-7 rounded-2xl"
+        bg-white p-7 rounded-2xl"
         >
           <Image source={images.check} className="w-28 h-28 mt-5" />
-          <Text className="text-2xl text-center font-JakartaBold mt-5 dark:text-white">
+          <Text className="text-2xl text-center font-JakartaBold mt-5">
             Ride booked!
           </Text>
-          <Text
-            className="text-md text-general-200 dark:text-gray-200 (condition) {
-            
-          } font-JakartaMedium text-center mt-3"
-          >
+          <Text className="text-md text-general-200 font-JakartaMedium text-center mt-3">
             Thank you for your booking, Your reservation has been placed. Please
             proceed with your trip!
           </Text>

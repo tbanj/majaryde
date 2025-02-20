@@ -174,9 +174,9 @@ const Map = ({ isLogout, isConnected }: MapProps) => {
               latitude: destinationLatitude!,
               longitude: destinationLongitude!,
             }}
-            apikey={`${process.env.EXPO_PUBLIC_GOOGLE_API_KEY!}`}
+            apikey={process.env.EXPO_PUBLIC_DEV_ANDROID_MAP_GOOGLE_API_KEY!}
             strokeColor="#0286ff"
-            strokeWidth={2}
+            strokeWidth={3}
             onError={(errorMessage) => {
               console.error("MapViewDirections error:");
               setDirectionsError(errorMessage);
@@ -240,28 +240,29 @@ const Map = ({ isLogout, isConnected }: MapProps) => {
 
   return (
     <>
-      {isUserLocationValid && (
-        <MapView
-          // key={`${userLatitude}-${userLongitude}-${destinationLatitude}-${destinationLongitude}`}
-          provider={PROVIDER_GOOGLE}
-          className="w-full h-full rounded-2xl"
-          tintColor="black"
-          mapType="standard"
-          showsPointsOfInterest={false}
-          initialRegion={region}
-          /* initialRegion={{
+      {/* {isUserLocationValid && (
+        
+      )} */}
+      <MapView
+        // key={`${userLatitude}-${userLongitude}-${destinationLatitude}-${destinationLongitude}`}
+        provider={PROVIDER_GOOGLE}
+        className="w-full h-full rounded-2xl"
+        tintColor="black"
+        mapType="standard"
+        showsPointsOfInterest={false}
+        initialRegion={region}
+        /* initialRegion={{
           latitude: 37.78825,
           longitude: -122.4324,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }} */
-          showsUserLocation={true}
-          userInterfaceStyle="light"
-        >
-          {markerComponents}
-          {destinationComponents}
-        </MapView>
-      )}
+        showsUserLocation={true}
+        userInterfaceStyle="light"
+      >
+        {markerComponents}
+        {destinationComponents}
+      </MapView>
     </>
   );
 };
