@@ -39,24 +39,52 @@ interface ApiConfig {
   }
 }; */
 
-export const fetchAPI = async (url: string, options?: RequestInit) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(url, options);
-      if (!response.ok) {
-        new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data: any = await response.json();
-      console.log("fetchAPI", data);
-      // return data;
-      resolve(data);
-    } catch (error) {
-      console.error("Fetch error:", error);
-      reject({ error });
-      throw error;
+export async function fetchAPI(url: string, options?: RequestInit) {
+  console.log("first part inside payment", url, options);
+  // First check internet connectivity
+  const isConnected = await checkInternetConnection();
+
+  if (!isConnected) {
+    throw new NoInternetError();
+  }
+
+  try {
+    console.log("inside payment", url, options);
+
+    // Add timeout to fetch
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    console.log("gara response", response);
+    // clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Server error response:", errorText);
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${errorText}`
+      );
     }
-  });
-};
+
+    const data = await response.json();
+    console.log("payment", data);
+    return data;
+  } catch (error: any) {
+    if (error instanceof NoInternetError) {
+      console.error("No internet connection");
+    } else if (error.name === "AbortError") {
+      console.error("Request timed out");
+      throw new Error("Request timed out after 15 seconds");
+    } else {
+      console.error("Fetch error:", error);
+    }
+    throw error;
+  }
+}
 export const useFetch = <T>(config: ApiConfig) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

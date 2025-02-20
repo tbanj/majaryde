@@ -1,13 +1,15 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import { Redirect, router } from "expo-router";
+import { Redirect, router, useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { icons, onboarding } from "../../constants";
 import CustomButton from "@/components/CustomButton";
 import { useAuth } from "@clerk/clerk-expo";
 import useNetworkCheck from "../hooks/useNetworkCheck";
 import ISConnectedCard from "@/components/ISConnectedCard";
+import { fetchAPI } from "../lib/fetch";
+import Payment from "@/components/Payment";
 
 const Onboarding = () => {
   const { state } = useNetworkCheck();
@@ -15,6 +17,24 @@ const Onboarding = () => {
   const swiperRef = useRef<Swiper>(null);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const isLastSlide = activeIndex === onboarding.length - 1;
+
+  useFocusEffect(
+    useCallback(() => {
+      // remove
+      const initiateStripe = () => {
+        fetchAPI(
+          "https://majaryde-backend.netlify.app/.netlify/functions/api/stripe/create",
+          {
+            body: '{"name":"Alabi Temitope","email":"engr.temitope@gmail.com","amount":"12.92","paymentMethodId":"pm_1QsIDDIDgz7vUa9s8Ki38fLJ"}',
+            headers: { "Content-Type": "application/json" },
+            method: "POST",
+          }
+        );
+      };
+      setActiveIndex(0);
+      // initiateStripe();
+    }, [])
+  );
 
   const handleNavigation = () => {
     if (isLastSlide) {
@@ -40,6 +60,7 @@ const Onboarding = () => {
       >
         <Text className="text-black text-md font-JakartaBold">Skip</Text>
       </TouchableOpacity>
+
       <Swiper
         ref={swiperRef}
         loop={false}
@@ -73,6 +94,14 @@ const Onboarding = () => {
         className="!w-11/12"
         title={isLastSlide ? "Get Started" : "Next"}
         onPress={handleNavigation}
+      />
+      <Payment
+        fullName={"Alabi Temitope"}
+        email={"engr.temitope@gmail.com"}
+        amount={"12.92"}
+        driverId={66456}
+        rideTime={6.89}
+        isConnected={state.isConnected}
       />
     </SafeAreaView>
   );

@@ -51,13 +51,13 @@ export default {
       favicon: "./assets/images/favicon.png",
     },
     plugins: [
-      [
+      /* [
         "expo-location",
         {
           locationAlwaysAndWhenInUsePermission:
             "Allow $(PRODUCT_NAME) to use your location.",
         },
-      ],
+      ], */
       [
         "expo-router",
         {
@@ -85,6 +85,14 @@ export default {
             backgroundColor: "#121212",
           },
           imageWidth: 200,
+        },
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          merchantIdentifier: "merchant.aceeryde.com",
+          enableGooglePay: true,
+          publishableKey: "pk_test_duafqMHra9sxrzWk1vGgMSsh",
         },
       ],
     ],
